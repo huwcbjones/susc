@@ -1,0 +1,15 @@
+#content {
+    padding-top: 40px;
+    background-color: #fff;
+    border-radius: 0 0 6px 6px;
+    height: calc(100% - 100vh);
+}
+
+#logo {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.navbar-fixed-top .navbar-collapse, .navbar-fixed-bottom .navbar-collapse {
+    max-height: 352px;
+}
