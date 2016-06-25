@@ -16,6 +16,7 @@
 <body>
 
 <?= $this->element('header') ?>
+<?= $this->fetch('precontent') ?>
 <div class="container" id="content">
 
     <div class="row">
