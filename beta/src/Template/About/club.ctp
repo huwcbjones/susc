@@ -1,4 +1,3 @@
 <?php
-
-    $this->Flash->success("It works!", ['params' => ['class' => 'alert']])
+$this->assign('title', 'Our Club');
 ?>
