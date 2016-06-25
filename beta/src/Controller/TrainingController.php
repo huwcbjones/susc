@@ -1,29 +1,24 @@
 <?php
 /**
  * Author: Huw
- * Since: 07/06/2016
+ * Since: 24/06/2016
  */
 
 namespace SUSC\Controller;
 
 
+use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Network\Exception\NotFoundException;
 use Cake\View\Exception\MissingTemplateException;
 
-class AboutController extends AppController
+class TrainingController extends Controller
 {
-    public function display()
+    function display()
     {
         $path = func_get_args();
 
-        $count = count($path);
-
         $page = null;
-
-        if (!$count) {
-            return $this->redirect('/about/club');
-        }
 
         $this->set($page);
 

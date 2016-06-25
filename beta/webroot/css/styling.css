@@ -1,5 +1,5 @@
 #content {
-    padding-top: 40px;
+    padding-top: 70px;
     background-color: #fff;
     border-radius: 0 0 6px 6px;
     height: calc(100% - 100vh);
@@ -12,4 +12,8 @@
 
 .navbar-fixed-top .navbar-collapse, .navbar-fixed-bottom .navbar-collapse {
     max-height: 352px;
+}
+
+.page-header {
+    margin: 20px 0 20px;
 }

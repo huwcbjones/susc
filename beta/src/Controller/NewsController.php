@@ -10,7 +10,7 @@ namespace SUSC\Controller;
 class NewsController extends AppController
 {
 
-    public function display()
+    public function index()
     {
     }
 
