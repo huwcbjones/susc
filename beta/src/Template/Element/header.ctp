@@ -4,16 +4,15 @@ use Cake\Routing\Router;
 
 $currentUrl = Router::normalize($this->request->here);
 $links = array();
-
 $links['home'] = $currentUrl === Router::url(['_name' => 'home']);
 $links['news'] = $currentUrl === Router::url(['_name' => 'news']);
-$links['training'] = $currentUrl === Router::url(['_name' => 'training']);
+$links['training'] = strpos($currentUrl,Router::url(['controller' => 'Training'])) !== false;
 $links['training_comp'] = $currentUrl === Router::url(['controller' => 'Training', 'action' => 'comp']);
 $links['training_rec'] = $currentUrl === Router::url(['controller' => 'Training', 'action' => 'rec']);
 $links['training_times'] = $currentUrl === Router::url(['controller' => 'Training', 'action' => 'times']);
 $links['fixtures'] = $currentUrl === Router::url(['_name' => 'fixtures']);
 $links['socials'] = $currentUrl === Router::url(['_name' => 'socials']);
-$links['about'] = $currentUrl === Router::url(['_name' => 'about']);
+$links['about'] = strpos($currentUrl, Router::url(['controller' => 'About'])) !== false;
 $links['about_club'] = $currentUrl === Router::url(['controller' => 'About', 'action' => 'club']);
 $links['about_coaches'] = $currentUrl === Router::url(['controller' => 'About', 'action' => 'coaches']);
 $links['about_committee'] = $currentUrl === Router::url(['controller' => 'About', 'action' => 'committee']);
@@ -44,7 +43,7 @@ $links['contact'] = $currentUrl === Router::url(['_name' => 'contact']);
                 <li<?= $links['home'] ? ' class="active"' : '' ?>><?= $this->Html->link('Home', ['_name' => 'home']) ?></li>
                 <li<?= $links['news'] ? ' class="active"' : '' ?>><?= $this->Html->link('News', ['_name' => 'news']) ?></li>
                 <li class="dropdown<?= $links['training'] ? ' active' : '' ?>">
-                    <a href="training" class="dropdown-toggle" title="SUSC Training" data-toggle="dropdown"
+                    <a href="<?= Router::url(['_name' => 'training'])?>" class="dropdown-toggle" title="SUSC Training" data-toggle="dropdown"
                        role="button" aria-haspopup="true"
                        aria-expanded="false">Training <span class="caret"></span></a>
                     <ul class="dropdown-menu">
@@ -56,7 +55,7 @@ $links['contact'] = $currentUrl === Router::url(['_name' => 'contact']);
                 <li<?= $links['fixtures'] ? ' class="active"' : '' ?>><?= $this->Html->link('Fixtures', ['_name' => 'fixtures']) ?></li>
                 <li<?= $links['socials'] ? ' class="active"' : '' ?>><?= $this->Html->link('Socials', ['_name' => 'socials']) ?></li>
                 <li class="dropdown<?= $links['about'] ? ' active' : '' ?>">
-                    <a href="about" class="dropdown-toggle" data-toggle="dropdown"
+                    <a href="<?= Router::url(['_name' => 'about']) ?>" class="dropdown-toggle" data-toggle="dropdown"
                        role="button" aria-haspopup="true"
                        aria-expanded="false">About Us <span class="caret"></span></a>
                     <ul class="dropdown-menu">
