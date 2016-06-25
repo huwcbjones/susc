@@ -48,20 +48,37 @@ Router::scope('/', function (RouteBuilder $routes) {
      * its action called 'display', and we pass a param to select the view file
      * to use (in this case, src/Template/Pages/home.ctp)...
      */
-    $routes->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
+    $routes->connect('/', ['controller' => 'Pages', 'home'], ['_name' => 'home']);
 
     // Connect News
-    $routes->connect('/news', ['controller' => 'News', 'action' => 'display', 'articles']);
+    $routes->connect('/news', ['controller' => 'News'], ['_name' => 'news']);
     $routes->connect('/news/*', ['controller' => 'News', 'action' => 'view']);
 
+    $routes->connect('/training', ['controller' => 'Training'], ['_name' => 'training']);
+    $routes->connect('/training/*', ['controller' => 'Training', 'action' => 'display']);
+
     // Connect Fixtures
-    $routes->connect('/fixtures', ['controller' => 'Fixtures', 'action' => 'display']);
+    $routes->connect('/fixtures', ['controller' => 'Fixtures'], ['_name' => 'fixtures']);
     $routes->connect('/fixtures/*', ['controller' => 'Fixtures', 'action' => 'view']);
 
-    // Connect About Us
-    $routes->connect('/about', ['controller' => 'About', 'action' => 'display', 'club']);
+    // Connect Socials
+    $routes->connect('/socials', ['controller' => 'Socials'], ['_name' => 'socials']);
+    $routes->connect('/socials/*', ['controller' => 'Socials', 'action' => 'view']);
+
+    // Connect About
+    $routes->connect('/about/club', ['controller' => 'About', 'action' => 'display', 'club'], ['_name' => 'about']);
+    $routes->redirect('/about', ['controller' => 'About', 'action' => 'display', 'club']);
     $routes->connect('/about/*', ['controller' => 'About', 'action' => 'display']);
 
+    $routes->connect('/contact', ['controller' => 'Pages', 'action' => 'contact'], ['_name' => 'contact']);
+
+    $routes->connect('/user', ['controller' => 'User', 'user']);
+    $routes->connect('/login', ['controller' => 'User', 'action' => 'login'], ['_name' => 'login']);
+    $routes->redirect('/user/login', ['_name' => 'login', 'controller' => 'User', 'action' => 'login']);
+
+    Router::prefix('admin', function ($routes) {
+        $routes->fallbacks('DashedRoute');
+    });
 
     /**
      * ...and connect the rest of 'Pages' controller's URLs.
