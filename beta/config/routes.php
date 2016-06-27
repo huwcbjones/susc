@@ -72,9 +72,9 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     $routes->connect('/contact', ['controller' => 'Pages', 'action' => 'contact'], ['_name' => 'contact']);
 
-    $routes->connect('/user', ['controller' => 'User', 'user']);
     $routes->connect('/login', ['controller' => 'User', 'action' => 'login'], ['_name' => 'login']);
-    $routes->redirect('/user/login', ['_name' => 'login', 'controller' => 'User', 'action' => 'login']);
+    $routes->redirect('/user/login', ['controller' => 'User', 'action' => 'login', '_name' => 'login']);
+    $routes->connect('/logout', ['controller' => 'User', 'action' => 'logout'], ['_name' => 'logout']);
 
     Router::prefix('admin', function ($routes) {
         $routes->fallbacks('DashedRoute');
