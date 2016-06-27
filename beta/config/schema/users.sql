@@ -1,8 +1,8 @@
 #
 # Users Table
 #
-CREATE TABLE users (
-  id int(11) NOT NULL auto_increment,
+CREATE TABLE users(
+  users_id int(11) NOT NULL auto_increment,
   username varchar(255) NOT NULL,
   email varchar(255) NOT NULL,
   firstName varchar(255) NOT NULL,
