@@ -28,6 +28,16 @@ use Cake\View\Exception\MissingTemplateException;
 class PagesController extends AppController
 {
 
+    public function initialize()
+    {
+        parent::initialize();
+
+        if ($this->Auth !== false) {
+            // Allow access to all pages
+            $this->Auth->allow();
+        }
+    }
+
     /**
      * Displays a view
      *
@@ -35,14 +45,11 @@ class PagesController extends AppController
      * @throws \Cake\Network\Exception\NotFoundException When the view file could not
      *   be found or \Cake\View\Exception\MissingTemplateException in debug mode.
      */
-    public function index()
+    public function display()
     {
         $path = func_get_args();
 
         $count = count($path);
-        if (!$count) {
-            return $this->redirect('/');
-        }
         $page = $subpage = null;
 
         if (!empty($path[0])) {
@@ -51,6 +58,11 @@ class PagesController extends AppController
         if (!empty($path[1])) {
             $subpage = $path[1];
         }
+
+        if (!$count) {
+            $path[0] = 'home';
+        }
+
         $this->set(compact('page', 'subpage'));
 
         try {
@@ -61,9 +73,5 @@ class PagesController extends AppController
             }
             throw new NotFoundException();
         }
-    }
-
-    public function contact()
-    {
     }
 }
