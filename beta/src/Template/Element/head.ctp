@@ -42,6 +42,8 @@ use Cake\Core\Configure;
 
 <?= $this->Html->css('bootstrap.min.css') ?>
 
+<?= $this->Html->css('font-awesome.min.css') ?>
+
 <?= $this->Html->css('styling.css') ?>
 
 <?= $this->fetch('meta') ?>
