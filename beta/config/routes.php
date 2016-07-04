@@ -18,6 +18,7 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
+use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
@@ -43,17 +44,19 @@ use Cake\Routing\Router;
 Router::defaultRouteClass('DashedRoute');
 
 Router::scope('/', function (RouteBuilder $routes) {
-    /**
-     * Here, we are connecting '/' (base path) to a controller called 'Pages',
-     * its action called 'display', and we pass a param to select the view file
-     * to use (in this case, src/Template/Pages/home.ctp)...
-     */
-    $routes->connect('/', ['controller' => 'Pages', 'home'], ['_name' => 'home']);
+    // Connect Home (/)
+    $routes->connect('/', ['controller' => 'Pages', 'action' => 'display'], ['_name' => 'home']);
 
+    // Connect Admin pages
+    Router::prefix('admin', function ($routes) {
+        $routes->fallbacks('DashedRoute');
+    });
+    
     // Connect News
     $routes->connect('/news', ['controller' => 'News'], ['_name' => 'news']);
     $routes->connect('/news/*', ['controller' => 'News', 'action' => 'view']);
 
+    // Connect Training
     $routes->connect('/training', ['controller' => 'Training'], ['_name' => 'training']);
     $routes->connect('/training/*', ['controller' => 'Training', 'action' => 'display']);
 
@@ -70,13 +73,11 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->redirect('/about', ['controller' => 'About', 'action' => 'display', 'club']);
     $routes->connect('/about/*', ['controller' => 'About', 'action' => 'display']);
 
-    $routes->connect('/contact', ['controller' => 'Pages', 'action' => 'contact'], ['_name' => 'contact']);
+    // Connect Contact Us
+    $routes->connect('/contact', ['controller' => 'Pages', 'action' => 'display', 'contact'], ['_name' => 'contact']);
 
-    $routes->connect('/login', ['controller' => 'User', 'action' => 'login'], ['_name' => 'login']);
-    $routes->redirect('/user/login', ['controller' => 'User', 'action' => 'login', '_name' => 'login']);
-    $routes->connect('/logout', ['controller' => 'User', 'action' => 'logout'], ['_name' => 'logout']);
-
-    Router::prefix('admin', function ($routes) {
+    // Connect CakeDC/Users for easy user management
+    Router::plugin('CakeDC/Users', ['path' => '/'], function ($routes) {
         $routes->fallbacks('DashedRoute');
     });
 
