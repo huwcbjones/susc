@@ -12,57 +12,100 @@
  * @since     0.2.9
  * @license   http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace SUSC\Controller;
 
-use Cake\Controller\Controller;
-use Cake\Event\Event;
+namespace SUSC\Controller {
 
-/**
- * Application Controller
- *
- * Add your application-wide methods in the class below, your controllers
- * will inherit them.
- *
- * @link http://book.cakephp.org/3.0/en/controllers.html#the-app-controller
- */
-class AppController extends Controller
-{
-
-    public $helpers = [
-        'BootstrapUI.Html',
-        'BootstrapUI.Flash'
-    ];
+    use Cake\Cache\Cache;
+    use Cake\Controller\Controller as BaseController;
+    use Cake\Event\Event;
 
     /**
-     * Initialization hook method.
+     * Application Controller
      *
-     * Use this method to add common initialization code like loading components.
+     * Add your application-wide methods in the class below, your controllers
+     * will inherit them.
      *
-     * e.g. `$this->loadComponent('Security');`
-     *
-     * @return void
+     * @link http://book.cakephp.org/3.0/en/controllers.html#the-app-controller
      */
-    public function initialize()
+    class AppController extends BaseController
     {
-        parent::initialize();
 
-        $this->loadComponent('RequestHandler');
-        $this->loadComponent('Flash');
-        $this->loadComponent('Csrf');
-    }
+        public $helpers = [
+            'BootstrapUI.Html',
+            'BootstrapUI.Flash'
+        ];
 
-    /**
-     * Before render callback.
-     *
-     * @param \Cake\Event\Event $event The beforeRender event.
-     * @return void
-     */
-    public function beforeRender(Event $event)
-    {
-        if (!array_key_exists('_serialize', $this->viewVars) &&
-            in_array($this->response->type(), ['application/json', 'application/xml'])
-        ) {
-            $this->set('_serialize', true);
+        /**
+         * Initialization hook method.
+         *
+         * Use this method to add common initialization code like loading components.
+         *
+         * e.g. `$this->loadComponent('Security');`
+         *
+         * @return void
+         */
+        public function initialize()
+        {
+            parent::initialize();
+            $this->loadComponent('Flash');
+            $this->loadComponent('RequestHandler');
+            $this->loadComponent('Csrf');
+            $this->loadComponent('CakeDC/Users.UsersAuth');
+            /*$this->loadComponent('Auth', [
+                'authorize' => 'Controller',
+                'authenticate' => [
+                    'Form',
+                    'Muffin/OAuth2.OAuth',
+                ],
+                'loginAction' => [
+                    '_name' => 'login'
+                ],
+                'unauthorizedRedirect' => $this->referer(),
+            ]);*/
         }
+
+        public function isAuthorized($user = null)
+        {
+            // Any registered user can access public functions
+            if (empty($this->request->params['prefix'])) {
+                return true;
+            }
+
+            // Only admins can access admin functions
+            if ($this->request->params['prefix'] === 'admin') {
+                return (bool)($user['role'] === 'admin');
+            }
+
+            // Default deny
+            return false;
+        }
+
+        public function beforeFilter(Event $event)
+        {
+            parent::beforeFilter($event);
+            // TODO: Enable cache in production
+            $this->response->disableCache();
+            Cache::disable();
+        }
+
+        /**
+         * Before render callback.
+         *
+         * @param \Cake\Event\Event $event The beforeRender event.
+         * @return void
+         */
+        public function beforeRender(Event $event)
+        {
+            if (!array_key_exists('_serialize', $this->viewVars) &&
+                in_array($this->response->type(), ['application/json', 'application/xml'])
+            ) {
+                $this->set('_serialize', true);
+            }
+        }
+    }
+}
+namespace App\Controller {
+
+    class AppController extends \SUSC\Controller\AppController {
     }
 }
