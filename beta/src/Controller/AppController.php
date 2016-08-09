@@ -51,17 +51,6 @@ namespace SUSC\Controller {
             $this->loadComponent('RequestHandler');
             $this->loadComponent('Csrf');
             $this->loadComponent('CakeDC/Users.UsersAuth');
-            /*$this->loadComponent('Auth', [
-                'authorize' => 'Controller',
-                'authenticate' => [
-                    'Form',
-                    'Muffin/OAuth2.OAuth',
-                ],
-                'loginAction' => [
-                    '_name' => 'login'
-                ],
-                'unauthorizedRedirect' => $this->referer(),
-            ]);*/
         }
 
         public function isAuthorized($user = null)
