@@ -5,6 +5,7 @@
  */
 
 namespace SUSC\Controller;
+use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -14,22 +15,35 @@ use Cake\ORM\TableRegistry;
  */
 class NewsController extends AppController
 {
+
+
+
+    public $paginate = [
+        'limit' => 10,
+        'order' => [
+            'News.created' => 'desc'
+        ],
+        'finder' => 'published'
+    ];
+
+    public function beforeRender(Event $event)
+    {
+        parent::beforeRender($event);
+        $this->viewBuilder()->helpers(['BBCode.BBCode']);
+    }
+
     public function initialize()
     {
         parent::initialize();
+        $this->loadComponent('Paginator');
+        //$this->helpers[] = 'BBCode.BBCode';
         $this->Auth->allow();
         $this->News = TableRegistry::get('News');
     }
 
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['news']
-        ];
-        $news = $this->paginate($this->News);
-
-        $this->set(compact('news'));
-        $this->set('_serialize', ['news']);
+         $this->set('news', $this->paginate());
     }
 
     public function view($fixtureID)
