@@ -10,28 +10,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<?= $this->element('head') ?>
+    <?= $this->element('head') ?>
 
 </head>
 <body>
 <div id="fb-root"></div>
-<script>(function(d, s, id) {
+<script>(function (d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
+        js = d.createElement(s);
+        js.id = id;
         js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.6&appId=1103769579691459";
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));</script>
+<header class="main-masthead">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 text-center vertical-center"><h1>Southampton University Swimming Club</h1></div>
+        </div>
 
+    </div>
+</header>
 <?= $this->element('header') ?>
-<?= $this->fetch('precontent') ?>
-<div class="container" id="content">
-
+<div class="container menu-padding" id="content">
+    <?= $this->fetch('precontent') ?>
     <div class="row">
         <div class="col-xs-12">
-        <?= $this->Flash->render() ?>
+            <?= $this->Flash->render() ?>
 
-        <?= $this->fetch('content') ?>
+            <?= $this->fetch('content') ?>
 
         </div>
     </div>
@@ -51,5 +58,29 @@
 <!--<![endif]-->
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <?= $this->Html->script('bootstrap.min.js') ?>
+
+<?= $this->fetch('postscript') ?>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var menu = $('#nav');
+        var origOffset = menu.offset().top;
+
+        function scroll() {
+            if ($(window).scrollTop() >= origOffset) {
+                menu.addClass('navbar-fixed-top')
+                    .removeClass('container')
+                    .removeClass('fix-margin');
+                $('#content').removeClass('menu-padding');
+            } else {
+                menu.removeClass('navbar-fixed-top')
+                    .addClass('container')
+                    .addClass('fix-margin');
+                $('#content').addClass('menu-padding');
+            }
+        }
+
+        document.onscroll = scroll;
+    });
+</script>
 </body>
 </html>

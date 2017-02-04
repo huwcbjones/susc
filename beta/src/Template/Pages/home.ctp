@@ -1,6 +1,7 @@
 <?php
 
 use Cake\Core\Configure;
+
 $this->start('css');
 echo $this->fetch('css');
 echo $this->Html->css('carousel');
@@ -10,15 +11,8 @@ $this->layout('clean');
 $this->assign('title', 'Home');
 ?>
 
-<?php
-$this->start('precontent');
-?>
-<div id="mainCarousel" class="carousel slide" data-ride="carousel">
-    <ol class="carousel-indicators">
-        <li data-target="#mainCarousel" data-slide-to="0" class="active"></li>
-        <li data-target="#mainCarousel" data-slide-to="1"></li>
-        <li data-target="#mainCarousel" data-slide-to="2"></li>
-    </ol>
+<?php $this->start('precontent') ?>
+<div id="mainCarousel" class="carousel slide carousel-fade" data-ride="carousel">
     <div class="carousel-inner" role="listbox">
         <div class="item active">
             <div class="image" style="background-image:url(/images/gallery/berchie_fly.jpg)">
@@ -27,7 +21,6 @@ $this->start('precontent');
             <div class="container">
                 <div class="carousel-caption">
                     <h1 class="h4">SUSC Qualify for BUCS Team Finals</h1>
-                    <p>Something short and brief.</p>
                 </div>
             </div>
         </div>
@@ -38,7 +31,6 @@ $this->start('precontent');
             <div class="container">
                 <div class="carousel-caption">
                     <h1 class="h4">SUSC @ BUCS Short Course</h1>
-                    <p><a class="btn btn-md btn-primary" href="gallery" role="button">View Gallery</a></p>
                 </div>
             </div>
         </div>
@@ -48,34 +40,34 @@ $this->start('precontent');
             <div class="container">
                 <div class="carousel-caption carouselPane">
                     <h1 class="h4">SUSC Finish Top 10 @ BUSC Team</h1>
-                    <p>Something something something</p>
                 </div>
             </div>
         </div>
     </div>
-    <a class="left carousel-control" href="#mainCarousel" role="button" data-slide="prev">
-        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-    </a>
-    <a class="right carousel-control" href="#mainCarousel" role="button" data-slide="next">
-        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-    </a>
 </div>
-<?php
-$this->end();
-?>
-
+<?php $this->end() ?>
 <div class="col-md-4">
     <h2>News</h2>
     <hr/>
     <div class="blog-post">
-        <h2 class="h4">Latest news post</h2>
-        <p class="blog-post-meta">April 28<sup>th</sup> 2016, by John Smith</p>
-        <article class="blog-post">
-            Some news content! Woop, short summary of post with link to full article.
-        </article>
-        <p><a href="news/itemID" class="btn btn-default  btn-sm">Read more &raquo;</a></p>
+        <?php foreach ($news as $article): ?>
+            <h2 class="h4"><?= h($article->title) ?></h2>
+            <p class="blog-post-meta"><?=
+                $article->created->format('F j<\s\u\p>S</\s\u\p> Y') ?>, by <?= h($article->user_id) ?></p>
+            <article class="blog-post">
+                Some news content! Woop, short summary of post with link to full article.
+            </article>
+            <p>
+                <a href="<?= $this->Url->build(
+                    ['controller' => 'news',
+                        'action' => 'view',
+                        $article->created->format('Y'),
+                        $article->created->format('m'),
+                        $article->created->format('d'),
+                        $article->slug
+                    ]
+                ) ?>" class="btn btn-default  btn-sm">Read more &raquo;</a></p>
+        <?php endforeach; ?>
     </div>
 </div>
 <div class="col-md-4">
@@ -106,4 +98,3 @@ $this->end();
         <p><a class="btn btn-default" href="downloads" role="button">Visit more info &raquo;</a></p>
     </div>
 </div>
-

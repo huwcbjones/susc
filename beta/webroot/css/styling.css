@@ -1,3 +1,36 @@
+@font-face {
+    font-family: "TeamSouthampton";
+    src: local('Freshman'),
+    url('/fonts/Freshman.ttf') format('truetype');
+}
+.main-masthead {
+    min-height:80px;
+}
+
+.main-masthead h1 {
+    color: #fff;
+    margin-top:20px;
+    font-size: 48px;
+    font-family: TeamSouthampton;
+    -webkit-text-stroke: 4px black;
+}
+
+.vertical-center {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+
+.fix-margin {
+    margin-bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.menu-padding {
+    padding-top: 25px !important;
+}
+
 #content {
     padding-top: 70px;
     background-color: #fff;
@@ -12,6 +45,11 @@
 
 .navbar-fixed-top .navbar-collapse, .navbar-fixed-bottom .navbar-collapse {
     max-height: 352px;
+}
+
+#nav {
+    /*border-width: 0 0 1px;*/
+    /*border-radius: 0;*/
 }
 
 .page-header {
