@@ -18,9 +18,9 @@ $links['about_coaches'] = $currentUrl === Router::url(['controller' => 'About', 
 $links['about_committee'] = $currentUrl === Router::url(['controller' => 'About', 'action' => 'committee']);
 $links['contact'] = $currentUrl === Router::url(['_name' => 'contact']);
 ?>
-<nav class="navbar navbar-inverse container fix-margin" id="nav">
-    <div class="container">
-        <div class="navbar-header">
+<nav class="navbar navbar-inverse container fix-menu-margin" id="nav">
+    <div class="container" id="nav-container">
+        <div class="navbar-header" id="nav-header">
             <?php if (!$this->fetch('navbar.top')): ?>
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
                         aria-expanded="true" aria-controls="navbar">

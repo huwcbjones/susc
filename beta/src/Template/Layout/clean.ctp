@@ -14,7 +14,7 @@
 
 </head>
 <body>
-<div id="fb-root"></div>
+<?php /*<div id="fb-root"></div>
 <script>(function (d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
@@ -22,7 +22,7 @@
         js.id = id;
         js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.6&appId=1103769579691459";
         fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));</script>
+    }(document, 'script', 'facebook-jssdk'));</script>*/ ?>
 <header class="main-masthead">
     <div class="container">
         <div class="row">
@@ -63,23 +63,40 @@
 <script type="text/javascript">
     $(document).ready(function () {
         var menu = $('#nav');
-        var origOffset = menu.offset().top;
+        var menuContainer = $('#nav-container');
+        var menuHeader = $('#nav-header');
+        var content = $('#content');
+        var offset = menu.offset().top;
+
+        function calcOffset() {
+            offset = menu.offset().top;
+            scroll();
+        }
 
         function scroll() {
-            if ($(window).scrollTop() >= origOffset) {
+            if ($(window).scrollTop() >= offset) {
                 menu.addClass('navbar-fixed-top')
                     .removeClass('container')
-                    .removeClass('fix-margin');
-                $('#content').removeClass('menu-padding');
+                    .removeClass('fix-menu-margin');
+                menuContainer
+                    .addClass('fix-menu-padding');
+                menuHeader
+                    .removeClass('fix-menu-header');
+                content.removeClass('menu-padding');
             } else {
                 menu.removeClass('navbar-fixed-top')
                     .addClass('container')
-                    .addClass('fix-margin');
-                $('#content').addClass('menu-padding');
+                    .addClass('fix-menu-margin');
+                menuContainer
+                    .removeClass('fix-menu-padding');
+                menuHeader
+                    .addClass('fix-menu-header');
+                content.addClass('menu-padding');
             }
         }
 
         document.onscroll = scroll;
+        window.onresize = calcOffset;
     });
 </script>
 </body>

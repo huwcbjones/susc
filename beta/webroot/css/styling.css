@@ -3,13 +3,14 @@
     src: local('Freshman'),
     url('/fonts/Freshman.ttf') format('truetype');
 }
+
 .main-masthead {
-    min-height:80px;
+    min-height: 80px;
 }
 
 .main-masthead h1 {
     color: #fff;
-    margin-top:20px;
+    margin-top: 20px;
     font-size: 48px;
     font-family: TeamSouthampton;
     -webkit-text-stroke: 4px black;
@@ -21,7 +22,29 @@
     float: none;
 }
 
-.fix-margin {
+.fix-menu-padding {
+    padding-left: 31px;
+    padding-right: 14px;
+}
+
+@media (max-width: 767px) {
+    .fix-menu-header {
+        margin-right: -32px !important;
+    }
+    #content {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+}
+
+@media (min-width: 768px) {
+    #content {
+        margin-bottom: 52px;
+        border-radius: 0 0 6px 6px;
+    }
+}
+
+.fix-menu-margin {
     margin-bottom: 0;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
@@ -34,7 +57,6 @@
 #content {
     padding-top: 70px;
     background-color: #fff;
-    border-radius: 0 0 6px 6px;
     height: calc(100% - 100vh);
 }
 
