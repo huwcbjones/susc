@@ -16,6 +16,7 @@ namespace SUSC\Controller;
 
 use Cake\Core\Configure;
 use Cake\Network\Exception\NotFoundException;
+use Cake\ORM\TableRegistry;
 use Cake\View\Exception\MissingTemplateException;
 
 /**
@@ -36,6 +37,21 @@ class PagesController extends AppController
             // Allow access to all pages
             $this->Auth->allow();
         }
+
+        $this->set('news', TableRegistry::get('Articles')->findNews('all', [
+            'order' => ['`Articles`.`created`' => 'DESC'],
+            'limit' => 3,
+        ])->find('published'));
+
+        $this->set('fixtures', TableRegistry::get('Articles')->findFixtures('all', [
+            'order' => ['`Articles`.`created`' => 'DESC'],
+            'limit' => 3,
+        ])->find('published'));
+
+        $this->set('socials', TableRegistry::get('Articles')->findSocials('all', [
+            'order' => ['`Articles`.`created`' => 'DESC'],
+            'limit' => 3,
+        ])->find('published'));
     }
 
     /**

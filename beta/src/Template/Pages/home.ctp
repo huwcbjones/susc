@@ -50,51 +50,92 @@ $this->assign('title', 'Home');
     <h2>News</h2>
     <hr/>
     <div class="blog-post">
+        <?php $articlesCount = 0; ?>
+        <?php if($news->count() != 0): ?>
         <?php foreach ($news as $article): ?>
             <h2 class="h4"><?= h($article->title) ?></h2>
             <p class="blog-post-meta"><?=
-                $article->created->format('F j<\s\u\p>S</\s\u\p> Y') ?>, by <?= h($article->user_id) ?></p>
+                $article->created->format('F j<\s\u\p>S</\s\u\p> Y') ?>, by <?= h($article->user->fullname) ?></p>
             <article class="blog-post">
-                Some news content! Woop, short summary of post with link to full article.
+                <?= $this->Text->truncate($article->content, 200, ['exact' => false,]) ?>
             </article>
             <p>
                 <a href="<?= $this->Url->build(
                     ['controller' => 'news',
                         'action' => 'view',
-                        $article->created->format('Y'),
-                        $article->created->format('m'),
-                        $article->created->format('d'),
-                        $article->slug
+                        'year' => $article->created->format('Y'),
+                        'month' => $article->created->format('m'),
+                        'day' => $article->created->format('d'),
+                        'slug' => $article->slug
                     ]
                 ) ?>" class="btn btn-default  btn-sm">Read more &raquo;</a></p>
+            <?php $articlesCount++; ?>
+            <?php if ($articlesCount != $news->count()): ?>
+                <hr/>
+            <?php endif ?>
         <?php endforeach; ?>
+        <?php else: ?>
+            <h3 class="h4">There is currently no news.</h3>
+        <?php endif ?>
     </div>
 </div>
 <div class="col-md-4">
     <h2>Fixtures</h2>
     <hr/>
     <div class="blog-post">
-        <h2 class="h4">Fixture title</h2>
-        <p class="blog-post-meta">Added April 28<sup>th</sup> 2016, by John Smith</p>
-        <article class="blog-post">
-            Few short details&hellip; next fixture is such-and-such. Leaving for whenever, getting back
-            whenever. Oh look, a button to find out
-            more!
-        </article>
-        <p><a class="btn btn-default" href="programme" role="button">View more details &raquo;</a></p>
+        <?php $articlesCount = 0; ?>
+        <?php if($fixtures->count() != 0): ?>
+        <?php foreach ($fixtures as $fixture): ?>
+            <h2 class="h4"><?= h($fixture->title) ?></h2>
+            <p class="blog-post-meta">Added <?=
+                $fixture->created->format('F j<\s\u\p>S</\s\u\p> Y') ?>, by <?= h($fixture->user->fullname) ?></p>
+            <article class="blog-post">
+                <?= $this->Text->truncate($fixture->content, 200, ['exact' => false,]) ?>
+            </article>
+            <p>
+                <a href="<?= $this->Url->build(
+                    ['controller' => 'fixtures',
+                        'action' => 'view',
+                        'slug' => $fixture->slug
+                    ]
+                ) ?>" class="btn btn-default  btn-sm">View more details &raquo;</a></p>
+            <?php $articlesCount++; ?>
+            <?php if ($articlesCount != $fixtures->count()): ?>
+                <hr/>
+            <?php endif ?>
+        <?php endforeach; ?>
+        <?php else: ?>
+            <h3 class="h4">There are currently no fixtures.</h3>
+        <?php endif ?>
     </div>
 </div>
 <div class="col-md-4">
     <h2>Socials</h2>
     <hr/>
     <div class="blog-post">
-        <h2 class="h4">Social title</h2>
-        <p class="blog-post-meta">Added April 28<sup>th</sup> 2016, by John Smith</p>
-        <article class="blog-post">
-            Short details to warm an appetite&hellip; next social is blahblahblah. Booze booze booze. Wakae up
-            in a hotel. Wow, I'd never have expected to see
-            another button that I can click to get more info!
-        </article>
-        <p><a class="btn btn-default" href="downloads" role="button">Visit more info &raquo;</a></p>
+        <?php $articlesCount = 0; ?>
+        <?php if($socials->count() != 0): ?>
+        <?php foreach ($socials as $social): ?>
+            <h2 class="h4"><?= h($social->title) ?></h2>
+            <p class="blog-post-meta">Added <?=
+                $fixture->created->format('F j<\s\u\p>S</\s\u\p> Y') ?>, by <?= h($social->user->fullname) ?></p>
+            <article class="blog-post">
+                <?= $this->Text->truncate($social->content, 200, ['exact' => false,]) ?>
+            </article>
+            <p>
+                <a href="<?= $this->Url->build(
+                    ['controller' => 'socials',
+                        'action' => 'view',
+                        'slug' => $social->slug
+                    ]
+                ) ?>" class="btn btn-default  btn-sm">More info &raquo;</a></p>
+            <?php $articlesCount++; ?>
+            <?php if ($articlesCount != $socials->count()): ?>
+                <hr/>
+            <?php endif ?>
+        <?php endforeach; ?>
+        <?php else: ?>
+            <h3 class="h4">There are currently no socials.</h3>
+        <?php endif ?>
     </div>
 </div>
