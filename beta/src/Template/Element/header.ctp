@@ -10,8 +10,8 @@ $links['training'] = strpos($currentUrl, Router::url(['controller' => 'Training'
 $links['training_comp'] = $currentUrl === Router::url(['controller' => 'Training', 'action' => 'comp']);
 $links['training_rec'] = $currentUrl === Router::url(['controller' => 'Training', 'action' => 'rec']);
 $links['training_times'] = $currentUrl === Router::url(['controller' => 'Training', 'action' => 'times']);
-$links['fixtures'] = $currentUrl === Router::url(['_name' => 'fixtures']);
-$links['socials'] = $currentUrl === Router::url(['_name' => 'socials']);
+$links['fixtures'] = strpos($currentUrl, Router::url(['_name' => 'fixtures'])) !== false;
+$links['socials'] = strpos($currentUrl, Router::url(['_name' => 'socials'])) !== false;
 $links['about'] = strpos($currentUrl, Router::url(['controller' => 'About'])) !== false;
 $links['about_club'] = $currentUrl === Router::url(['controller' => 'About', 'action' => 'club']);
 $links['about_coaches'] = $currentUrl === Router::url(['controller' => 'About', 'action' => 'coaches']);

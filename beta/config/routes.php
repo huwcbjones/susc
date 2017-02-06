@@ -51,10 +51,46 @@ Router::scope('/', function (RouteBuilder $routes) {
     Router::prefix('admin', function ($routes) {
         $routes->fallbacks('DashedRoute');
     });
-    
+
     // Connect News
     $routes->connect('/news', ['controller' => 'News'], ['_name' => 'news']);
-    $routes->connect('/news/*', ['controller' => 'News', 'action' => 'view']);
+        $routes->connect('/news/:year/',
+        ['controller' => 'News', 'action' => 'viewYear'],
+        ['pass' => ['year'],
+            'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
+        ]
+    );
+    $routes->connect('/news/:year/:month/',
+        ['controller' => 'News', 'action' => 'viewMonth'],
+        [
+            'pass' => ['year', 'month'],
+            'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
+            'month' => '0[1-9]|1[012]',
+        ]
+    );
+    $routes->connect('/news/:year/:month/:day/',
+        ['controller' => 'News', 'action' => 'viewDay'],
+        [
+            'pass' => ['year', 'month', 'day'],
+            'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
+            'month' => '0[1-9]|1[012]',
+            'day' => '0[1-9]|[12][0-9]|3[01]',
+        ]
+    );
+    $routes->connect('/news/:year/:month/:day/:slug',
+        ['controller' => 'News', 'action' => 'view'],
+        [
+            'pass' => ['slug'],
+            'slug' => '[A-z0-9\-]+'
+        ]
+    );
+    $routes->connect('/news/:slug',
+        ['controller' => 'News', 'action' => 'view'],
+        [
+            'pass' => ['slug'],
+            'slug' => '[A-z0-9\-]+'
+        ]
+    );
 
     // Connect Training
     $routes->connect('/training', ['controller' => 'Training'], ['_name' => 'training']);
@@ -62,24 +98,42 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     // Connect Fixtures
     $routes->connect('/fixtures', ['controller' => 'Fixtures'], ['_name' => 'fixtures']);
-    $routes->connect('/fixtures/*', ['controller' => 'Fixtures', 'action' => 'view']);
+    $routes->connect('/fixtures/:slug',
+        ['controller' => 'Fixtures', 'action' => 'view'],
+        [
+            'pass' => ['slug'],
+            'slug' => '[A-z0-9\-]+'
+        ]
+    );
 
     // Connect Socials
     $routes->connect('/socials', ['controller' => 'Socials'], ['_name' => 'socials']);
-    $routes->connect('/socials/*', ['controller' => 'Socials', 'action' => 'view']);
+    $routes->connect('/socials/:slug',
+        ['controller' => 'Socials', 'action' => 'view'],
+        [
+            'pass' => ['slug'],
+            'slug' => '[A-z0-9\-]+'
+        ]
+    );
 
     // Connect About
     $routes->connect('/about/club', ['controller' => 'About', 'action' => 'display', 'club'], ['_name' => 'about']);
     $routes->redirect('/about', ['controller' => 'About', 'action' => 'display', 'club']);
+    $routes->connect('/about/coaches', ['controller' => 'About', 'action' => 'coaches']);
+    $routes->connect('/about/committee', ['controller' => 'Committee']);
+    $routes->connect('/about/committee/*', ['controller' => 'Committee', 'action' => 'add']);
     $routes->connect('/about/*', ['controller' => 'About', 'action' => 'display']);
 
     // Connect Contact Us
     $routes->connect('/contact', ['controller' => 'Pages', 'action' => 'display', 'contact'], ['_name' => 'contact']);
 
     // Connect CakeDC/Users for easy user management
-    Router::plugin('CakeDC/Users', ['path' => '/'], function ($routes) {
-        $routes->fallbacks('DashedRoute');
-    });
+    /*Router::prefix('users', function ($routes) {
+        Router::plugin('CakeDC/Users', ['path' => '/'], function($routes){
+            $routes->fallbacks('DashedRoute');
+        });
+    });*/
+
 
     /**
      * ...and connect the rest of 'Pages' controller's URLs.
