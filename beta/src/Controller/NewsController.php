@@ -110,5 +110,6 @@ class NewsController extends AppController
             throw new NotFoundException(__('Article not found'));
         }
         $this->set('article', $article);
+        $this->render('view');
     }
 }
