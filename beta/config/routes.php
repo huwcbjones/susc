@@ -108,8 +108,16 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     // Connect Socials
     $routes->connect('/socials', ['controller' => 'Socials'], ['_name' => 'socials']);
+    $routes->connect('/socials/:year/:month/',
+        ['controller' => 'Socials', 'action' => 'viewMonth'],
+        [
+            'pass' => ['year', 'month'],
+            'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
+            'month' => '0[1-9]|1[012]',
+        ]
+    );
     $routes->connect('/socials/:slug',
-        ['controller' => 'Socials', 'action' => 'view'],
+        ['controller' => 'Socials', 'action' => 'viewSocial'],
         [
             'pass' => ['slug'],
             'slug' => '[A-z0-9\-]+'
