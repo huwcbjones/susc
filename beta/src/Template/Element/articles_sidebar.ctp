@@ -6,7 +6,7 @@
             <?php foreach($archives as $archive): ?>
             <li><?= $this->Html->Link(date('F', mktime(0, 0, 0, $archive->month, 15)) . ' ' . $archive->year,
                     [
-                        'controller' => 'News',
+                        'controller' => $controller,
                         'action' => 'viewMonth',
                         'year' => $archive->year,
                         'month' => sprintf('%02d', $archive->month),
