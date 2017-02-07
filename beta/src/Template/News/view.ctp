@@ -9,7 +9,7 @@ echo $this->fetch('css');
 echo $this->Html->css('blog');
 $this->end();
 
-$this->element('articles_sidebar')
+$this->element('articles_sidebar', ['controller' => 'News'])
 ?>
 <div class="page-header"><h1><?= h($article->title) ?></h1></div>
 <div class="row">
@@ -20,6 +20,6 @@ $this->element('articles_sidebar')
 
         </div>
     </div>
-    <?= $this->fetch('sidebar', $archives) ?>
+    <?= $this->fetch('sidebar', $archives, 'news') ?>
 </div>
 
