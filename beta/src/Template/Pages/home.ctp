@@ -51,29 +51,29 @@ $this->assign('title', 'Home');
     <hr/>
     <div class="blog-post">
         <?php $articlesCount = 0; ?>
-        <?php if($news->count() != 0): ?>
-        <?php foreach ($news as $article): ?>
-            <h2 class="h4"><?= h($article->title) ?></h2>
-            <p class="blog-post-meta"><?=
-                $article->created->format('F j<\s\u\p>S</\s\u\p> Y') ?>, by <?= h($article->user->fullname) ?></p>
-            <article class="blog-post">
-                <?= $this->Text->truncate($article->content, 200, ['exact' => false,]) ?>
-            </article>
-            <p>
-                <a href="<?= $this->Url->build(
-                    ['controller' => 'news',
-                        'action' => 'view',
-                        'year' => $article->created->format('Y'),
-                        'month' => $article->created->format('m'),
-                        'day' => $article->created->format('d'),
-                        'slug' => $article->slug
-                    ]
-                ) ?>" class="btn btn-default  btn-sm">Read more &raquo;</a></p>
-            <?php $articlesCount++; ?>
-            <?php if ($articlesCount != $news->count()): ?>
-                <hr/>
-            <?php endif ?>
-        <?php endforeach; ?>
+        <?php if ($news->count() != 0): ?>
+            <?php foreach ($news as $article): ?>
+                <h2 class="h4"><?= h($article->title) ?></h2>
+                <p class="blog-post-meta"><?=
+                    $article->created->format('F j<\s\u\p>S</\s\u\p> Y') ?>, by <?= h($article->user->fullname) ?></p>
+                <article class="blog-post">
+                    <?= $this->Text->truncate($article->content, 200, ['exact' => false,]) ?>
+                </article>
+                <p>
+                    <a href="<?= $this->Url->build(
+                        ['controller' => 'news',
+                            'action' => 'view',
+                            'year' => $article->created->format('Y'),
+                            'month' => $article->created->format('m'),
+                            'day' => $article->created->format('d'),
+                            'slug' => $article->slug
+                        ]
+                    ) ?>" class="btn btn-default  btn-sm">Read more &raquo;</a></p>
+                <?php $articlesCount++; ?>
+                <?php if ($articlesCount != $news->count() && $articlesCount < 3): ?>
+                    <hr/>
+                <?php endif ?>
+            <?php endforeach; ?>
         <?php else: ?>
             <h3 class="h4">There is currently no news.</h3>
         <?php endif ?>
@@ -84,26 +84,26 @@ $this->assign('title', 'Home');
     <hr/>
     <div class="blog-post">
         <?php $articlesCount = 0; ?>
-        <?php if($fixtures->count() != 0): ?>
-        <?php foreach ($fixtures as $fixture): ?>
-            <h2 class="h4"><?= h($fixture->title) ?></h2>
-            <p class="blog-post-meta">Added <?=
-                $fixture->created->format('F j<\s\u\p>S</\s\u\p> Y') ?>, by <?= h($fixture->user->fullname) ?></p>
-            <article class="blog-post">
-                <?= $this->Text->truncate($fixture->content, 200, ['exact' => false,]) ?>
-            </article>
-            <p>
-                <a href="<?= $this->Url->build(
-                    ['controller' => 'fixtures',
-                        'action' => 'view',
-                        'slug' => $fixture->slug
-                    ]
-                ) ?>" class="btn btn-default  btn-sm">View more details &raquo;</a></p>
-            <?php $articlesCount++; ?>
-            <?php if ($articlesCount != $fixtures->count()): ?>
-                <hr/>
-            <?php endif ?>
-        <?php endforeach; ?>
+        <?php if ($fixtures->count() != 0): ?>
+            <?php foreach ($fixtures as $fixture): ?>
+                <h2 class="h4"><?= h($fixture->title) ?></h2>
+                <p class="blog-post-meta">Added <?=
+                    $fixture->created->format('F j<\s\u\p>S</\s\u\p> Y') ?>, by <?= h($fixture->user->fullname) ?></p>
+                <article class="blog-post">
+                    <?= $this->Text->truncate($fixture->content, 200, ['exact' => false,]) ?>
+                </article>
+                <p>
+                    <a href="<?= $this->Url->build(
+                        ['controller' => 'fixtures',
+                            'action' => 'view',
+                            'slug' => $fixture->slug
+                        ]
+                    ) ?>" class="btn btn-default  btn-sm">View more details &raquo;</a></p>
+                <?php $articlesCount++; ?>
+                <?php if ($articlesCount != $fixtures->count() && $articlesCount < 3): ?>
+                    <hr/>
+                <?php endif ?>
+            <?php endforeach; ?>
         <?php else: ?>
             <h3 class="h4">There are currently no fixtures.</h3>
         <?php endif ?>
@@ -114,26 +114,26 @@ $this->assign('title', 'Home');
     <hr/>
     <div class="blog-post">
         <?php $articlesCount = 0; ?>
-        <?php if($socials->count() != 0): ?>
-        <?php foreach ($socials as $social): ?>
-            <h2 class="h4"><?= h($social->title) ?></h2>
-            <p class="blog-post-meta">Added <?=
-                $fixture->created->format('F j<\s\u\p>S</\s\u\p> Y') ?>, by <?= h($social->user->fullname) ?></p>
-            <article class="blog-post">
-                <?= $this->Text->truncate($social->content, 200, ['exact' => false,]) ?>
-            </article>
-            <p>
-                <a href="<?= $this->Url->build(
-                    ['controller' => 'socials',
-                        'action' => 'viewSocial',
-                        'slug' => $social->slug
-                    ]
-                ) ?>" class="btn btn-default  btn-sm">More info &raquo;</a></p>
-            <?php $articlesCount++; ?>
-            <?php if ($articlesCount != $socials->count()): ?>
-                <hr/>
-            <?php endif ?>
-        <?php endforeach; ?>
+        <?php if ($socials->count() != 0): ?>
+            <?php foreach ($socials as $social): ?>
+                <h2 class="h4"><?= h($social->title) ?></h2>
+                <p class="blog-post-meta">Added <?=
+                    $fixture->created->format('F j<\s\u\p>S</\s\u\p> Y') ?>, by <?= h($social->user->fullname) ?></p>
+                <article class="blog-post">
+                    <?= $this->Text->truncate($social->content, 200, ['exact' => false,]) ?>
+                </article>
+                <p>
+                    <a href="<?= $this->Url->build(
+                        ['controller' => 'socials',
+                            'action' => 'viewSocial',
+                            'slug' => $social->slug
+                        ]
+                    ) ?>" class="btn btn-default  btn-sm">More info &raquo;</a></p>
+                <?php $articlesCount++; ?>
+                <?php if ($articlesCount != $socials->count() && $articlesCount < 3): ?>
+                    <hr/>
+                <?php endif ?>
+            <?php endforeach; ?>
         <?php else: ?>
             <h3 class="h4">There are currently no socials.</h3>
         <?php endif ?>
