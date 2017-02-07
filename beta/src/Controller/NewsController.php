@@ -34,7 +34,6 @@ class NewsController extends AppController
     public function initialize()
     {
         parent::initialize();
-        $this->loadComponent('Paginator');
         //$this->Auth->allow();
         $this->News = TableRegistry::get('Articles');
         $this->set('archives',

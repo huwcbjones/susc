@@ -23,7 +23,6 @@ class FixturesController extends AppController
     public function initialize()
     {
         parent::initialize();
-        $this->loadComponent('Paginator');
         //$this->Auth->allow();
         $this->Articles = TableRegistry::get('Articles');
     }

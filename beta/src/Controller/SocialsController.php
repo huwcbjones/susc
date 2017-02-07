@@ -22,7 +22,6 @@ class SocialsController extends AppController
     public function initialize()
     {
         parent::initialize();
-        $this->loadComponent('Paginator');
         //$this->Auth->allow();
         $this->Socials = TableRegistry::get('Articles');
         $this->set('archives',

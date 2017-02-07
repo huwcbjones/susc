@@ -18,6 +18,7 @@ namespace SUSC\Controller {
     use Cake\Cache\Cache;
     use Cake\Controller\Controller as BaseController;
     use Cake\Event\Event;
+    use Cake\ORM\TableRegistry;
 
     /**
      * Application Controller
@@ -50,7 +51,7 @@ namespace SUSC\Controller {
             $this->loadComponent('Flash');
             $this->loadComponent('RequestHandler');
             $this->loadComponent('Csrf');
-            $this->loadComponent('CakeDC/Users.UsersAuth');
+            //TableRegistry::config('Articles', ['table' => 'News']);
         }
 
         public function isAuthorized($user = null)
