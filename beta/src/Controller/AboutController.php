@@ -9,32 +9,29 @@ namespace SUSC\Controller;
 
 use Cake\Core\Configure;
 use Cake\Network\Exception\NotFoundException;
+use Cake\ORM\TableRegistry;
 use Cake\View\Exception\MissingTemplateException;
 
 class AboutController extends AppController
 {
-    public function display()
+
+    public function initialize()
     {
-        $path = func_get_args();
+        parent::initialize();
+        $this->Committee = TableRegistry::get('committee');
+        //$this->Coaches = TableRegistry::get('coaches');
+    }
 
-        $count = count($path);
+    public function club()
+    {
 
-        $page = null;
+    }
 
-        if (!$count) {
-            return $this->redirect('/about/club');
-        }
+    public function committee(){
+        $this->set('committee', $this->Committee->find('published'));
+    }
 
-        $this->set($page);
-
-        try {
-            $this->render(implode('/', $path));
-        } catch (MissingTemplateException $e) {
-            if (Configure::read('debug')) {
-                throw $e;
-            }
-
-            throw new NotFoundException();
-        }
+    public function coaches(){
+        $this->set('committee', $this->Coaches->find('published'));
     }
 }

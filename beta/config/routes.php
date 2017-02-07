@@ -45,7 +45,7 @@ Router::defaultRouteClass('DashedRoute');
 
 Router::scope('/', function (RouteBuilder $routes) {
     // Connect Home (/)
-    $routes->connect('/', ['controller' => 'Pages', 'action' => 'display'], ['_name' => 'home']);
+    $routes->connect('/', ['controller' => 'Pages', 'action' => 'home'], ['_name' => 'home']);
 
     // Connect Admin pages
     Router::prefix('admin', function ($routes) {
@@ -93,8 +93,7 @@ Router::scope('/', function (RouteBuilder $routes) {
     );
 
     // Connect Training
-    $routes->connect('/training', ['controller' => 'Training'], ['_name' => 'training']);
-    $routes->connect('/training/*', ['controller' => 'Training', 'action' => 'display']);
+    $routes->connect('/training', ['controller' => 'Pages', 'action' =>'training'], ['_name' => 'training']);
 
     // Connect Fixtures
     $routes->connect('/fixtures', ['controller' => 'Fixtures'], ['_name' => 'fixtures']);
@@ -125,15 +124,13 @@ Router::scope('/', function (RouteBuilder $routes) {
     );
 
     // Connect About
-    $routes->connect('/about/club', ['controller' => 'About', 'action' => 'display', 'club'], ['_name' => 'about']);
+    $routes->connect('/about/club', ['controller' => 'About', 'action' => 'club'], ['_name' => 'about']);
     $routes->redirect('/about', ['controller' => 'About', 'action' => 'display', 'club']);
     $routes->connect('/about/coaches', ['controller' => 'About', 'action' => 'coaches']);
-    $routes->connect('/about/committee', ['controller' => 'Committee']);
-    $routes->connect('/about/committee/*', ['controller' => 'Committee', 'action' => 'add']);
-    $routes->connect('/about/*', ['controller' => 'About', 'action' => 'display']);
+    $routes->connect('/about/committee', ['controller' => 'About', 'action' => 'committee']);
 
     // Connect Contact Us
-    $routes->connect('/contact', ['controller' => 'Pages', 'action' => 'display', 'contact'], ['_name' => 'contact']);
+    $routes->connect('/contact', ['controller' => 'Pages', 'action' => 'contact'], ['_name' => 'contact']);
 
     // Connect CakeDC/Users for easy user management
     /*Router::prefix('users', function ($routes) {
@@ -142,11 +139,6 @@ Router::scope('/', function (RouteBuilder $routes) {
         });
     });*/
 
-
-    /**
-     * ...and connect the rest of 'Pages' controller's URLs.
-     */
-    $routes->connect('/pages/*', ['controller' => 'Pages', 'action' => 'display']);
 
     /**
      * Connect catchall routes for all controllers.
