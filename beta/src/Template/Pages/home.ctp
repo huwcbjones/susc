@@ -125,7 +125,7 @@ $this->assign('title', 'Home');
             <p>
                 <a href="<?= $this->Url->build(
                     ['controller' => 'socials',
-                        'action' => 'view',
+                        'action' => 'viewSocial',
                         'slug' => $social->slug
                     ]
                 ) ?>" class="btn btn-default  btn-sm">More info &raquo;</a></p>
