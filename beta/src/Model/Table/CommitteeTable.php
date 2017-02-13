@@ -2,7 +2,6 @@
 namespace SUSC\Model\Table;
 
 use Cake\ORM\Query;
-use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -76,7 +75,7 @@ class CommitteeTable extends Table
         return $validator;
     }
 
-    public function findPublished(Query $query, array $options)
+    public function findPublished(Query $query)
     {
         return $query->where(['status' => true]);
     }
