@@ -7,10 +7,8 @@
 namespace SUSC\Controller;
 
 
-use Cake\Core\Configure;
-use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
-use Cake\View\Exception\MissingTemplateException;
+use cebe\markdown\GithubMarkdown;
 
 class AboutController extends AppController
 {
@@ -19,12 +17,14 @@ class AboutController extends AppController
     {
         parent::initialize();
         $this->Committee = TableRegistry::get('committee');
-        //$this->Coaches = TableRegistry::get('coaches');
+        $this->Coaches = TableRegistry::get('coaches');
+        $this->Static = TableRegistry::get('scontent');
     }
 
     public function club()
     {
-
+        $parser = new GithubMarkdown();
+        $this->set('content', $parser->parse($this->Static->find('club')->first()->value));
     }
 
     public function committee(){
@@ -32,6 +32,6 @@ class AboutController extends AppController
     }
 
     public function coaches(){
-        $this->set('committee', $this->Coaches->find('published'));
+        $this->set('coaches', $this->Coaches->find('published'));
     }
 }
