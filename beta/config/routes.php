@@ -18,7 +18,6 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
@@ -125,7 +124,7 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     // Connect About
     $routes->connect('/about/club', ['controller' => 'About', 'action' => 'club'], ['_name' => 'about']);
-    $routes->redirect('/about', ['controller' => 'About', 'action' => 'display', 'club']);
+    $routes->redirect('/about', ['controller' => 'About', 'action' => 'club']);
     $routes->connect('/about/coaches', ['controller' => 'About', 'action' => 'coaches']);
     $routes->connect('/about/committee', ['controller' => 'About', 'action' => 'committee']);
 

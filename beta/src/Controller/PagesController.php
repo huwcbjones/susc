@@ -18,6 +18,7 @@ use Cake\Core\Configure;
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\View\Exception\MissingTemplateException;
+use huwcbjones\markdown\GithubMarkdownExtended;
 
 /**
  * Static content controller
@@ -31,27 +32,13 @@ class PagesController extends AppController
 
     public function initialize()
     {
+        require_once(ROOT .DS. "vendor" . DS  . "huwcbjones" . DS . "markdown" . DS . "GithubMarkdownExtended.php");
         parent::initialize();
-
+        $this->Static = TableRegistry::get('scontent');
         if ($this->Auth !== false) {
             // Allow access to all pages
             $this->Auth->allow();
         }
-
-        $this->set('news', TableRegistry::get('Articles')->findNews('all', [
-            'order' => ['`Articles`.`created`' => 'DESC'],
-            'limit' => 3,
-        ])->find('published'));
-
-        $this->set('fixtures', TableRegistry::get('Articles')->findFixtures('all', [
-            'order' => ['`Articles`.`created`' => 'DESC'],
-            'limit' => 3,
-        ])->find('published'));
-
-        $this->set('socials', TableRegistry::get('Articles')->findSocials('all', [
-            'order' => ['`Articles`.`created`' => 'DESC'],
-            'limit' => 3,
-        ])->find('published'));
     }
 
     /**
@@ -89,5 +76,37 @@ class PagesController extends AppController
             }
             throw new NotFoundException();
         }
+    }
+
+    public function home()
+    {
+        $this->set('news', TableRegistry::get('Articles')->findNews('published', [
+            'order' => ['`Articles`.`created`' => 'DESC'],
+            'limit' => 3,
+        ]));
+
+        $this->set('fixtures', TableRegistry::get('Articles')->findFixtures('published', [
+            'order' => ['`Articles`.`created`' => 'DESC'],
+            'limit' => 3,
+        ]));
+
+        $this->set('socials', TableRegistry::get('Articles')->findSocials('published', [
+            'order' => ['`Articles`.`created`' => 'DESC'],
+            'limit' => 3,
+        ]));
+    }
+
+    public function contact()
+    {
+        $parser = new GithubMarkdownExtended();
+        $this->set('content', $parser->parse($this->Static->find('contact')->first()->value));
+    }
+
+    public function training()
+    {
+        $parser = new GithubMarkdownExtended();
+        $this->set('competition', $parser->parse($this->Static->find('training', ['section' => 'competition'])->first()->value));
+        $this->set('recreation', $parser->parse($this->Static->find('training', ['section' => 'recreation'])->first()->value));
+        $this->set('facilities', $parser->parse($this->Static->find('training', ['section' => 'facilities'])->first()->value));
     }
 }

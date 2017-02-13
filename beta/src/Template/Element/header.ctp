@@ -48,7 +48,7 @@ $links['contact'] = $currentUrl === Router::url(['_name' => 'contact']);
                     <ul class="dropdown-menu">
                         <li><?= $this->Html->link('Competition Squad', ['_name' => 'training', '#' => 'comp']) ?></li>
                         <li><?= $this->Html->link('Recreational Squad', ['_name' => 'training', '#' => 'rec']) ?></li>
-                        <li><?= $this->Html->link('Training Times', ['_name' => 'training', '#' => 'times']) ?></li>
+                        <li><?= $this->Html->link('Facilities', ['_name' => 'training', '#' => 'facilities']) ?></li>
                     </ul>
                 </li>
                 <li<?= $links['fixtures'] ? ' class="active"' : '' ?>><?= $this->Html->link('Fixtures', ['_name' => 'fixtures']) ?></li>
