@@ -11,37 +11,35 @@ $this->element('articles_sidebar', ['controller' => 'Socials'])
         <?php if ($socials->count() != 0): ?>
             <div class="row">
                 <div class="col-xs-12">
-                    <?php $articlesCount = 0; ?>
-                    <?php foreach ($socials as $article): ?>
-                        <div class="blog-post">
-                            <h2 class="blog-post-title"><?= $this->Html->link(
-                                    h($article->title),
-                                    ['controller' => 'socials',
-                                        'action' => 'viewSocial',
-                                        'slug' => $article->slug
-                                    ]
-                                ) ?></h2>
-                            <p class="blog-post-meta"><?=
-                                $article->created->format('F j<\s\u\p>S</\s\u\p> Y') ?>,
-                                by <?= h($article->user->fullname) ?></p>
-                            <?= $this->Text->autolink($article->content, ['escape' => false]) ?>
+                    <?php
+                    $articlesCount = 0;
+                    foreach ($socials as $social) {
+                        echo $this->element(
+                            'Articles/medium',
+                            [
+                                'article' => $social,
+                                'link' => [
+                                    'controller' => 'socials',
+                                    'action' => 'viewSocial',
+                                    'slug' => $social->slug
+                                ]
+                            ]);
+                        $articlesCount++;
+                        if ($articlesCount != $socials->count()) {
+                            echo "<hr />\n";
+                        }
+                    } ?>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <?= $this->Paginator->numbers() ?>
                         </div>
-                        <?php $articlesCount++; ?>
-                        <?php if ($articlesCount != $socials->count()): ?>
-                            <hr/>
-                        <?php endif ?>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12 text-center">
-                    <?= $this->Paginator->numbers() ?>
+                    </div>
                 </div>
             </div>
         <?php else: ?>
             <h2>Cannot find any socials.</h2>
-        <?php endif ?>
+        <?php endif; ?>
     </div>
-    <?= $this->fetch('sidebar') ?>
+    <?= $this->fetch('sidebar', $archives) ?>
 </div>
 
