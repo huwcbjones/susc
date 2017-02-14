@@ -2,8 +2,7 @@
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
-use Cake\Utility\Text;
-use cebe\markdown\GithubMarkdown;
+use huwcbjones\markdown\GithubMarkdownExtended;
 
 /**
  * News Entity.
@@ -36,16 +35,12 @@ class Article extends Entity
         'id' => false,
     ];
 
-    protected function _getSlug()
-    {
-        $id_url = $this->title;
-        $id_url = strtolower($id_url);
-        return Text::slug($id_url);
-    }
+
 
     protected function _getContent($content)
     {
-        $parser = new GithubMarkdown();
+        require_once(ROOT .DS. "vendor" . DS  . "huwcbjones" . DS . "markdown" . DS . "GithubMarkdownExtended.php");
+        $parser = new GithubMarkdownExtended();
         return $parser->parse($content);
     }
 }

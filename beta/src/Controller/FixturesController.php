@@ -25,6 +25,11 @@ class FixturesController extends AppController
         parent::initialize();
         //$this->Auth->allow();
         $this->Articles = TableRegistry::get('Articles');
+        $this->Static = TableRegistry::get('scontent');
+    }
+
+    public function calendar(){
+        $this->set('calendar', $this->Static->find('fixtures')->first()->value);
     }
 
     public function index()
