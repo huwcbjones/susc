@@ -33,8 +33,9 @@ $links['contact'] = $currentUrl === Router::url(['_name' => 'contact']);
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 <li class="navbar-text" id="logo">
-                    <div class="text-center logo"><a
-                            href="/"><?= $this->Html->image('logo_min.png', ['alt' => 'SUSC']) ?></a></div>
+                    <div class="text-center logo"><a href="/">
+                            <span class="header-image"><?= $this->Html->image('logo_min.png', ['alt' => 'SUSC']) ?></span>
+                        </a></div>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-left">
