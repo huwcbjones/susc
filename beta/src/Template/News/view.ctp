@@ -1,5 +1,4 @@
 <?php
-use Cake\Utility\Text;
 
 $this->layout('clean');
 $this->assign('title', h($article->title));
@@ -14,11 +13,7 @@ $this->element('articles_sidebar', ['controller' => 'News'])
 <div class="page-header"><h1><?= h($article->title) ?></h1></div>
 <div class="row">
     <div class="col-sm-8">
-        <div class="blog-post">
-            <p class="blog-post-meta"><?= $article->created->format('F j<\s\u\p>S</\s\u\p> Y') ?>, by <?= h($article->user->fullname) ?></p>
-            <?= $article->content ?>
-
-        </div>
+        <?= $this->element('Articles/long', ['article' => $article]) ?>
     </div>
     <?= $this->fetch('sidebar', $archives, 'news') ?>
 </div>
