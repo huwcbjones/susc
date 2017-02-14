@@ -8,6 +8,6 @@
         by <?= h($article->user->fullname) ?></p>
     <article>
         <?= $this->Text->truncate($article->content, 200, ['exact' => false,]) ?>
+        <p><?= $this->Html->link($button, $link, ['class' => 'btn btn-default btn-sm', 'escape' => false]) ?></p>
     </article>
-    <p><?= $this->Html->link($button, $link, ['class' => 'btn btn-default btn-sm', 'escape' => false]) ?></p>
 </div>
