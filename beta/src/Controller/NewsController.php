@@ -6,7 +6,6 @@
 
 namespace SUSC\Controller;
 
-use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;

@@ -9,6 +9,7 @@ namespace SUSC\Controller;
 
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
+use huwcbjones\markdown\GithubMarkdownExtended;
 
 class FixturesController extends AppController
 {
@@ -23,13 +24,15 @@ class FixturesController extends AppController
     public function initialize()
     {
         parent::initialize();
+        require_once(ROOT .DS. "vendor" . DS  . "huwcbjones" . DS . "markdown" . DS . "GithubMarkdownExtended.php");
         //$this->Auth->allow();
         $this->Articles = TableRegistry::get('Articles');
         $this->Static = TableRegistry::get('scontent');
     }
 
     public function calendar(){
-        $this->set('calendar', $this->Static->find('fixtures')->first()->value);
+        $parser = new GithubMarkdownExtended();
+        $this->set('calendar', $parser->parse($this->Static->find('fixtures')->first()->value));
     }
 
     public function index()

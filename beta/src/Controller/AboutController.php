@@ -16,6 +16,7 @@ class AboutController extends AppController
     public function initialize()
     {
         parent::initialize();
+        require_once(ROOT .DS. "vendor" . DS  . "huwcbjones" . DS . "markdown" . DS . "GithubMarkdownExtended.php");
         $this->Committee = TableRegistry::get('committee');
         $this->Coaches = TableRegistry::get('coaches');
         $this->Static = TableRegistry::get('scontent');
