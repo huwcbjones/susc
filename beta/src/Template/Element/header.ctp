@@ -11,6 +11,8 @@ $links['training_comp'] = $currentUrl === Router::url(['_name' => 'training_comp
 $links['training_rec'] = $currentUrl === Router::url(['_name' => 'training_rec']);
 $links['training_facilities'] = $currentUrl === Router::url(['_name' => 'training_facilities']);
 $links['fixtures'] = strpos($currentUrl, Router::url(['_name' => 'fixtures'])) !== false;
+$links['fixtures_feed'] = strpos($currentUrl, Router::url(['_name' => 'fixtures'])) !== false && strpos($currentUrl, Router::url(['_name' => 'fixture_calendar'])) === false;
+$links['fixtures_calendar'] = $currentUrl === Router::url(['_name' => 'fixture_calendar']);
 $links['socials'] = strpos($currentUrl, Router::url(['_name' => 'socials'])) !== false;
 $links['about'] = strpos($currentUrl, 'about') !== false;
 $links['about_club'] = $currentUrl === Router::url(['controller' => 'About', 'action' => 'club']);
@@ -54,7 +56,15 @@ $links['contact'] = $currentUrl === Router::url(['_name' => 'contact']);
                         <li<?= $links['training_facilities'] ? ' class="active"' : '' ?>><?= $this->Html->link('Training Facilities', ['_name' => 'training_facilities']) ?></li>
                     </ul>
                 </li>
-                <li<?= $links['fixtures'] ? ' class="active"' : '' ?>><?= $this->Html->link('Fixtures', ['_name' => 'fixtures']) ?></li>
+                <li class="dropdown<?= $links['fixtures'] ? ' active' : '' ?>">
+                    <a href="<?= Router::url(['_name' => 'fixtures']) ?>" class="dropdown-toggle" data-toggle="dropdown"
+                       role="button" aria-haspopup="true"
+                       aria-expanded="false">Fixtures <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li<?= $links['fixtures_feed'] ? ' class="active"' : '' ?>><?= $this->Html->link('Fixtures', ['_name' => 'fixtures']) ?></li>
+                        <li<?= $links['fixtures_calendar'] ? ' class="active"' : '' ?>><?= $this->Html->link('Fixture Calendar', ['_name' => 'fixture_calendar']) ?></li>
+                    </ul>
+                </li>
                 <li<?= $links['socials'] ? ' class="active"' : '' ?>><?= $this->Html->link('Socials', ['_name' => 'socials']) ?></li>
                 <li class="dropdown<?= $links['about'] ? ' active' : '' ?>">
                     <a href="<?= Router::url(['_name' => 'about']) ?>" class="dropdown-toggle" data-toggle="dropdown"

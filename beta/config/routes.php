@@ -99,7 +99,7 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     // Connect Fixtures
     $routes->connect('/fixtures', ['controller' => 'Fixtures'], ['_name' => 'fixtures']);
-    $routes->connect('/fixtures/calendar', ['controller' => 'Fixtures', 'action' => 'calendar']);
+    $routes->connect('/fixtures/calendar', ['controller' => 'Fixtures', 'action' => 'calendar'], ['_name' => 'fixture_calendar']);
     $routes->connect('/fixtures/:slug',
         ['controller' => 'Fixtures', 'action' => 'view'],
         [
