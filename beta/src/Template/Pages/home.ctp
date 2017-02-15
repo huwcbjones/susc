@@ -108,7 +108,7 @@ $this->assign('title', 'Home');
             }
         }
     else: ?>
-        <h3 class="h4">There are currently no socials.</h3>
+        <h3 class="h4">There are currently no fixtures.</h3>
     <?php endif ?>
 </div>
 <div class="col-md-4">
