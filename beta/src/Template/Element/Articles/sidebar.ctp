@@ -1,5 +1,5 @@
 <?php $this->start('sidebar') ?>
-<div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+<div class="blog-sidebar col-md-2 col-md-offset-1 col-sm-3 col-sm-offset-1">
     <div class="sidebar-module">
         <h4>Archive</h4>
         <ol class="list-unstyled">
