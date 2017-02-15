@@ -1,6 +1,15 @@
 <?php
 $this->assign('title', 'Our Committee');
-?>
+
+$this->start('css');
+echo $this->fetch('css'); ?>
+<style>
+    .img-profile {
+        width: 150px;
+        height: 150px;
+    }
+</style>
+<?php $this->end(); ?>
 
 <div class="row">
     <div class="col-sm-10 col-sm-offset-1">
@@ -8,7 +17,7 @@ $this->assign('title', 'Our Committee');
         <?php foreach ($committee as $member): ?>
             <div class="media">
                 <div class="media-left">
-                    <img class="media-object" src="/images/<?= $member->image ?>" alt="<?= $member->name ?>"/>
+                    <img class="media-object img-rounded img-profile" src="/images/<?= $member->image ?>" alt="<?= $member->name ?>"/>
                 </div>
                 <div class="media-body">
                     <h3 class="media-heading"><?= $member->name ?>
