@@ -6,8 +6,10 @@ $currentUrl = Router::normalize($this->request->here);
 $links = array();
 $links['home'] = $currentUrl === Router::url(['_name' => 'home']);
 $links['news'] = strpos($currentUrl, Router::url(['_name' => 'news'])) !== false;
-$links['training'] = strpos($currentUrl, Router::url(['controller' => 'Training'])) !== false;
-$links['training'] = $currentUrl === Router::url(['_name' => 'training']);
+$links['training'] = strpos($currentUrl, 'training') !== false;
+$links['training_comp'] = $currentUrl === Router::url(['_name' => 'training_comp']);
+$links['training_rec'] = $currentUrl === Router::url(['_name' => 'training_rec']);
+$links['training_facilities'] = $currentUrl === Router::url(['_name' => 'training_facilities']);
 $links['fixtures'] = strpos($currentUrl, Router::url(['_name' => 'fixtures'])) !== false;
 $links['socials'] = strpos($currentUrl, Router::url(['_name' => 'socials'])) !== false;
 $links['about'] = strpos($currentUrl, 'about') !== false;
@@ -47,9 +49,9 @@ $links['contact'] = $currentUrl === Router::url(['_name' => 'contact']);
                        role="button" aria-haspopup="true"
                        aria-expanded="false">Training <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><?= $this->Html->link('Competition Squad', ['_name' => 'training', '#' => 'comp']) ?></li>
-                        <li><?= $this->Html->link('Recreational Squad', ['_name' => 'training', '#' => 'rec']) ?></li>
-                        <li><?= $this->Html->link('Facilities', ['_name' => 'training', '#' => 'facilities']) ?></li>
+                        <li<?= $links['training_comp'] ? ' class="active"' : '' ?>><?= $this->Html->link('Competition Squad', ['_name' => 'training_comp']) ?></li>
+                        <li<?= $links['training_rec'] ? ' class="active"' : '' ?>><?= $this->Html->link('Recreational Squad', ['_name' => 'training_rec']) ?></li>
+                        <li<?= $links['training_facilities'] ? ' class="active"' : '' ?>><?= $this->Html->link('Training Facilities', ['_name' => 'training_facilities']) ?></li>
                     </ul>
                 </li>
                 <li<?= $links['fixtures'] ? ' class="active"' : '' ?>><?= $this->Html->link('Fixtures', ['_name' => 'fixtures']) ?></li>

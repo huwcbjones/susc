@@ -84,4 +84,8 @@ class ScontentTable extends Table
     public function findTraining(Query $query, $options){
         return $query->where(['key' => 'training_' . $options['section']])->limit(1);
     }
+
+    public function findFixtures(Query $query){
+        return $query->where(['key' => 'fixtures'])->limit(1);
+    }
 }

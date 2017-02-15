@@ -104,9 +104,19 @@ class PagesController extends AppController
 
     public function training()
     {
-        $parser = new GithubMarkdownExtended();
-        $this->set('competition', $parser->parse($this->Static->find('training', ['section' => 'competition'])->first()->value));
-        $this->set('recreation', $parser->parse($this->Static->find('training', ['section' => 'recreation'])->first()->value));
-        $this->set('facilities', $parser->parse($this->Static->find('training', ['section' => 'facilities'])->first()->value));
+        $path = func_get_args();
+        if(count($path) == 0) throw new NotFoundException();
+
+        try {
+            $parser = new GithubMarkdownExtended();
+            $this->set($path[0], $parser->parse($this->Static->find('training', ['section' => $path[0]])->first()->value));
+            $this->render('training_' . $path[0]);
+
+        } catch (MissingTemplateException $e) {
+            if (Configure::read('debug')) {
+                throw $e;
+            }
+            throw new NotFoundException();
+        }
     }
 }

@@ -53,7 +53,7 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     // Connect News
     $routes->connect('/news', ['controller' => 'News'], ['_name' => 'news']);
-        $routes->connect('/news/:year/',
+    $routes->connect('/news/:year/',
         ['controller' => 'News', 'action' => 'viewYear'],
         ['pass' => ['year'],
             'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
@@ -92,11 +92,14 @@ Router::scope('/', function (RouteBuilder $routes) {
     );
 
     // Connect Training
-    $routes->connect('/training', ['controller' => 'Pages', 'action' =>'training'], ['_name' => 'training']);
+    $routes->connect('/training', ['controller' => 'Pages', 'action' => 'training'], ['_name' => 'training']);
+    $routes->connect('/training/comp', ['controller' => 'Pages', 'action' => 'training', 'competition'], ['_name' => 'training_comp']);
+    $routes->connect('/training/rec', ['controller' => 'Pages', 'action' => 'training', 'recreation'], ['_name' => 'training_rec']);
+    $routes->connect('/training/facilities', ['controller' => 'Pages', 'action' => 'training', 'facilities'], ['_name' => 'training_facilities']);
 
     // Connect Fixtures
     $routes->connect('/fixtures', ['controller' => 'Fixtures'], ['_name' => 'fixtures']);
-    $routes->connect('/fixtures/calendar', ['controller' => 'Fixtures', 'action'=>'calendar']);
+    $routes->connect('/fixtures/calendar', ['controller' => 'Fixtures', 'action' => 'calendar']);
     $routes->connect('/fixtures/:slug',
         ['controller' => 'Fixtures', 'action' => 'view'],
         [
