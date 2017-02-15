@@ -1,7 +1,7 @@
 @font-face {
-    font-family: "TeamSouthampton";
-    src: local('Freshman'),
-    url('/fonts/Freshman.ttf') format('truetype');
+    font-family: "SUSC";
+    src: local('GoudyOldStyle-Bold.ttf'),
+    url('/fonts/GoudyOldStyle-Bold.ttf') format('truetype');
 }
 
 .main-masthead {
@@ -12,8 +12,17 @@
     color: #fff;
     margin-top: 20px;
     font-size: 48px;
-    font-family: TeamSouthampton;
-    -webkit-text-stroke: 4px black;
+    font-family: SUSC;
+    text-shadow: -1px -1px 15px #000,
+    1px -1px 15px #000,
+    -1px 1px 15px #000,
+    1px 1px 15px #000;
+}
+
+@media (max-width: 767px) {
+    .main-masthead h1 {
+        font-size: 36px;
+    }
 }
 
 .vertical-center {
@@ -62,8 +71,9 @@
 }
 
 #logo {
-    margin-top: 5px;
-    margin-bottom: 5px;
+    padding-top: 0;
+    padding-bottom: 0;
+    float: inherit;
 }
 
 .navbar-fixed-top .navbar-collapse, .navbar-fixed-bottom .navbar-collapse {
@@ -83,19 +93,28 @@
     margin-top: 0;
 }
 
+.header-image-container {
+    padding-top: 0 !important;
+    padding-right: 0 !important;
+    padding-bottom: 0 !important;
+    height: 50px;
+}
 /* for low resolution display */
 .header-image {
-    background-image: url(/img/logo_min.png);
-    background-position: center;
     background-size: 30px 40px;
-    height: 40px;
+    background: url(/img/logo_min.png) no-repeat center;
+    position: relative;
+    display: inline-block;
+    height: 50px;
     width: 30px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 /* for high resolution display */
 @media only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2/1), only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
     .header-image {
-        background-image: url(/img/logo_min@2.png);
+        background-image: url(/img/logo_min@2.png) no-repeat center;
     }
 }
 

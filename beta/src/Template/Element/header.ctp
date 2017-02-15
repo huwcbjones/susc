@@ -35,11 +35,11 @@ $links['contact'] = $currentUrl === Router::url(['_name' => 'contact']);
             <?= $this->Html->link(Configure::read('App.name'), '/', ['class' => 'navbar-brand']); ?>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right">
-                <li class="navbar-text" id="logo">
-                    <div class="text-center logo"><a href="/">
-                            <span class="header-image"><?= $this->Html->image('logo_min.png', ['alt' => 'SUSC']) ?></span>
-                        </a></div>
+            <ul class="nav navbar-nav navbar-right text-center">
+                <li class="navbar-brand" id="logo">
+                    <a class="header-image-container" href="/">
+                        <span class="header-image"></span>
+                    </a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-left">
