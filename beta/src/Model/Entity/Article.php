@@ -43,4 +43,12 @@ class Article extends Entity
         $parser = new GithubMarkdownExtended();
         return $parser->parse($content);
     }
+
+    protected function _getAuthorName(){
+        if (is_null($this->user)) {
+            return 'SUSC';
+        } else {
+            return $this->user->fullname;
+        }
+    }
 }

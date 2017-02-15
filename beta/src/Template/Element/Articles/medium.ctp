@@ -5,7 +5,7 @@
         ) ?></h2>
     <p class="blog-post-meta"><?=
         $article->created->format('F j<\s\u\p>S</\s\u\p> Y') ?>,
-        by <?= h($article->user->fullname) ?></p>
+        by <?= h($article->authorName) ?></p>
     <article>
         <?= $this->Text->truncate($article->content, 400, ['exact' => false,]) ?>
         <p><?= $this->Html->link('Read more &raquo;', $link, ['class' => 'btn btn-default', 'escape' => false]) ?></p>
