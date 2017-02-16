@@ -80,6 +80,8 @@ class PagesController extends AppController
 
     public function home()
     {
+        $this->set('gallery', TableRegistry::get('Galleries')->find('home')->first());
+
         $this->set('news', TableRegistry::get('Articles')->findNews('published', [
             'order' => ['`Articles`.`created`' => 'DESC'],
             'limit' => 3,
