@@ -12,44 +12,23 @@ $this->assign('title', 'Home');
 <?php $this->start('precontent') ?>
 <div id="mainCarousel" class="carousel slide carousel-fade" data-ride="carousel">
     <div class="carousel-inner" role="listbox">
-        <div class="item active">
-            <div class="image" style="background-image:url(/images/gallery/berchie_fly.jpg)">
-                <img src="/images/gallery/berchie_fly.jpg" alt="SUSC Qualify for BUCS Team Finals">
-            </div>
-            <div class="container">
-                <div class="carousel-caption">
-                    <h1 class="h4">SUSC Qualify for BUCS Team Finals</h1>
-                    <p>
-                        <small>Photo by Oli Crump</small>
-                    </p>
+        <?php $imageCount = 0 ?>
+        <?php foreach ($gallery->images as $image): ?>
+            <div class="item<?= $imageCount == 0 ? ' active' : '' ?>">
+                <div class="image" style="background-image:url(<?= $image->path ?>)">
+                    <img src="<?= $image->path ?>" alt="<?= $image->title ?>">
+                </div>
+                <div class="container">
+                    <div class="carousel-caption">
+                        <h1 class="h4"><?= $image->title ?></h1>
+                        <p>
+                            <small><?= (strlen($image->copyright) != 0) ? $image->copyright : '&nbsp;' ?></small>
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="item">
-            <div class="image" style="background-image:url(/images/gallery/bucs_sc_2015.jpg)">
-                <img src="/images/gallery/bucs_sc_2015.jpg" alt="SUSC @ BUCS Short Course">
-            </div>
-            <div class="container">
-                <div class="carousel-caption">
-                    <h1 class="h4">SUSC @ BUCS Short Course</h1>
-                    <p>
-                        <small>&nbsp;</small>
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="item">
-            <div class="image" style="background-image:url(/images/gallery/tudds_backstroke.jpg)">
-                <img src="/images/gallery/tudds_backstroke.jpg"></div>
-            <div class="container">
-                <div class="carousel-caption carouselPane">
-                    <h1 class="h4">SUSC Finish Top 10 @ BUSC Team</h1>
-                    <p>
-                        <small>&nbsp;</small>
-                    </p>
-                </div>
-            </div>
-        </div>
+            <?php $imageCount++; ?>
+        <?php endforeach; ?>
     </div>
 </div>
 <?php $this->end() ?>
