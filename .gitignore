@@ -1,3 +1,7 @@
 .idea/**
 **/desktop.ini
 **/Thumbs.db
+/vendor/*
+/config/app.php
+/tmp/*
+/logs/*
