@@ -8,6 +8,12 @@ echo $this->fetch('css'); ?>
         width: 150px;
         height: 150px;
     }
+    @media (max-width: 767px) {
+        .img-profile {
+            width: 100px;
+            height: 100px;
+        }
+    }
 </style>
 <?php $this->end(); ?>
 
