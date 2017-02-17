@@ -93,7 +93,13 @@ class GalleriesTable extends Table
         return parent::find($type, $options)->contain(['Images']);
     }
 
-    public function findHome(Query $query){
+    public function findHome(Query $query)
+    {
         return $query->where(['title' => 'homepage']);
+    }
+
+    public function findPublished(Query $query)
+    {
+        return $query->where(['status' => true]);
     }
 }
