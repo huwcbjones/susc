@@ -25,7 +25,7 @@ class GalleriesController extends AppController
      */
     public function index()
     {
-        $this->set('galleries', $this->Galleries->find('published'));
+        $this->set('galleries', $this->Galleries->findGallery('published'));
     }
 
     /**
