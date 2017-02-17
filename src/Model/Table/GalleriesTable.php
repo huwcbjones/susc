@@ -41,12 +41,14 @@ class GalleriesTable extends Table
         $this->addBehavior('Timestamp');
 
         $this->belongsTo('ThumbnailImage', [
+            'className' => 'images',
             'foreignKey' => 'thumbnail_id'
         ]);
         $this->belongsToMany('Images', [
             'foreignKey' => 'gallery_id',
             'targetForeignKey' => 'image_id',
-            'joinTable' => 'galleries_images'
+            'joinTable' => 'galleries_images',
+            'sort' => ['display' => 'ASC']
         ]);
     }
 
@@ -98,8 +100,13 @@ class GalleriesTable extends Table
         return $query->where(['title' => 'homepage']);
     }
 
+    public function findGallery($type = 'all', $options = [])
+    {
+        return parent::find($type, $options)->contain(['Images'])->contain(['ThumbnailImage'])->order(['`Galleries`.`created`' => 'ASC']);
+    }
+
     public function findPublished(Query $query)
     {
-        return $query->where(['status' => true]);
+        return $query->where(['`Galleries`.`status`' => true]);
     }
 }
