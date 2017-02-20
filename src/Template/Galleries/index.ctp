@@ -3,7 +3,6 @@ $this->start('css');
 ?>
 <?= $this->fetch('css'); ?>
 <?= $this->Html->css('jquery.fancybox'); ?>
-<?= $this->Html->css('helpers/jquery.fancybox-thumbs'); ?>
 <?= $this->Html->css('helpers/jquery.fancybox-buttons'); ?>
 <?php
 $this->end();
@@ -11,9 +10,15 @@ $this->start('postscript');
 ?>
 <?= $this->fetch('postscript'); ?>
 <?= $this->Html->script('jquery.fancybox.pack'); ?>
+<?= $this->Html->script('helpers/jquery.fancybox-buttons.js'); ?>
 <script type="text/javascript">
     $(document).ready(function () {
-        $(".fancybox").fancybox();
+        $(".fancybox").fancybox({
+            closeBtn		: false,
+            helpers		: {
+                buttons	: {}
+            }
+        });
     });
 </script>
 <?php
