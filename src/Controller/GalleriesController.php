@@ -1,7 +1,9 @@
 <?php
 namespace SUSC\Controller;
 
+use Cake\Cache\Cache;
 use Cake\Core\Configure;
+use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use phpthumb;
 
@@ -19,7 +21,6 @@ class GalleriesController extends AppController
     }
 
 
-
     /**
      * Index method
      *
@@ -32,11 +33,30 @@ class GalleriesController extends AppController
 
     public function thumbnail($id)
     {
-        $pt = new phpthumb();
-        $pt->config_disable_debug = Configure::read('debug');
-        $this->response->body(function() use ($pt, $id) {
-            return $pt->ImageCreateFromFilename('images/store/' . $id);
-        });
+        $images = TableRegistry::get('Images')->find('id', [$id]);
+        if ($images->count() != 1) {
+            return new NotFoundException();
+        }
+        $image = $images->first();
+        $this->autoRender = false;
+        $this->response->type($image->extension);
+
+        $this->response->body(Cache::remember('image-thumb-' . $image->id, function () use ($image){
+            $pt = new phpthumb();
+
+            $pt->config_disable_debug = !Configure::read('debug');
+
+            $pt->setParameter('w', 500);
+            $pt->setSourceFilename(WWW_ROOT . $image->path);
+
+            if ($pt->GenerateThumbnail()) {
+                $pt->RenderOutput();
+                return $pt->outputImageData;
+            } else {
+                throw new NotFoundException();
+            }
+
+        }, 'thumbnail'));
     }
 
     /**

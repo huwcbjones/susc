@@ -34,7 +34,7 @@ foreach ($galleries as $gallery): ?>
         <?php if ($imageCount == 0): ?>
             <a class="fancybox" rel="<?= $gallery->id ?>" href="<?= $image->path ?>"
                title="<?= $image->title ?>">
-                <img class="img-responsive img-rounded" src="<?= $this->Url->build(['_name'=>'thumbnail', 'thumbid' => $gallery->thumbnail_image->id . '.'. $gallery->thumbnail_image->extension]) ?>"/>
+                <img class="img-responsive img-rounded" src="<?= $this->Url->build(['_name'=>'thumbnail', 'thumbid' => $gallery->thumbnail_image->id]) ?>"/>
             </a>
             <div class="hidden">
                 <?php else: ?>

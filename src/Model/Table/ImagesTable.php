@@ -1,6 +1,7 @@
 <?php
 namespace SUSC\Model\Table;
 
+use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -76,4 +77,10 @@ class ImagesTable extends Table
 
         return $validator;
     }
+
+    public function findId(Query $query, array $options)
+    {
+        return $query->where(['id' => $options[0]]);
+    }
+
 }
