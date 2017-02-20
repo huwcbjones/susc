@@ -15,7 +15,8 @@
     "league/oauth1-client": "@stable",
     "league/oauth2-facebook": "@stable",
     "league/oauth2-google": "@stable",
-    "google/recaptcha": "@stable"
+    "google/recaptcha": "@stable",
+    "cebe/markdown": "~1.0.1"
   },
   "require-dev": {
     "psy/psysh": "@stable",
