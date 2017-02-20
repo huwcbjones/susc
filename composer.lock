@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "fcab5269ea0146125f354c7bed786ab8",
-    "content-hash": "54230f84126aa483e3a4659c427e1657",
+    "hash": "9199c338108700ed074793a666327a63",
+    "content-hash": "addcb9f5488cce9d8414940eaaf71366",
     "packages": [
         {
             "name": "aura/intl",
@@ -836,6 +836,57 @@
                 "uri"
             ],
             "time": "2016-06-24 23:00:38"
+        },
+        {
+            "name": "james-heinrich/phpthumb",
+            "version": "v1.7.14",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/JamesHeinrich/phpThumb.git",
+                "reference": "51af297b5946c86a902103b5886f93aa0d37ed83"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JamesHeinrich/phpThumb/zipball/51af297b5946c86a902103b5886f93aa0d37ed83",
+                "reference": "51af297b5946c86a902103b5886f93aa0d37ed83",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=4.3.3"
+            },
+            "suggest": {
+                "ext-gd": "PHP GD library",
+                "ext-imagick": "PHP ImageMagick"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "phpthumb.class.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL"
+            ],
+            "authors": [
+                {
+                    "name": "James Heinrich",
+                    "email": "info@silisoftware.com",
+                    "homepage": "http://www.silisoftware.com/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "The PHP thumbnail generator",
+            "homepage": "http://phpthumb.sourceforge.net/",
+            "keywords": [
+                "ImageMagick",
+                "gd",
+                "image",
+                "magic",
+                "thumb",
+                "thumbnail"
+            ],
+            "time": "2016-08-10 17:12:04"
         },
         {
             "name": "league/oauth1-client",
