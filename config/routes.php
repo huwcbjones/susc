@@ -126,6 +126,18 @@ Router::scope('/', function (RouteBuilder $routes) {
         ]
     );
 
+    // Connect Galleries
+    $routes->connect('/galleries',
+        ['controller' => 'Galleries', 'action' => 'index'], ['_name' => 'galleries']
+    );
+    $routes->connect('/galleries/thumb/:thumbid',
+        ['controller' => 'Galleries', 'action' => 'thumbnail'], [
+            '_name' => 'thumbnail',
+            'pass' => ['thumbid'],
+            'thumbid' => '[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.(png|gif|jp(e|)g)'
+        ]
+    );
+
     // Connect About
     $routes->connect('/about/club', ['controller' => 'About', 'action' => 'club'], ['_name' => 'about']);
     $routes->redirect('/about', ['controller' => 'About', 'action' => 'club']);

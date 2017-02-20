@@ -1,7 +1,9 @@
 <?php
 namespace SUSC\Controller;
 
+use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
+use phpthumb;
 
 /**
  * Galleries Controller
@@ -26,6 +28,15 @@ class GalleriesController extends AppController
     public function index()
     {
         $this->set('galleries', $this->Galleries->findGallery('published'));
+    }
+
+    public function thumbnail($id)
+    {
+        $pt = new phpthumb();
+        $pt->config_disable_debug = Configure::read('debug');
+        $this->response->body(function() use ($pt, $id) {
+            return $pt->ImageCreateFromFilename('images/store/' . $id);
+        });
     }
 
     /**
