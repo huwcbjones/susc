@@ -97,12 +97,16 @@ class GalleriesTable extends Table
 
     public function findHome(Query $query)
     {
-        return $query->where(['title' => 'homepage']);
+        return $query->where(['id' => 'a59b681c-f393-11e6-bffe-0050569388dc']);
     }
 
     public function findGallery($type = 'all', $options = [])
     {
-        return parent::find($type, $options)->contain(['Images'])->contain(['ThumbnailImage'])->order(['`Galleries`.`created`' => 'ASC']);
+        return parent::find($type, $options)
+            ->contain(['Images'])
+            ->contain(['ThumbnailImage'])
+            ->where(['`Galleries`.`id` !=' => 'a59b681c-f393-11e6-bffe-0050569388dc'])
+            ->order(['`Galleries`.`created`' => 'ASC']);
     }
 
     public function findPublished(Query $query)

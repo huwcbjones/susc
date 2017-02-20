@@ -5,7 +5,6 @@ $this->start('css');
 <?= $this->Html->css('jquery.fancybox'); ?>
 <?= $this->Html->css('helpers/jquery.fancybox-thumbs'); ?>
 <?= $this->Html->css('helpers/jquery.fancybox-buttons'); ?>
-
 <?php
 $this->end();
 $this->start('postscript');
@@ -22,6 +21,7 @@ $this->end();
 $this->assign('title', 'Galleries');
 // TODO: Fix the layout
 $galleryCount = 0;
+if($galleries->count() != 0):
 foreach ($galleries as $gallery): ?>
     <?php if ($galleryCount == 0): ?>
         <div class="row">
@@ -34,7 +34,7 @@ foreach ($galleries as $gallery): ?>
         <?php if ($imageCount == 0): ?>
             <a class="fancybox" rel="<?= $gallery->id ?>" href="<?= $image->path ?>"
                title="<?= $image->title ?>">
-                <img class="img-responsive img-rounded" src="<?= $gallery->thumbnail_image->path ?>"/>
+                <img class="img-responsive img-rounded" src="<?= $this->Url->build(['_name'=>'thumbnail', 'thumbid' => $gallery->thumbnail_image->id]) ?>"/>
             </a>
             <div class="hidden">
                 <?php else: ?>
@@ -59,4 +59,7 @@ foreach ($galleries as $gallery): ?>
     $galleryCount++;
     if ($galleryCount > 4) $galleryCount = 0;
     ?>
-<?php endforeach; ?>
+<?php endforeach;
+else: ?>
+<h2>Cannot find any galleries</h2>
+<?php endif; ?>
