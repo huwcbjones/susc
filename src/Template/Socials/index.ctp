@@ -4,7 +4,7 @@ echo $this->fetch('css');
 echo $this->Html->css('blog');
 $this->end();
 
-$this->element('articles_sidebar', ['controller' => 'Socials'])
+$this->element('Articles/sidebar', ['controller' => 'Socials'])
 ?>
 <div class="row">
     <div class="col-sm-8">
