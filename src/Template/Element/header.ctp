@@ -13,6 +13,7 @@ $links['training_facilities'] = $currentUrl === Router::url(['_name' => 'trainin
 $links['fixtures'] = strpos($currentUrl, Router::url(['_name' => 'fixtures'])) !== false;
 $links['fixtures_feed'] = strpos($currentUrl, Router::url(['_name' => 'fixtures'])) !== false && strpos($currentUrl, Router::url(['_name' => 'fixture_calendar'])) === false;
 $links['fixtures_calendar'] = $currentUrl === Router::url(['_name' => 'fixture_calendar']);
+$links['gallery'] = strpos($currentUrl, Router::url(['_name' => 'gallery'])) !== false;
 $links['socials'] = strpos($currentUrl, Router::url(['_name' => 'socials'])) !== false;
 $links['about'] = strpos($currentUrl, 'about') !== false;
 $links['about_contact'] = $currentUrl === Router::url(['_name' => 'contact']);
@@ -66,6 +67,7 @@ $links['about_committee'] = $currentUrl === Router::url(['controller' => 'About'
                         <li<?= $links['training_facilities'] ? ' class="active"' : '' ?>><?= $this->Html->link('Training Facilities', ['_name' => 'training_facilities']) ?></li>
                     </ul>
                 </li>
+                <li<?= $links['gallery'] ? ' class="active"' : '' ?>><?= $this->Html->link('Gallery', ['_name' => 'gallery']) ?></li>
                 <li class="dropdown<?= $links['about'] ? ' active' : '' ?>">
                     <a href="<?= Router::url(['_name' => 'about']) ?>" class="dropdown-toggle" data-toggle="dropdown"
                        role="button" aria-haspopup="true"

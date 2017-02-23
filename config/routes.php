@@ -127,8 +127,8 @@ Router::scope('/', function (RouteBuilder $routes) {
     );
 
     // Connect Galleries
-    $routes->connect('/galleries',
-        ['controller' => 'Galleries', 'action' => 'index'], ['_name' => 'galleries']
+    $routes->connect('/gallery',
+        ['controller' => 'Galleries', 'action' => 'index'], ['_name' => 'gallery']
     );
     $routes->connect('/galleries/thumb/:thumbid',
         ['controller' => 'Galleries', 'action' => 'thumbnail'], [
