@@ -93,8 +93,8 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     // Connect Training
     $routes->connect('/training', ['controller' => 'Pages', 'action' => 'training'], ['_name' => 'training']);
-    $routes->connect('/training/comp', ['controller' => 'Pages', 'action' => 'training', 'competition'], ['_name' => 'training_comp']);
-    $routes->connect('/training/rec', ['controller' => 'Pages', 'action' => 'training', 'recreation'], ['_name' => 'training_rec']);
+    $routes->connect('/training/competition', ['controller' => 'Pages', 'action' => 'training', 'competition'], ['_name' => 'training_comp']);
+    $routes->connect('/training/recreational', ['controller' => 'Pages', 'action' => 'training', 'recreation'], ['_name' => 'training_rec']);
     $routes->connect('/training/facilities', ['controller' => 'Pages', 'action' => 'training', 'facilities'], ['_name' => 'training_facilities']);
 
     // Connect Fixtures
@@ -141,11 +141,10 @@ Router::scope('/', function (RouteBuilder $routes) {
     // Connect About
     $routes->connect('/about/club', ['controller' => 'About', 'action' => 'club'], ['_name' => 'about']);
     $routes->redirect('/about', ['controller' => 'About', 'action' => 'club']);
+    $routes->connect('/about/contact', ['controller' => 'About', 'action' => 'contact'], ['_name' => 'contact']);
     $routes->connect('/about/coaches', ['controller' => 'About', 'action' => 'coaches']);
     $routes->connect('/about/committee', ['controller' => 'About', 'action' => 'committee']);
 
-    // Connect Contact Us
-    $routes->connect('/contact', ['controller' => 'Pages', 'action' => 'contact'], ['_name' => 'contact']);
 
     // Connect CakeDC/Users for easy user management
     /*Router::prefix('users', function ($routes) {

@@ -22,6 +22,12 @@ class AboutController extends AppController
         $this->Static = TableRegistry::get('scontent');
     }
 
+    public function contact()
+    {
+        $parser = new GithubMarkdownExtended();
+        $this->set('content', $parser->parse($this->Static->find('contact')->first()->value));
+    }
+
     public function club()
     {
         $parser = new GithubMarkdownExtended();

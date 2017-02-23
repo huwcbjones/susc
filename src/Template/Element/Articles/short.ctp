@@ -3,7 +3,7 @@
             h($article->title),
             $link
         ) ?></h2>
-    <p class="blog-post-meta">Added <?=
+    <p class="blog-post-meta"><?=
         $article->created->format('F j<\s\u\p>S</\s\u\p> Y') ?>,
         by <?= h($article->authorName) ?></p>
     <article>

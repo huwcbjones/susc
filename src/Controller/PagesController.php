@@ -41,43 +41,6 @@ class PagesController extends AppController
         }
     }
 
-    /**
-     * Displays a view
-     *
-     * @return void|\Cake\Network\Response
-     * @throws \Cake\Network\Exception\NotFoundException When the view file could not
-     *   be found or \Cake\View\Exception\MissingTemplateException in debug mode.
-     */
-    public function display()
-    {
-        $path = func_get_args();
-
-        $count = count($path);
-        $page = $subpage = null;
-
-        if (!empty($path[0])) {
-            $page = $path[0];
-        }
-        if (!empty($path[1])) {
-            $subpage = $path[1];
-        }
-
-        if (!$count) {
-            $path[0] = 'home';
-        }
-
-        $this->set(compact('page', 'subpage'));
-
-        try {
-            $this->render(implode('/', $path));
-        } catch (MissingTemplateException $e) {
-            if (Configure::read('debug')) {
-                throw $e;
-            }
-            throw new NotFoundException();
-        }
-    }
-
     public function home()
     {
         $this->set('gallery', TableRegistry::get('Galleries')->find('home')->first());
@@ -96,12 +59,6 @@ class PagesController extends AppController
             'order' => ['`Articles`.`created`' => 'DESC'],
             'limit' => 3,
         ]));
-    }
-
-    public function contact()
-    {
-        $parser = new GithubMarkdownExtended();
-        $this->set('content', $parser->parse($this->Static->find('contact')->first()->value));
     }
 
     public function training()
