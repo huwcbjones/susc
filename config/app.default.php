@@ -9,7 +9,7 @@ return [
      * Development Mode:
      * true: Errors and warnings shown.
      */
-    'debug' => filter_var(env('DEBUG', true), FILTER_VALIDATE_BOOLEAN),
+    'debug' => filter_var(env('DEBUG', false), FILTER_VALIDATE_BOOLEAN),
 
     /**
      * Configure basic information about the application.
@@ -37,9 +37,10 @@ return [
      *   paths for plugins, view templates and locale files respectively.
      */
     'App' => [
-        'namespace' => 'App',
+        'name' => 'SUSC',
+        'namespace' => 'SUSC',
         'encoding' => env('APP_ENCODING', 'UTF-8'),
-        'defaultLocale' => env('APP_DEFAULT_LOCALE', 'en_US'),
+        'defaultLocale' => env('APP_DEFAULT_LOCALE', 'en_GB'),
         'base' => false,
         'dir' => 'src',
         'webroot' => 'webroot',
@@ -89,6 +90,14 @@ return [
             'url' => env('CACHE_DEFAULT_URL', null),
         ],
 
+        'thumbnail' => [
+            'className' => 'File',
+            'path' => CACHE . 'thumbnail/',
+            'prefix' => 'SUSC_thumbnail',
+            'duration' => '+1 month',
+            'probability' => 50,
+            'serialize' => false
+        ],
         /**
          * Configure the cache used for general framework caching.
          * Translation cache files are stored with this configuration.
@@ -96,7 +105,7 @@ return [
          */
         '_cake_core_' => [
             'className' => 'File',
-            'prefix' => 'myapp_cake_core_',
+            'prefix' => 'SUSC_cake_core_',
             'path' => CACHE . 'persistent/',
             'serialize' => true,
             'duration' => '+2 minutes',
@@ -111,7 +120,7 @@ return [
          */
         '_cake_model_' => [
             'className' => 'File',
-            'prefix' => 'myapp_cake_model_',
+            'prefix' => 'SUSC_cake_model_',
             'path' => CACHE . 'models/',
             'serialize' => true,
             'duration' => '+2 minutes',
@@ -202,9 +211,9 @@ return [
     'Email' => [
         'default' => [
             'transport' => 'default',
-            'from' => 'you@localhost',
-            //'charset' => 'utf-8',
-            //'headerCharset' => 'utf-8',
+            'from' => 'do-not-reply@susc.org.uk',
+            'charset' => 'utf-8',
+            'headerCharset' => 'utf-8',
         ],
     ],
 
@@ -226,10 +235,10 @@ return [
              * the following line and set the port accordingly
              */
             //'port' => 'non_standard_port_number',
-            'username' => 'my_app',
+            'username' => 'susc',
             'password' => 'secret',
-            'database' => 'my_app',
-            'encoding' => 'utf8',
+            'database' => 'susc',
+            'encoding' => 'utf8mb4',
             'timezone' => 'UTC',
             'flags' => [],
             'cacheMetadata' => true,
@@ -266,10 +275,10 @@ return [
             'persistent' => false,
             'host' => 'localhost',
             //'port' => 'non_standard_port_number',
-            'username' => 'my_app',
+            'username' => 'susc',
             'password' => 'secret',
-            'database' => 'test_myapp',
-            'encoding' => 'utf8',
+            'database' => 'test_susc',
+            'encoding' => 'utf8mb4',
             'timezone' => 'UTC',
             'cacheMetadata' => true,
             'quoteIdentifiers' => false,
@@ -340,4 +349,19 @@ return [
     'Session' => [
         'defaults' => 'php',
     ],
+
+    'Recaptcha' => [
+        // Register API keys at https://www.google.com/recaptcha/admin
+        'sitekey' => '6LeWvSMTAAAAACMle6siNvZAYk9XWDUz855c1bTb',
+        'secret' => '6LeWvSMTAAAAAN6xIdtUvAirFARwuWj_0vZY9iL-t',
+        // reCAPTCHA supported 40+ languages listed
+        // here: https://developers.google.com/recaptcha/docs/language
+        'lang' => 'en',
+        // either light or dark
+        'theme' => 'light',
+        // either image or audio
+        'type' => 'image',
+        // either normal or compact
+        'size' => 'normal'
+    ]
 ];

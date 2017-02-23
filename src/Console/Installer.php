@@ -40,6 +40,8 @@ namespace SUSC\Console {
             static::createAppConfig($rootDir, $io);
             static::createWritableDirectories($rootDir, $io);
 
+            static::copyResources($rootDir, $io);
+
             // ask if the permissions should be changed
             if ($io->isInteractive()) {
                 $validator = function ($arg) {
@@ -113,6 +115,12 @@ namespace SUSC\Console {
                     $io->write('Created `' . $path . '` directory');
                 }
             }
+        }
+
+        public static function copyResources($rootDir, $io)
+        {
+            shell_exec('cp -r "' . $rootDir . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'huwcbjones" "'
+                . $rootDir . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . '"');
         }
 
         /**
@@ -191,8 +199,8 @@ namespace SUSC\Console {
         }
     }
 }
-
 namespace App\Console {
-    class Installer extends \SUSC\Console\Installer{
+    class Installer extends \SUSC\Console\Installer
+    {
     }
 }
