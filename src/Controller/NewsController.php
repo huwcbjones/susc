@@ -46,68 +46,25 @@ class NewsController extends AppController
                 ->toArray());
     }
 
-    public function index()
+    public function index($year = null, $month = null, $day = null)
     {
-        $this->set('news', $this->paginate($this->News->findNews('published')));
+        $options = array();
+        if($year != null) $options['year'] = $year;
+        if($month != null) $options['month'] = $month;
+        if($day != null) $options['day'] = $day;
+        $this->set('news', $this->paginate($this->News->findNews('published')->find('date', $options)));
     }
 
-    public function viewYear($year)
-    {
-        $options = ['year' => $year];
-        $articles = $this->News
-            ->findNews('published')
-            ->find('year', $options);
-        $this->set('news', $this->paginate($articles));
-        $this->render('index');
-    }
-
-    public function viewMonth($year, $month)
-    {
-        $options = ['year' => $year, 'month' => $month];
-        $articles = $this->News
-            ->findNews('published')
-            ->find('year', $options)
-            ->find('month', $options);
-        $this->set('news', $this->paginate($articles));
-        $this->render('index');
-    }
-
-    public function viewDay($year, $month, $day)
-    {
-        $options = ['year' => $year, 'month' => $month, 'day' => $day];
-        $articles = $this->News
-            ->findNews('published')
-            ->find('year', $options)
-            ->find('month', $options)
-            ->find('day', $options);
-        $this->set('news', $this->paginate($articles));
-        $this->render('index');
-    }
-
-    public function view($slug = null, $year = null, $month = null, $day = null)
+    public function view($year = null, $month = null, $day = null, $slug = null)
     {
         $options = ['year' => $year, 'month' => $month, 'day' => $day, 'slug' => $slug];
         $article = $this->News
             ->findNews('published')
-            ->find('slug', $options)
+            ->find('article', $options)
             ->first();
         if (empty($article)) {
             throw new NotFoundException(__('Article not found'));
         }
         $this->set('article', $article);
-    }
-
-    public function viewArticle($slug = null)
-    {
-        $options = ['slug' => $slug];
-        $article = $this->News
-            ->findNews('published')
-            ->find('slug', $options)
-            ->first();
-        if (empty($article)) {
-            throw new NotFoundException(__('Article not found'));
-        }
-        $this->set('article', $article);
-        $this->render('view');
     }
 }

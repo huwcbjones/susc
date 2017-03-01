@@ -7,9 +7,7 @@
 namespace SUSC\Model\Table;
 
 use Cake\ORM\Query;
-use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -120,6 +118,25 @@ class ArticlesTable extends Table
         return $query->where(['YEAR(`Articles`.`created`)' => $options['year']]);
     }
 
+    public function findDate(Query $query, array $options){
+        if(key_exists('day', $options) && $options['day'] != null) {
+            $query = $query->where([
+                'DAY(`Articles`.`created`)' => $options['day']
+            ]);
+        }
+        if (key_exists('month', $options) && $options['month'] != null) {
+            $query = $query->where([
+                'MONTH(`Articles`.`created`)' => $options['month']
+            ]);
+        }
+        if (key_exists('year', $options) && $options['year'] != null) {
+            $query = $query->where([
+                'YEAR(`Articles`.`created`)' => $options['year']
+            ]);
+        }
+        return $query;
+    }
+
     public function findMonth(Query $query, array $options)
     {
         return $query->where(['MONTH(`Articles`.`created`)' => $options['month']]);
@@ -132,5 +149,9 @@ class ArticlesTable extends Table
 
     public function findSlug(Query $query, array $options){
         return $query->where(['slug' => $options['slug']]);
+    }
+
+    public function findArticle(Query $query, array $options){
+        return $this->findDate($this->findSlug($query, $options), $options);
     }
 }

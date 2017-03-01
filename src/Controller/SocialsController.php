@@ -10,6 +10,11 @@ namespace SUSC\Controller;
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 
+/**
+ * Socials Controller
+ *
+ * @property \SUSC\Model\Table\ArticlesTable $Socials
+ */
 class SocialsController extends AppController
 {
     public $paginate = [
@@ -35,43 +40,25 @@ class SocialsController extends AppController
                 ->toArray());
     }
 
-    public function index()
+    public function index($year = null, $month = null, $day = null)
     {
-        $this->set('socials', $this->paginate($this->Socials->findSocials('published')));
+        $options = array();
+        if($year != null) $options['year'] = $year;
+        if($month != null) $options['month'] = $month;
+        if($day != null) $options['day'] = $day;
+        $this->set('socials', $this->paginate($this->Socials->findSocials('published')->find('date', $options)));
     }
 
-    public function viewYear($year)
+    public function view( $year = null, $month = null, $day = null, $slug = null)
     {
-        $options = ['year' => $year];
-        $articles = $this->News
-            ->findSocials('published')
-            ->find('year', $options);
-        $this->set('socials', $this->paginate($articles));
-        $this->render('index');
-    }
-
-    public function viewMonth($year, $month)
-    {
-        $options = ['year' => $year, 'month' => $month];
-        $articles = $this->Socials
-            ->findSocials('published')
-            ->find('year', $options)
-            ->find('month', $options);
-        $this->set('socials', $this->paginate($articles));
-        $this->render('index');
-    }
-
-    public function viewSocial($slug = null)
-    {
-        $options = ['slug' => $slug];
+        $options = ['year' => $year, 'month' => $month, 'day' => $day, 'slug' => $slug];
         $article = $this->Socials
             ->findSocials('published')
-            ->find('slug', $options)
+            ->find('article', $options)
             ->first();
         if (empty($article)) {
             throw new NotFoundException(__('Social not found'));
         }
         $this->set('social', $article);
-        $this->render('view');
     }
 }

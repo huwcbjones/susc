@@ -104,6 +104,9 @@ $this->assign('title', 'Home');
                     'link' => [
                         'controller' => 'socials',
                         'action' => 'viewSocial',
+                        'year' => $social->created->format('Y'),
+                        'month' => $social->created->format('m'),
+                        'day' => $social->created->format('d'),
                         'slug' => $social->slug
                     ],
                     'button' => 'More info &raquo;'

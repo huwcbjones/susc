@@ -21,6 +21,9 @@ $this->element('Articles/sidebar', ['controller' => 'Socials'])
                                 'link' => [
                                     'controller' => 'socials',
                                     'action' => 'viewSocial',
+                                    'year' => $social->created->format('Y'),
+                                    'month' => $social->created->format('m'),
+                                    'day' => $social->created->format('d'),
                                     'slug' => $social->slug
                                 ]
                             ]);

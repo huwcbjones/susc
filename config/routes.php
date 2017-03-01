@@ -53,22 +53,22 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     // Connect News
     $routes->connect('/news', ['controller' => 'News'], ['_name' => 'news']);
-    $routes->connect('/news/:year/',
-        ['controller' => 'News', 'action' => 'viewYear'],
+    $routes->connect('/news/:year',
+        ['controller' => 'News', 'action' => 'index'],
         ['pass' => ['year'],
             'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
         ]
     );
-    $routes->connect('/news/:year/:month/',
-        ['controller' => 'News', 'action' => 'viewMonth'],
+    $routes->connect('/news/:year/:month',
+        ['controller' => 'News', 'action' => 'index'],
         [
             'pass' => ['year', 'month'],
             'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
             'month' => '0[1-9]|1[012]',
         ]
     );
-    $routes->connect('/news/:year/:month/:day/',
-        ['controller' => 'News', 'action' => 'viewDay'],
+    $routes->connect('/news/:year/:month/:day',
+        ['controller' => 'News', 'action' => 'index'],
         [
             'pass' => ['year', 'month', 'day'],
             'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
@@ -79,14 +79,10 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->connect('/news/:year/:month/:day/:slug',
         ['controller' => 'News', 'action' => 'view'],
         [
-            'pass' => ['slug'],
-            'slug' => '[A-z0-9\-]+'
-        ]
-    );
-    $routes->connect('/news/:slug',
-        ['controller' => 'News', 'action' => 'view'],
-        [
-            'pass' => ['slug'],
+            'pass' => ['year', 'month', 'day', 'slug'],
+            'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
+            'month' => '0[1-9]|1[012]',
+            'day' => '0[1-9]|[12][0-9]|3[01]',
             'slug' => '[A-z0-9\-]+'
         ]
     );
@@ -110,18 +106,37 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     // Connect Socials
     $routes->connect('/socials', ['controller' => 'Socials'], ['_name' => 'socials']);
+    $routes->connect('/socials/:year',
+        ['controller' => 'Socials', 'action' => 'index'],
+        [
+            'pass' => ['year'],
+            'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
+        ]
+    );
     $routes->connect('/socials/:year/:month/',
-        ['controller' => 'Socials', 'action' => 'viewMonth'],
+        ['controller' => 'Socials', 'action' => 'index'],
         [
             'pass' => ['year', 'month'],
             'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
             'month' => '0[1-9]|1[012]',
         ]
     );
-    $routes->connect('/socials/:slug',
-        ['controller' => 'Socials', 'action' => 'viewSocial'],
+    $routes->connect('/socials/:year/:month/:day',
+        ['controller' => 'Socials', 'action' => 'index'],
         [
-            'pass' => ['slug'],
+            'pass' => ['year', 'month', 'day'],
+            'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
+            'month' => '0[1-9]|1[012]',
+            'day' => '0[1-9]|[12][0-9]|3[01]'
+        ]
+    );
+    $routes->connect('/socials/:year/:month/:day/:slug',
+        ['controller' => 'Socials', 'action' => 'view'],
+        [
+            'pass' => ['year', 'month', 'day', 'slug'],
+            'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
+            'month' => '0[1-9]|1[012]',
+            'day' => '0[1-9]|[12][0-9]|3[01]',
             'slug' => '[A-z0-9\-]+'
         ]
     );
