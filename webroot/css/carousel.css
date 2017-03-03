@@ -17,8 +17,7 @@
 }
 
 .image {
-    background-repeat: no-repeat;
-    background-position: center top;
+    background: no-repeat center center;
     -webkit-filter: brightness(75%);
     -moz-filter: brightness(75%);
     -o-filter: brightness(75%);
