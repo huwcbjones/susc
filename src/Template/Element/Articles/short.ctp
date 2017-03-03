@@ -8,8 +8,7 @@
         by <span itemprop="author" itemscope itemtype="http://schema.org/Person">
             <span itemprop="name"><?= h($article->authorName) ?></span></span></p>
     <article><span itemprop="articleBody">
-            <?= $this->Text->truncate($article->content, 200, ['exact' => false,]) ?>
-            <p><?= $this->Html->link($button, $link, ['itemprop' => 'url', 'class' => 'btn btn-default btn-sm', 'escape' => false]) ?></p>
-    </span>
+            <?= $this->Text->truncate($article->content, 200, ['exact' => false,]) ?></span>
+        <p><?= $this->Html->link($button, $link, ['itemprop' => 'url', 'class' => 'btn btn-default btn-sm', 'escape' => false]) ?></p>
     </article>
 </div>
