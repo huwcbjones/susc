@@ -20,6 +20,7 @@ $fixturesCount = 0;
                                 'link' => [
                                     'controller' => 'fixtures',
                                     'action' => 'view',
+                                    'year' => $fixture->created->format('Y'),
                                     'slug' => $fixture->slug
                                 ]
                             ]);

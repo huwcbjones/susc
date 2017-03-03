@@ -35,16 +35,19 @@ class FixturesController extends AppController
         $this->set('calendar', $parser->parse($this->Static->find('fixtures')->first()->value));
     }
 
-    public function index()
+    public function index($year = null)
     {
-        $this->set('fixtures', $this->paginate($this->Articles->findFixtures('published')));
+        $options = array();
+        if($year != null) $options['year'] = $year;
+        $this->set('fixtures', $this->paginate($this->Articles->findFixtures('published')->find('date', $options)));
     }
 
-    public function view($slug = null)
+    public function view($year = null, $slug = null)
     {
-        $options = ['slug' => $slug];
+        $options = ['year' => $year, 'slug' => $slug];
         $fixture = $this->Articles
             ->findFixtures('published')
+            ->find('date', $options)
             ->find('slug', $options)
             ->first();
         if (empty($fixture)) {
