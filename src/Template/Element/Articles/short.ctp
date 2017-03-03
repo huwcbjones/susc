@@ -11,4 +11,16 @@
             <?= $this->Text->truncate($article->content, 200, ['exact' => false,]) ?></span>
         <p><?= $this->Html->link($button, $link, ['itemprop' => 'url', 'class' => 'btn btn-default btn-sm', 'escape' => false]) ?></p>
     </article>
+    <div class="hidden" itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
+        <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
+            <?= $this->Html->Image('logo.png',  ['fullBase' => true]) ?>
+            <meta itemprop="url" content="<?= $this->Url->build('/img/logo.png', true) ?>">
+        </div>
+        <meta itemprop="name" content="SUSC">
+    </div>
+    <div class="hidden" itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
+        <img src="<?= $this->Url->build('/img/logo.png', true) ?>"/>
+        <meta itemprop="url" content="<?= $this->Url->build('/img/logo.png', true) ?>" />
+        <meta itemprop="height width" content="1024" />
+    </div>
 </div>
