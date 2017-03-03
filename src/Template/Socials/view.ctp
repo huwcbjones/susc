@@ -10,11 +10,12 @@ $this->end();
 
 $this->element('Articles/sidebar', ['controller' => 'Socials'])
 ?>
-<div class="page-header"><h1><?= h($social->title) ?></h1></div>
-<div class="row">
-    <div class="col-sm-8 col-md-9">
-        <?= $this->element('Articles/long', ['article' => $social]) ?>
+<div itemscope itemtype="http://schema.org/Article">
+    <div class="page-header"><h1><span itemprop="name"><?= h($social->title) ?></span></h1></div>
+    <div class="row">
+        <div class="col-sm-8 col-md-9">
+            <?= $this->element('Articles/long', ['article' => $social]) ?>
+        </div>
+        <?= $this->fetch('sidebar', $archives, 'socials') ?>
     </div>
-    <?= $this->fetch('sidebar', $archives, 'socials') ?>
 </div>
-
