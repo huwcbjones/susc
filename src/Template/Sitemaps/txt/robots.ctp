@@ -1,0 +1,1 @@
+Sitemap: <?= $this->Url->build(['_name' => 'sitemap', '_ext'=>'xml'], true) ?>

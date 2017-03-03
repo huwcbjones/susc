@@ -148,13 +148,19 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->connect('/gallery',
         ['controller' => 'Galleries', 'action' => 'index'], ['_name' => 'gallery']
     );
-    $routes->connect('/galleries/thumb/:thumbid',
-        ['controller' => 'Galleries', 'action' => 'thumbnail'], [
-            '_name' => 'thumbnail',
-            'pass' => ['thumbid'],
-            'thumbid' => '[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}'
-        ]
-    );
+    Router::scope('/gallery/thumb', function ($routes) {
+        $routes->extensions(['jpg']);
+        $routes->connect('/:thumbid',
+            ['controller' => 'Galleries', 'action' => 'thumbnail'],
+            [
+                '_name' => 'thumbnail',
+                'pass' => ['thumbid'],
+                'thumbid' => '[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}'
+            ]
+        );
+
+    });
+
 
     // Connect About
     $routes->connect('/about/club', ['controller' => 'About', 'action' => 'club'], ['_name' => 'about']);
@@ -163,6 +169,16 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->connect('/about/coaches', ['controller' => 'About', 'action' => 'coaches']);
     $routes->connect('/about/committee', ['controller' => 'About', 'action' => 'committee']);
 
+    Router::scope('/sitemap', function ($routes) {
+        $routes->extensions(['xml']);
+        $routes->connect('/', ['controller' => 'Sitemaps'], ['_name'=> 'sitemap']);
+        $routes->fallbacks('DashedRoute');
+    });
+    Router::scope('/robots', function ($routes) {
+        $routes->extensions(['txt']);
+        $routes->connect('/', ['controller' => 'Sitemaps', 'action' => 'robots']);
+        $routes->fallbacks('DashedRoute');
+    });
 
     // Connect CakeDC/Users for easy user management
     /*Router::prefix('users', function ($routes) {
