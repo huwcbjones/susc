@@ -44,10 +44,10 @@ use Cake\Routing\Router;
 <meta property="og:title" content="<?= h($this->fetch('title')) ?>"/>
 <meta property="og:description" content="<?= h($this->fetch('description')) ?>"/>
 <meta property="og:image" content="<?= $this->Url->build('/img/logo.png', true) ?>"/>
-<?= $this->Html->meta([
+<?= $this->Html->meta(
     'description',
     h($this->fetch('description'))
-]) ?>
+) ?>
 
 <title itemprop='name'><?= h($this->fetch('title')) ?> | <?= Configure::read('App.name') ?></title>
 <link rel="canonical" href="<?= Router::url($this->request->here(), true) ?>" itemprop="url">
