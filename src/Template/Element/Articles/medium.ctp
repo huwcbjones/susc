@@ -1,4 +1,4 @@
-<div class="blog-post" itemscope itemtype="http://schema.org/BlogPost">
+<div class="blog-post" itemscope itemtype="http://schema.org/BlogPosting">
     <h2 class="blog-post-title"><span itemprop="name headline"><?= $this->Html->link(
                 h($article->title),
                 $link
