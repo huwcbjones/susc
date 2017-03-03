@@ -77,6 +77,7 @@ $this->assign('title', 'Home');
                     'link' => [
                         'controller' => 'fixtures',
                         'action' => 'view',
+                        'year' => $fixture->created->format('Y'),
                         'slug' => $fixture->slug
                     ],
                     'button' => 'View more details &raquo;'
@@ -103,7 +104,7 @@ $this->assign('title', 'Home');
                     'article' => $social,
                     'link' => [
                         'controller' => 'socials',
-                        'action' => 'viewSocial',
+                        'action' => 'view',
                         'year' => $social->created->format('Y'),
                         'month' => $social->created->format('m'),
                         'day' => $social->created->format('d'),
