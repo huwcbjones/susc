@@ -14,6 +14,7 @@ use Cake\ORM\TableRegistry;
  * Socials Controller
  *
  * @property \SUSC\Model\Table\ArticlesTable $Socials
+ * @property \Cake\Network\Session $Session
  */
 class SocialsController extends AppController
 {
@@ -28,6 +29,7 @@ class SocialsController extends AppController
     {
         parent::initialize();
         //$this->Auth->allow();
+        $this->Session = $this->request->session();
         $this->Socials = TableRegistry::get('Articles');
         $this->set('archives',
             $this->Socials->findSocials('published')
@@ -43,13 +45,13 @@ class SocialsController extends AppController
     public function index($year = null, $month = null, $day = null)
     {
         $options = array();
-        if($year != null) $options['year'] = $year;
-        if($month != null) $options['month'] = $month;
-        if($day != null) $options['day'] = $day;
+        if ($year != null) $options['year'] = $year;
+        if ($month != null) $options['month'] = $month;
+        if ($day != null) $options['day'] = $day;
         $this->set('socials', $this->paginate($this->Socials->findSocials('published')->find('date', $options)));
     }
 
-    public function view( $year = null, $month = null, $day = null, $slug = null)
+    public function view($year = null, $month = null, $day = null, $slug = null)
     {
         $options = ['year' => $year, 'month' => $month, 'day' => $day, 'slug' => $slug];
         $article = $this->Socials
@@ -58,6 +60,11 @@ class SocialsController extends AppController
             ->first();
         if (empty($article)) {
             throw new NotFoundException(__('Social not found'));
+        }
+        if ($this->Session->read('read_social_' . $article->slug) != true) {
+            $article->hits++;
+            $this->Socials->save($article);
+            $this->Session->write('read_social_' . $article->slug, true);
         }
         $this->set('social', $article);
     }

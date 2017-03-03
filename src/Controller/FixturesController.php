@@ -11,6 +11,12 @@ use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use huwcbjones\markdown\GithubMarkdownExtended;
 
+/**
+ * Class FixturesController
+ * @package SUSC\Controller
+ * @property \SUSC\Model\Table\ArticlesTable $Articles
+ * @property \Cake\Network\Session $Session
+ */
 class FixturesController extends AppController
 {
     public $paginate = [
@@ -28,6 +34,7 @@ class FixturesController extends AppController
         //$this->Auth->allow();
         $this->Articles = TableRegistry::get('Articles');
         $this->Static = TableRegistry::get('scontent');
+        $this->Session = $this->request->session();
     }
 
     public function calendar(){
@@ -48,8 +55,12 @@ class FixturesController extends AppController
         $fixture = $this->Articles
             ->findFixtures('published')
             ->find('date', $options)
-            ->find('slug', $options)
-            ->first();
+            ->find('slug', $options)->first();
+        if($this->Session->read('read_fixture_' . $fixture->slug) != true){
+            $fixture->hits++;
+            $this->Articles->save($fixture);
+            $this->Session->write('read_fixture_' . $fixture->slug, true);
+        }
         if (empty($fixture)) {
             throw new NotFoundException(__('Fixture not found'));
         }

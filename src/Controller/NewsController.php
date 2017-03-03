@@ -14,6 +14,7 @@ use Cake\ORM\TableRegistry;
  * News Controller
  *
  * @property \SUSC\Model\Table\ArticlesTable $News
+ * @property \Cake\Network\Session $Session
  */
 class NewsController extends AppController
 {
@@ -34,6 +35,7 @@ class NewsController extends AppController
     {
         parent::initialize();
         //$this->Auth->allow();
+        $this->Session = $this->request->session();
         $this->News = TableRegistry::get('Articles');
         $this->set('archives',
             $this->News->findNews('published')
@@ -49,9 +51,9 @@ class NewsController extends AppController
     public function index($year = null, $month = null, $day = null)
     {
         $options = array();
-        if($year != null) $options['year'] = $year;
-        if($month != null) $options['month'] = $month;
-        if($day != null) $options['day'] = $day;
+        if ($year != null) $options['year'] = $year;
+        if ($month != null) $options['month'] = $month;
+        if ($day != null) $options['day'] = $day;
         $this->set('news', $this->paginate($this->News->findNews('published')->find('date', $options)));
     }
 
@@ -64,6 +66,11 @@ class NewsController extends AppController
             ->first();
         if (empty($article)) {
             throw new NotFoundException(__('Article not found'));
+        }
+        if ($this->Session->read('read_article_' . $article->slug) != true) {
+            $article->hits++;
+            $this->News->save($article);
+            $this->Session->write('read_article_' . $article->slug, true);
         }
         $this->set('article', $article);
     }
