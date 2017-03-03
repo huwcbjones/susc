@@ -23,18 +23,19 @@ use huwcbjones\markdown\GithubMarkdownExtended;
 /**
  * Static content controller
  *
- * This controller will render views from Template/Pages/
  *
- * @link http://book.cakephp.org/3.0/en/controllers/pages-controller.html
+ * @property \SUSC\Model\Table\ArticlesTable $Articles
+ * @property \SUSC\Model\Table\ScontentTable $Static
  */
 class PagesController extends AppController
 {
 
     public function initialize()
     {
-        require_once(ROOT .DS. "vendor" . DS  . "huwcbjones" . DS . "markdown" . DS . "GithubMarkdownExtended.php");
+        require_once(ROOT . DS . "vendor" . DS . "huwcbjones" . DS . "markdown" . DS . "GithubMarkdownExtended.php");
         parent::initialize();
         $this->Static = TableRegistry::get('scontent');
+        $this->Articles = TableRegistry::get('Articles');
         if ($this->Auth !== false) {
             // Allow access to all pages
             $this->Auth->allow();
@@ -45,26 +46,41 @@ class PagesController extends AppController
     {
         $this->set('gallery', TableRegistry::get('Galleries')->find('home')->first());
 
-        $this->set('news', TableRegistry::get('Articles')->findNews('published', [
+        $news = $this->Articles->findNews('published', [
             'order' => ['`Articles`.`created`' => 'DESC'],
             'limit' => 3,
-        ]));
+        ]);
+        $fixtures = $this->Articles->findFixtures('published', [
+            'order' => ['`Articles`.`created`' => 'DESC'],
+            'limit' => 3,
+        ]);
+        $socials = $this->Articles->findSocials('published', [
+            'order' => ['`Articles`.`created`' => 'DESC'],
+            'limit' => 3,
+        ]);
+        $this->set('news', $news);
+        $this->set('fixtures', $fixtures);
+        $this->set('socials', $socials);
 
-        $this->set('fixtures', TableRegistry::get('Articles')->findFixtures('published', [
-            'order' => ['`Articles`.`created`' => 'DESC'],
-            'limit' => 3,
-        ]));
+        $lastModified = $this->Articles->getLastModified($news);
+        $lastModifiedTest = $this->Articles->getLastModified($fixtures);
+        if ($lastModified < $lastModifiedTest) $lastModified = $lastModifiedTest;
+        $lastModifiedTest = $this->Articles->getLastModified($socials);
+        if ($lastModified < $lastModifiedTest) $lastModified = $lastModifiedTest;
 
-        $this->set('socials', TableRegistry::get('Articles')->findSocials('published', [
-            'order' => ['`Articles`.`created`' => 'DESC'],
-            'limit' => 3,
-        ]));
+        $this->response = $this->response->withModified($lastModified);
+        if ($this->response->checkNotModified($this->request)) {
+            return $this->response;
+        }
+
+        $this->response = $this->response->withSharable(true, 600);
+        $this->response = $this->response->withExpires('+10 minutes');
     }
 
     public function training()
     {
         $path = func_get_args();
-        if(count($path) == 0) throw new NotFoundException();
+        if (count($path) == 0) throw new NotFoundException();
 
         try {
             $parser = new GithubMarkdownExtended();

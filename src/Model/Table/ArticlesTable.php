@@ -83,24 +83,24 @@ class ArticlesTable extends Table
         return $validator;
     }
 
+    public function findNews($type = 'all', $options = [])
+    {
+        return $this->find($type, $options)->where(['category' => 'news']);
+    }
+
     public function find($type = 'all', $options = [])
     {
         return parent::find($type, $options)->contain(['Users']);
     }
 
-    public function findNews($type = 'all', $options = [])
-    {
-        return $this->find($type, $options)->where(['category' =>'news']);
-    }
-
     public function findFixtures($type = 'all', $options = [])
     {
-        return $this->find($type, $options)->where(['category' =>'fixtures']);
+        return $this->find($type, $options)->where(['category' => 'fixtures']);
     }
 
     public function findSocials($type = 'all', $options = [])
     {
-        return $this->find($type, $options)->where(['category' =>'socials']);
+        return $this->find($type, $options)->where(['category' => 'socials']);
     }
 
     public function findPublished(Query $query)
@@ -118,8 +118,24 @@ class ArticlesTable extends Table
         return $query->where(['YEAR(`Articles`.`created`)' => $options['year']]);
     }
 
-    public function findDate(Query $query, array $options){
-        if(key_exists('day', $options) && $options['day'] != null) {
+    public function findMonth(Query $query, array $options)
+    {
+        return $query->where(['MONTH(`Articles`.`created`)' => $options['month']]);
+    }
+
+    public function findDay(Query $query, array $options)
+    {
+        return $query->where(['DAY(`Articles`.`created`)' => $options['day']]);
+    }
+
+    public function findArticle(Query $query, array $options)
+    {
+        return $this->findDate($this->findSlug($query, $options), $options);
+    }
+
+    public function findDate(Query $query, array $options)
+    {
+        if (key_exists('day', $options) && $options['day'] != null) {
             $query = $query->where([
                 'DAY(`Articles`.`created`)' => $options['day']
             ]);
@@ -137,21 +153,24 @@ class ArticlesTable extends Table
         return $query;
     }
 
-    public function findMonth(Query $query, array $options)
+    public function findSlug(Query $query, array $options)
     {
-        return $query->where(['MONTH(`Articles`.`created`)' => $options['month']]);
-    }
-
-    public function findDay(Query $query, array $options)
-    {
-        return $query->where(['DAY(`Articles`.`created`)' => $options['day']]);
-    }
-
-    public function findSlug(Query $query, array $options){
         return $query->where(['slug' => $options['slug']]);
     }
 
-    public function findArticle(Query $query, array $options){
-        return $this->findDate($this->findSlug($query, $options), $options);
+    public function generateHash(Query $query)
+    {
+        $results = $query->all();
+        $hash = '';
+        foreach ($results as $result) {
+            $hash .= $result->modified;
+        }
+        return md5($hash);
+    }
+
+    public function getLastModified(Query $query){
+        $query = clone $query->order(['`Articles`.`modified`' => 'DESC']);
+        if($query->count() == 0) return strtotime('1970-01-01 00:00');
+        return $query->first()->modified->i18nFormat(\IntlDateFormatter::FULL);
     }
 }
