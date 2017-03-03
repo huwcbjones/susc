@@ -9,7 +9,7 @@
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head itemscope itemtype="http://schema.org/WebSite">
     <?= $this->element('head') ?>
 
 </head>
