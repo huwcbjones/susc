@@ -8,8 +8,8 @@ echo $this->fetch('css');
 echo $this->Html->css('blog');
 $this->end();
 ?>
-<div itemscope itemtype="http://schema.org/Article">
-    <div class="page-header"><h1><span itemprop="name"><?= h($fixture->title) ?></span></h1></div>
+<div itemscope itemtype="http://schema.org/BlogPost">
+    <div class="page-header"><h1><span itemprop="name headline"><?= h($fixture->title) ?></span></h1></div>
     <div class="row">
         <div class="col-xs-12">
             <?= $this->element('Articles/long', ['article' => $fixture]) ?>

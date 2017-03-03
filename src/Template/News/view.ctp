@@ -10,8 +10,8 @@ $this->end();
 
 $this->element('Articles/sidebar', ['controller' => 'News'])
 ?>
-<div itemscope itemtype="http://schema.org/Article">
-    <div class="page-header"><h1><span itemprop="name"><?= h($article->title) ?></span></h1></div>
+<div itemscope itemtype="http://schema.org/BlogPost">
+    <div class="page-header"><h1><span itemprop="name headline"><?= h($article->title) ?></span></h1></div>
     <div class="row">
         <div class="col-sm-8 col-md-9">
             <?= $this->element('Articles/long', ['article' => $article]) ?>

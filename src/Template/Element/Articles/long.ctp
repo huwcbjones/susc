@@ -8,7 +8,7 @@
             <span itemprop="name"><?= h($article->authorName) ?></span></span></p>
             <?php if ($article->created != $article->modified) : ?>
                 <p class="blog-post-meta pull-right"> (Last
-                    updated <?= $article->modified->format('F j<\s\u\p>S</\s\u\p> Y') ?>
+                    updated <span itemprop="dateModified" content="<?= $article->created->format("Y-m-d") ?>"><?= $article->modified->format('F j<\s\u\p>S</\s\u\p> Y') ?></span>
                     )</p>
             <?php endif; ?>
         </div>
