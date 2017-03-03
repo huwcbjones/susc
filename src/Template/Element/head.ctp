@@ -49,7 +49,8 @@ use Cake\Routing\Router;
     h($this->fetch('description'))
 ) ?>
 
-<title itemprop='name'><?= h($this->fetch('title')) ?> | <?= Configure::read('App.name') ?></title>
+<title><?= h($this->fetch('title')) ?> | <?= Configure::read('App.name') ?></title>
+<meta itemprop="name" content="SUSC" />
 <link rel="canonical" href="<?= Router::url($this->request->here(), true) ?>" itemprop="url">
 
 <?= $this->Html->css('bootstrap.min.css') ?>
