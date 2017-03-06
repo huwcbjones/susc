@@ -47,7 +47,7 @@
 <?= $this->Html->script('jquery-1.12.3.min.js') ?>
 <![endif]-->
 <!--[if gte IE 9]><!-->
-<?= $this->Html->script('jquery-2.2.3.js') ?>
+<?= $this->Html->script('jquery-2.2.3.min.js') ?>
 <!--<![endif]-->
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <?= $this->Html->script('bootstrap.min.js') ?>
