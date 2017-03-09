@@ -57,7 +57,7 @@ $links['about_committee'] = $currentUrl === Router::url(['controller' => 'About'
                 </li>
                 <li<?= $links['socials'] ? ' class="active"' : '' ?>><?= $this->Html->link('Socials', ['_name' => 'socials']) ?></li>
                 <li class="dropdown<?= $links['training'] ? ' active' : '' ?>">
-                    <a href="<?= Router::url(['_name' => 'training']) ?>" class="dropdown-toggle" title="SUSC Training"
+                    <a href="#" class="dropdown-toggle" title="SUSC Training"
                        data-toggle="dropdown"
                        role="button" aria-haspopup="true"
                        aria-expanded="false">Training <span class="caret"></span></a>
