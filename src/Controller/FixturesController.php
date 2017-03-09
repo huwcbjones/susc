@@ -56,7 +56,10 @@ class FixturesController extends AppController
             ->findFixtures('published')
             ->find('date', $options)
             ->find('slug', $options)->first();
-        if($this->Session->read('read_fixture_' . $fixture->slug) != true){
+        if (
+            !$this->request->is('crawler')
+            && $this->Session->read('read_fixture_' . $fixture->slug) != true
+        ) {
             $fixture->hits++;
             $this->Articles->save($fixture);
             $this->Session->write('read_fixture_' . $fixture->slug, true);

@@ -61,7 +61,10 @@ class SocialsController extends AppController
         if (empty($article)) {
             throw new NotFoundException(__('Social not found'));
         }
-        if ($this->Session->read('read_social_' . $article->slug) != true) {
+        if (
+            !$this->request->is('crawler')
+            && $this->Session->read('read_social_' . $article->slug) != true
+        ) {
             $article->hits++;
             $this->Socials->save($article);
             $this->Session->write('read_social_' . $article->slug, true);

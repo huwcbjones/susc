@@ -18,7 +18,6 @@ namespace SUSC\Controller {
     use Cake\Cache\Cache;
     use Cake\Controller\Controller as BaseController;
     use Cake\Event\Event;
-    use Cake\ORM\TableRegistry;
 
     /**
      * Application Controller
@@ -26,6 +25,7 @@ namespace SUSC\Controller {
      * Add your application-wide methods in the class below, your controllers
      * will inherit them.
      *
+     * @property $request \Cake\Network\Request;
      * @link http://book.cakephp.org/3.0/en/controllers.html#the-app-controller
      */
     class AppController extends BaseController
@@ -51,6 +51,16 @@ namespace SUSC\Controller {
             $this->loadComponent('Flash');
             $this->loadComponent('RequestHandler');
             $this->loadComponent('Csrf');
+            $this->request->addDetector(
+                'crawler',
+                function($request){
+
+                        return (
+                            $request->hasHeader('User-Agent')
+                            && preg_match('/bot|crawl|slurp|spider/i', $request->getHeaderLine('User-Agent'))
+                        );
+                }
+            );
             //TableRegistry::config('Articles', ['table' => 'News']);
         }
 

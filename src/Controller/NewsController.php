@@ -67,10 +67,12 @@ class NewsController extends AppController
         if (empty($article)) {
             throw new NotFoundException(__('Article not found'));
         }
-        if ($this->Session->read('read_article_' . $article->slug) != true) {
+        if (
+            !$this->request->is('crawler')
+            && $this->Session->read('read_article_' . $article->slug) != true
+        ) {
             $article->hits++;
             $this->News->save($article);
-            $this->Session->write('read_article_' . $article->slug, true);
         }
         $this->set('article', $article);
     }
