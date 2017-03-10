@@ -52,7 +52,7 @@ class SitemapsController extends AppController
         return [
             [
                 'url' => Router::url(['_name' => 'home', '_full' => true]),
-                'modified' => date('Y-m-d H:i:s'),
+                'modified' => date('c'),
                 'priority' => 1.0
             ],
             [
@@ -73,39 +73,39 @@ class SitemapsController extends AppController
             ],
             [
                 'url' => Router::url(['_name' => 'training', '_full' => true]),
-                'modified' => date('Y-m-d H:i:s')
+                'modified' => date('c')
             ],
             [
                 'url' => Router::url(['_name' => 'training_comp', '_full' => true]),
-                'modified' => date('Y-m-d H:i:s')
+                'modified' => date('c')
             ],
             [
                 'url' => Router::url(['_name' => 'training_rec', '_full' => true]),
-                'modified' => date('Y-m-d H:i:s')
+                'modified' => date('c')
             ],
             [
                 'url' => Router::url(['_name' => 'training_facilities', '_full' => true]),
-                'modified' => date('Y-m-d H:i:s')
+                'modified' => date('c')
             ],
             [
                 'url' => Router::url(['_name' => 'gallery', '_full' => true]),
-                'modified' => date('Y-m-d H:i:s')
+                'modified' => date('c')
             ],
             [
                 'url' => Router::url(['_name' => 'about', '_full' => true]),
-                'modified' => date('Y-m-d H:i:s')
+                'modified' => date('c')
             ],
             [
                 'url' => Router::url(['_name' => 'contact', '_full' => true]),
-                'modified' => date('Y-m-d H:i:s')
+                'modified' => date('c')
             ],
             [
                 'url' => Router::url(['_name' => 'coaches', '_full' => true]),
-                'modified' => date('Y-m-d H:i:s')
+                'modified' => date('c')
             ],
             [
                 'url' => Router::url(['_name' => 'committee', '_full' => true]),
-                'modified' => date('Y-m-d H:i:s')
+                'modified' => date('c')
             ],
         ];
     }
@@ -126,7 +126,7 @@ class SitemapsController extends AppController
                     'slug' => $article->slug,
                     '_full' => true
                 ]),
-                'modified' => $article->modified->format("Y-m-d H:i:s"),
+                'modified' => $article->modified->format("c"),
                 'priority' => floatval($article->rank)
             ];
         }
