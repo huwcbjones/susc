@@ -83,9 +83,9 @@ class ArticlesTable extends Table
         return $validator;
     }
 
-    public function findNews($type = 'all', $options = [])
+    public function findNews(Query $query)
     {
-        return $this->find($type, $options)->where(['category' => 'news']);
+        return $query->where(['category' => 'news']);
     }
 
     public function find($type = 'all', $options = [])
@@ -93,14 +93,14 @@ class ArticlesTable extends Table
         return parent::find($type, $options)->contain(['Users']);
     }
 
-    public function findFixtures($type = 'all', $options = [])
+    public function findFixtures(Query $query)
     {
-        return $this->find($type, $options)->where(['category' => 'fixtures']);
+        return $query->where(['category' => 'fixtures']);
     }
 
-    public function findSocials($type = 'all', $options = [])
+    public function findSocials(Query $query)
     {
-        return $this->find($type, $options)->where(['category' => 'socials']);
+        return $query->where(['category' => 'socials']);
     }
 
     public function findPublished(Query $query)
@@ -168,9 +168,26 @@ class ArticlesTable extends Table
         return md5($hash);
     }
 
-    public function getLastModified(Query $query){
-        $query = clone $query->order(['`Articles`.`modified`' => 'DESC']);
-        if($query->count() == 0) return strtotime('1970-01-01 00:00');
-        return $query->first()->modified->i18nFormat(\IntlDateFormatter::FULL);
+    public function getLastModified($category = null)
+    {
+        if($category === null) {
+            $query = $this->find('published');
+        } else {
+            $query = $this->find($category);
+        }
+        $query = $query->select(['status', 'created', 'modified', 'lastmod' => $query->func()->max('`Articles`.`modified`')]);
+        if ($query->count() == 0) return strtotime('1970-01-01 00:00');
+        return $query->first()->lastmod;
+    }
+
+    public function getSitemap()
+    {
+        $query = $this->find('published');
+        return $query->select([
+            'slug',
+            'created',
+            'modified',
+            'rank' => '`Articles`.`hits` / TIMESTAMPDIFF(HOUR, `Articles`.`created`, NOW())'
+        ])->order(['rank' => 'DESC']);
     }
 }
