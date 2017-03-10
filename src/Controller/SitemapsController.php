@@ -57,19 +57,19 @@ class SitemapsController extends AppController
             ],
             [
                 'url' => Router::url(['_name' => 'news', '_full' => true]),
-                'modified' => $this->Articles->getLastModified('news')
+                'modified' => $this->Articles->getLastModified('news')->format('c')
             ],
             [
                 'url' => Router::url(['_name' => 'fixtures', '_full' => true]),
-                'modified' => $this->Articles->getLastModified('fixtures')
+                'modified' => $this->Articles->getLastModified('fixtures')->format('c')
             ],
             [
                 'url' => Router::url(['_name' => 'fixture_calendar', '_full' => true]),
-                'modified' => $this->Articles->getLastModified('fixtures')
+                'modified' => $this->Articles->getLastModified('fixtures')->format('c')
             ],
             [
                 'url' => Router::url(['_name' => 'socials', '_full' => true]),
-                'modified' => $this->Articles->getLastModified('socials')
+                'modified' => $this->Articles->getLastModified('socials')->format('c')
             ],
             [
                 'url' => Router::url(['_name' => 'training', '_full' => true]),

@@ -177,7 +177,7 @@ class ArticlesTable extends Table
         }
         $query = $query->select(['status', 'created', 'modified', 'lastmod' => $query->func()->max('`Articles`.`modified`')]);
         if ($query->count() == 0) return strtotime('1970-01-01 00:00');
-        return $query->first()->lastmod;
+        return $query->first()->modified;
     }
 
     public function getSitemap()
