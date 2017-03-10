@@ -166,8 +166,8 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->connect('/about/club', ['controller' => 'About', 'action' => 'club'], ['_name' => 'about']);
     $routes->redirect('/about', ['controller' => 'About', 'action' => 'club']);
     $routes->connect('/about/contact', ['controller' => 'About', 'action' => 'contact'], ['_name' => 'contact']);
-    $routes->connect('/about/coaches', ['controller' => 'About', 'action' => 'coaches']);
-    $routes->connect('/about/committee', ['controller' => 'About', 'action' => 'committee']);
+    $routes->connect('/about/coaches', ['controller' => 'About', 'action' => 'coaches'], ['_name' => 'coaches']);
+    $routes->connect('/about/committee', ['controller' => 'About', 'action' => 'committee'], ['_name' => 'committee']);
 
     Router::scope('/sitemap', function ($routes) {
         $routes->extensions(['xml']);
