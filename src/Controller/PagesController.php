@@ -46,15 +46,15 @@ class PagesController extends AppController
     {
         $this->set('gallery', TableRegistry::get('Galleries')->find('home')->first());
 
-        $news = $this->Articles->findNews('published', [
+        $news = $this->Articles->find('news')->find('published', [
             'order' => ['`Articles`.`created`' => 'DESC'],
             'limit' => 3,
         ]);
-        $fixtures = $this->Articles->findFixtures('published', [
+        $fixtures = $this->Articles->find('fixtures')->find('published', [
             'order' => ['`Articles`.`created`' => 'DESC'],
             'limit' => 3,
         ]);
-        $socials = $this->Articles->findSocials('published', [
+        $socials = $this->Articles->find('socials')->find('published', [
             'order' => ['`Articles`.`created`' => 'DESC'],
             'limit' => 3,
         ]);
@@ -62,11 +62,7 @@ class PagesController extends AppController
         $this->set('fixtures', $fixtures);
         $this->set('socials', $socials);
 
-        $lastModified = $this->Articles->getLastModified($news);
-        $lastModifiedTest = $this->Articles->getLastModified($fixtures);
-        if ($lastModified < $lastModifiedTest) $lastModified = $lastModifiedTest;
-        $lastModifiedTest = $this->Articles->getLastModified($socials);
-        if ($lastModified < $lastModifiedTest) $lastModified = $lastModifiedTest;
+        $lastModified = $this->Articles->getLastModified();
 
         $this->response = $this->response->withModified($lastModified);
         if ($this->response->checkNotModified($this->request)) {

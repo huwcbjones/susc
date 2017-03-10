@@ -32,7 +32,9 @@ class SocialsController extends AppController
         $this->Session = $this->request->session();
         $this->Socials = TableRegistry::get('Articles');
         $this->set('archives',
-            $this->Socials->findSocials('published')
+            $this->Socials
+                ->find('socials')
+                ->find('published')
                 ->select([
                     'year' => 'YEAR(`Articles`.`created`)',
                     'month' => 'MONTH(`Articles`.`created`)'
@@ -48,14 +50,23 @@ class SocialsController extends AppController
         if ($year != null) $options['year'] = $year;
         if ($month != null) $options['month'] = $month;
         if ($day != null) $options['day'] = $day;
-        $this->set('socials', $this->paginate($this->Socials->findSocials('published')->find('date', $options)));
+        $this->set(
+            'socials',
+            $this->paginate(
+                $this->Socials
+                    ->find('socials')
+                    ->find('published')
+                    ->find('date', $options)
+            )
+        );
     }
 
     public function view($year = null, $month = null, $day = null, $slug = null)
     {
         $options = ['year' => $year, 'month' => $month, 'day' => $day, 'slug' => $slug];
         $article = $this->Socials
-            ->findSocials('published')
+            ->find('socials')
+            ->find('published')
             ->find('article', $options)
             ->first();
         if (empty($article)) {

@@ -46,16 +46,25 @@ class FixturesController extends AppController
     {
         $options = array();
         if($year != null) $options['year'] = $year;
-        $this->set('fixtures', $this->paginate($this->Articles->findFixtures('published')->find('date', $options)));
+        $this->set(
+            'fixtures',
+            $this->paginate(
+                $this->Articles
+                    ->find('fixtures')
+                    ->find('published')
+                    ->find('date', $options)
+            )
+        );
     }
 
     public function view($year = null, $slug = null)
     {
         $options = ['year' => $year, 'slug' => $slug];
         $fixture = $this->Articles
-            ->findFixtures('published')
-            ->find('date', $options)
-            ->find('slug', $options)->first();
+            ->find('fixtures')
+            ->find('published')
+            ->find('article', $options)
+            ->first();
         if (
             !$this->request->is('crawler')
             && $this->Session->read('read_fixture_' . $fixture->slug) != true
