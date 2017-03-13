@@ -116,8 +116,16 @@ class SitemapsController extends AppController
 
         $data = array();
         foreach ($articles as $article) {
-            $data[] = [
-                'url' => Router::url([
+            if($article->category == 'fixtures') {
+                $url = Router::url([
+                    'controller' => $article->category,
+                    'action' => 'view',
+                    'year' => $article->created->format('Y'),
+                    'slug' => $article->slug,
+                    '_full' => true
+                ]);
+            } else {
+                $url = Router::url([
                     'controller' => $article->category,
                     'action' => 'view',
                     'year' => $article->created->format('Y'),
@@ -125,7 +133,10 @@ class SitemapsController extends AppController
                     'day' => $article->created->format('d'),
                     'slug' => $article->slug,
                     '_full' => true
-                ]),
+                ]);
+            }
+            $data[] = [
+                'url' => $url,
                 'modified' => $article->modified->format("c"),
                 'priority' => floatval($article->rank)
             ];
