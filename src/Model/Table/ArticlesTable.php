@@ -184,6 +184,7 @@ class ArticlesTable extends Table
     {
         $query = $this->find('published');
         return $query->select([
+            'category',
             'slug',
             'created',
             'modified',

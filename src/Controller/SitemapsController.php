@@ -118,7 +118,7 @@ class SitemapsController extends AppController
         foreach ($articles as $article) {
             $data[] = [
                 'url' => Router::url([
-                    'controller' => 'news',
+                    'controller' => $article->category,
                     'action' => 'view',
                     'year' => $article->created->format('Y'),
                     'month' => $article->created->format('m'),
