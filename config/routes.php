@@ -161,6 +161,16 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     });
 
+    // Connect Kit
+    $routes->connect('/kit', ['controller' => 'Kit', 'action' => 'index'], ['_name' => 'kit']);
+    $routes->connect('/kit/:slug',
+        ['controller' => 'Kit', 'action' => 'view'],
+        [
+            'pass' => ['slug'],
+            'slug' => '[A-z0-9\-]+'
+        ]
+    );
+
 
     // Connect About
     $routes->connect('/about/club', ['controller' => 'About', 'action' => 'club'], ['_name' => 'about']);
@@ -171,7 +181,7 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     Router::scope('/sitemap', function ($routes) {
         $routes->extensions(['xml']);
-        $routes->connect('/', ['controller' => 'Sitemaps'], ['_name'=> 'sitemap']);
+        $routes->connect('/', ['controller' => 'Sitemaps'], ['_name' => 'sitemap']);
         $routes->fallbacks('DashedRoute');
     });
     Router::scope('/robots', function ($routes) {
