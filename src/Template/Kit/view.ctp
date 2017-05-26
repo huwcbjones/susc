@@ -10,13 +10,17 @@ $kitBagForm = new KitBagForm();
 ?>
 
 <div class="row">
-    <div class="col-sm-8 media">
-        <div class="media-body">
-            <?= $kit->description ?>
-            <div class="col-sm-6">
+    <div class="col-sm-8">
+        <div class="row">
+            <div class="col-sm-7">
+                <?= $kit->description ?>
                 <?= $this->Form->create($kitBagForm) ?>
                 <?= $this->Form->hidden('id', ['value' => $kit->id]) ?>
                 <?= $this->Form->hidden('isRemove', ['value' => 0]) ?>
+                <div class="form-group">
+                    <label for="priceText">Price</label>
+                    <p class="form-control-static"><?= sprintf("£%.2f", $kit->price) ?></p>
+                </div>
                 <div<?php if ($kit->sizeList == null) echo ' class="hidden"' ?>>
                     <div class="form-group">
                         <label for="sizeCombo">Size</label>
@@ -27,12 +31,12 @@ $kitBagForm = new KitBagForm();
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Add to my bag</button>
+                <button type="submit" class="btn btn-primary btn-block">Add to my bag</button>
                 <?= $this->Form->end() ?>
             </div>
-        </div>
-        <div class="media-right">
-            <img src="<?= $kit->imagePath ?>" alt="<?= h($kit->title) ?>"/>
+            <div class="col-sm-5">
+                <img src="<?= $kit->imagePath ?>" alt="<?= h($kit->title) ?>" class="img-responsive center-block"/>
+            </div>
         </div>
     </div>
     <?= $this->fetch('bag', $kitBagData) ?>

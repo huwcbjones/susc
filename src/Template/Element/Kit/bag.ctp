@@ -21,7 +21,7 @@
                     Price: <?= sprintf("£%.2f", $kit->price) ?><br/>
                     <?= $this->Form->postLink(
                     'Remove',
-                    '#',
+                    '',
                     [
                         'data' => [
                             'id' => $kit->id,
@@ -37,7 +37,7 @@
                 Total: <?= sprintf("£%.2f", $total) ?>
             </div>
         <?php else: ?>
-            <p>Your kit bag is currently empty. To add kit, click &ldquo;Add to my bag&rdquo;</p>
+            <p>Your kit bag is currently empty. To add kit, select an item, choose your size, then click &ldquo;Add to my bag&rdquo;</p>
         <?php endif; ?>
     </div>
 <?php $this->end() ?>

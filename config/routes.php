@@ -163,7 +163,7 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     // Connect Kit
     $routes->connect('/kit', ['controller' => 'Kit', 'action' => 'index'], ['_name' => 'kit']);
-    $routes->connect('/kit/:slug',
+    $routes->connect('/kit/item/:slug',
         ['controller' => 'Kit', 'action' => 'view'],
         [
             'pass' => ['slug'],

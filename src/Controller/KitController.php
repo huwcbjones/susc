@@ -18,8 +18,12 @@ class KitController extends AppController
     {
         parent::initialize();
         $this->Kit = TableRegistry::get('Kit');
+        $this->loadKitBag();
+    }
 
-        $this->KitBagData = $this->request->session()->read('Kit.KitBag');
+    protected function loadKitBag()
+    {
+        if (empty($this->KitBagData)) $this->KitBagData = $this->request->session()->read('Kit.KitBag');
         if (empty($this->KitBagData)) $this->KitBagData = array();
 
         foreach ($this->KitBagData as $k => $v) {
@@ -27,7 +31,6 @@ class KitController extends AppController
         }
         $this->set('kitBagData', $this->KitBagData);
     }
-
 
     /**
      * Index method
@@ -37,9 +40,10 @@ class KitController extends AppController
     public function index()
     {
         $this->set('kit', $this->Kit->find('published'));
+        $this->processKitBag();
     }
 
-    public function view($slug)
+    protected function processKitBag()
     {
         $kitBagForm = new KitBagForm();
         $request = $this->request;
@@ -49,6 +53,7 @@ class KitController extends AppController
                 if ($request->getData('isRemove') == 0) {
                     $this->KitBagData[$id] = [
                         'id' => $id,
+                        'kit' => $this->Kit->find('id', ['id' => $id])->find('published')->first(),
                         'size' => $request->getData('size')
                     ];
                     $this->Flash->success('Successfully added item to kit bag.');
@@ -61,11 +66,17 @@ class KitController extends AppController
                 $this->Flash->error('There was an error adding that item to your kit bag.');
             }
         }
+        $this->loadKitBag();
+    }
 
+    public function view($slug)
+    {
         $kit = $this->Kit->find('slug', ['slug' => $slug])->find('published')->first();
         if (empty($kit)) {
             throw new NotFoundException("Kit not found.");
         }
         $this->set('kit', $kit);
+
+        $this->processKitBag();
     }
 }
