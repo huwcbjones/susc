@@ -163,11 +163,13 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     // Connect Kit
     $routes->connect('/kit', ['controller' => 'Kit', 'action' => 'index'], ['_name' => 'kit']);
+    $routes->connect('/kit/basket', ['controller' => 'Kit', 'action' => 'basket'], ['_name'=>'basket']);
     $routes->connect('/kit/item/:slug',
         ['controller' => 'Kit', 'action' => 'view'],
         [
             'pass' => ['slug'],
-            'slug' => '[A-z0-9\-]+'
+            'slug' => '[A-z0-9\-]+',
+            '_name' => 'kit_item'
         ]
     );
 

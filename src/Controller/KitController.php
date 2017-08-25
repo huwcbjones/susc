@@ -44,6 +44,11 @@ class KitController extends AppController
         $this->loadKitBag();
     }
 
+    public function basket()
+    {
+        $this->set('title', 'My Basket');
+    }
+
     protected function processKitBag()
     {
         $kitBagForm = new KitBagForm();
