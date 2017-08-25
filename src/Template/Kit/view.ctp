@@ -4,7 +4,7 @@ use SUSC\Form\KitBagForm;
 
 $this->assign('title', h($kit->title));
 
-$this->element('Kit/bag');
+$this->element('Kit/basket');
 $kitBagForm = new KitBagForm();
 
 ?>
@@ -31,7 +31,7 @@ $kitBagForm = new KitBagForm();
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Add to my bag</button>
+                <button type="submit" class="btn btn-primary btn-block">Add to basket <span class="glyphicon glyphicon-shopping-cart"></span></button>
                 <?= $this->Form->end() ?>
             </div>
             <div class="col-sm-5">
@@ -39,5 +39,5 @@ $kitBagForm = new KitBagForm();
             </div>
         </div>
     </div>
-    <?= $this->fetch('bag', $kitBagData) ?>
+    <?= $this->fetch('basket', $basketData) ?>
 </div>

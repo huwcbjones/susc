@@ -1,12 +1,12 @@
-<?php $this->start('bag') ?>
+<?php $this->start('basket') ?>
     <div class="col-sm-4">
-        <h2 class="h3">My Kit Bag</h2>
+        <h2 class="h3">My Basket</h2>
         <hr/>
-        <?php if (!empty($kitBagData)):
+        <?php if (!empty($basketData)):
             $total = 0;
             ?>
             <div>
-                <?php foreach ($kitBagData as $id => $data):
+                <?php foreach ($basketData as $id => $data):
                     if (empty($data['kit'])) continue;
                     $kit = $data['kit'];
                     $size = $data['size'];
@@ -27,7 +27,7 @@
                             'id' => $kit->id,
                             'isRemove' => 1
                         ],
-                        'confirm' => 'Are you sure you want to remove ' . $kit->title . ' from your kit bag?'
+                        'confirm' => 'Are you sure you want to remove ' . $kit->title . ' from your basket?'
                     ]
                 ) ?>
                     <hr/>
@@ -37,7 +37,7 @@
                 Total: <?= sprintf("£%.2f", $total) ?>
             </div>
         <?php else: ?>
-            <p>Your kit bag is currently empty. To add kit, select an item, choose your size, then click &ldquo;Add to my bag&rdquo;</p>
+            <p>Your basket is currently empty. To add kit, select an item, choose your size, then click &ldquo;Add to basket&rdquo;</p>
         <?php endif; ?>
     </div>
 <?php $this->end() ?>

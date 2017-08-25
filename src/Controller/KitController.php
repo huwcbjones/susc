@@ -10,7 +10,7 @@ use SUSC\Form\KitBagForm;
  * Kit Controller
  *
  * @property \SUSC\Model\Table\KitTable $Kit
- * @property array $KitBagData
+ * @property array $BasketData
  */
 class KitController extends AppController
 {
@@ -23,13 +23,13 @@ class KitController extends AppController
 
     protected function loadKitBag()
     {
-        if (empty($this->KitBagData)) $this->KitBagData = $this->request->session()->read('Kit.KitBag');
-        if (empty($this->KitBagData)) $this->KitBagData = array();
+        if (empty($this->BasketData)) $this->BasketData = $this->request->session()->read('Kit.Basket');
+        if (empty($this->BasketData)) $this->BasketData = array();
 
-        foreach ($this->KitBagData as $k => $v) {
-            $this->KitBagData[$k]['kit'] = $this->Kit->find('id', ['id' => $k])->find('published')->first();
+        foreach ($this->BasketData as $k => $v) {
+            $this->BasketData[$k]['kit'] = $this->Kit->find('id', ['id' => $k])->find('published')->first();
         }
-        $this->set('kitBagData', $this->KitBagData);
+        $this->set('basketData', $this->BasketData);
     }
 
     /**
@@ -41,42 +41,48 @@ class KitController extends AppController
     {
         $this->set('kit', $this->Kit->find('published'));
         $this->processKitBag();
+        $this->loadKitBag();
     }
 
     protected function processKitBag()
     {
         $kitBagForm = new KitBagForm();
         $request = $this->request;
-        if ($request->is('post')) {
-            if ($kitBagForm->execute($request->getData())) {
-                $id = $request->getData('id');
-                if ($request->getData('isRemove') == 0) {
-                    $this->KitBagData[$id] = [
-                        'id' => $id,
-                        'kit' => $this->Kit->find('id', ['id' => $id])->find('published')->first(),
-                        'size' => $request->getData('size')
-                    ];
-                    $this->Flash->success('Successfully added item to kit bag.');
-                } else {
-                    unset($this->KitBagData[$id]);
-                    $this->Flash->success('Successfully remove item from kit bag.');
-                }
-                $request->session()->write('Kit.KitBag', $this->KitBagData);
-            } else {
-                $this->Flash->error('There was an error adding that item to your kit bag.');
-            }
+
+        if (!$request->is('post')) {
+            return;
         }
-        $this->loadKitBag();
+
+        if (!$kitBagForm->execute($request->getData())) {
+            $this->Flash->error('There was an error adding that item to your basket.');
+            return;
+        }
+
+        $id = $request->getData('id');
+        if ($request->getData('isRemove') == 0) {
+            $this->BasketData[$id] = [
+                'id' => $id,
+                'kit' => $this->Kit->find('id', ['id' => $id])->find('published')->first(),
+                'size' => $request->getData('size')
+            ];
+            $this->Flash->success('Successfully added item to basket.');
+        } else {
+            unset($this->BasketData[$id]);
+            $this->Flash->success('Successfully remove item from kit bag.');
+        }
+
+        $request->session()->write('Kit.Basket', $this->BasketData);
     }
 
     public function view($slug)
     {
         $kit = $this->Kit->find('slug', ['slug' => $slug])->find('published')->first();
         if (empty($kit)) {
-            throw new NotFoundException("Kit not found.");
+            throw new NotFoundException("Item not found.");
         }
         $this->set('kit', $kit);
 
         $this->processKitBag();
+        $this->loadKitBag();
     }
 }
