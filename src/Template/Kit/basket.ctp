@@ -24,13 +24,19 @@ $kitBagForm = new KitBagForm();
             <th></th>
             </thead>
             <tbody>
-            <?php foreach ($basketData as $id=>$kit): ?>
+            <?php foreach ($basketData as $id => $data):
+                $kit = $data['kit'];
+                $size = $data['size'];
+
+                ?>
                 <row>
                     <td><h3 class="h4"><?= $this->Html->link(h($kit->title), [
                                 'controller' => 'kit',
                                 'action' => 'view',
                                 'slug' => $kit->slug
                             ]) ?></h3></td>
+                    <td><?= $size ?></td>
+                    <td><?= $kit->price ?></td>
                 </row>
             <?php endforeach; ?>
             </tbody>
