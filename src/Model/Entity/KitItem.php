@@ -1,12 +1,11 @@
 <?php
-
 namespace SUSC\Model\Entity;
 
 use Cake\ORM\Entity;
 use huwcbjones\markdown\GithubMarkdownExtended;
 
 /**
- * Kit Entity
+ * KitItem Entity
  *
  * @property string $id
  * @property string $title
@@ -19,7 +18,7 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  * @property \Cake\I18n\Time $modified
  * @property string $status
  */
-class Kit extends Entity
+class KitItem extends Entity
 {
 
     /**

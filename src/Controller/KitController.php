@@ -17,7 +17,7 @@ class KitController extends AppController
     public function initialize()
     {
         parent::initialize();
-        $this->Kit = TableRegistry::get('Kit');
+        $this->Kit = TableRegistry::get('KitItems');
         $this->loadKitBag();
     }
 

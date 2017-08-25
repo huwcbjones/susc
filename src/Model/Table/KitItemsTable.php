@@ -1,5 +1,4 @@
 <?php
-
 namespace SUSC\Model\Table;
 
 use Cake\ORM\Query;
@@ -8,19 +7,19 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Kit Model
+ * KitItems Model
  *
- * @method \SUSC\Model\Entity\Kit get($primaryKey, $options = [])
- * @method \SUSC\Model\Entity\Kit newEntity($data = null, array $options = [])
- * @method \SUSC\Model\Entity\Kit[] newEntities(array $data, array $options = [])
- * @method \SUSC\Model\Entity\Kit|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \SUSC\Model\Entity\Kit patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \SUSC\Model\Entity\Kit[] patchEntities($entities, array $data, array $options = [])
- * @method \SUSC\Model\Entity\Kit findOrCreate($search, callable $callback = null, $options = [])
+ * @method \SUSC\Model\Entity\KitItem get($primaryKey, $options = [])
+ * @method \SUSC\Model\Entity\KitItem newEntity($data = null, array $options = [])
+ * @method \SUSC\Model\Entity\KitItem[] newEntities(array $data, array $options = [])
+ * @method \SUSC\Model\Entity\KitItem|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \SUSC\Model\Entity\KitItem patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \SUSC\Model\Entity\KitItem[] patchEntities($entities, array $data, array $options = [])
+ * @method \SUSC\Model\Entity\KitItem findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class KitTable extends Table
+class KitItemsTable extends Table
 {
 
     /**
@@ -33,7 +32,7 @@ class KitTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('kit');
+        $this->table('kit_items');
         $this->displayField('title');
         $this->primaryKey('id');
 
@@ -62,8 +61,7 @@ class KitTable extends Table
             ->add('slug', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         $validator
-            ->requirePresence('image', 'create')
-            ->notEmpty('image');
+            ->allowEmpty('image');
 
         $validator
             ->decimal('price')
