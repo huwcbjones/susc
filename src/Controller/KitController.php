@@ -47,6 +47,8 @@ class KitController extends AppController
     public function basket()
     {
         $this->set('title', 'My Basket');
+        $this->processKitBag();
+        $this->loadKitBag();
     }
 
     protected function processKitBag()
