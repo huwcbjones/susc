@@ -51,6 +51,8 @@ Router::scope('/', function (RouteBuilder $routes) {
         $routes->fallbacks('DashedRoute');
     });
 
+    $routes->connect('/login', ['controller' => 'Users', 'action' => 'login'], ['_name' => 'login']);
+
     // Connect News
     $routes->connect('/news', ['controller' => 'News'], ['_name' => 'news']);
     $routes->connect('/news/:year',
