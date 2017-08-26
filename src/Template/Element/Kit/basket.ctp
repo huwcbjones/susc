@@ -15,7 +15,7 @@
                     'slug' => $kit->slug
                 ]) ?></h3>
             Size: <?= $size ?><br/>
-            Price: <?= sprintf("£%.2f", $kit->price) ?><br/>
+            Price: <?= $kit->formattedPrice ?><br/>
             <?= $this->Form->postLink(
             'Remove',
             '',
