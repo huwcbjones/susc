@@ -1,4 +1,5 @@
 <?php
+
 namespace SUSC\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -57,5 +58,10 @@ class KitItem extends Entity
         }
 
         return str_getcsv($this->sizes);
+    }
+
+    protected function _getFormattedPrice()
+    {
+        return sprintf("£%.2f", $this->price);
     }
 }
