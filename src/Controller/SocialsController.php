@@ -7,14 +7,17 @@
 namespace SUSC\Controller;
 
 
+use App\Model\Entity\Article;
 use Cake\Network\Exception\NotFoundException;
+use Cake\Network\Session;
 use Cake\ORM\TableRegistry;
+use SUSC\Model\Table\ArticlesTable;
 
 /**
  * Socials Controller
  *
- * @property \SUSC\Model\Table\ArticlesTable $Socials
- * @property \Cake\Network\Session $Session
+ * @property ArticlesTable $Socials
+ * @property Session $Session
  */
 class SocialsController extends AppController
 {
@@ -64,6 +67,7 @@ class SocialsController extends AppController
     public function view($year = null, $month = null, $day = null, $slug = null)
     {
         $options = ['year' => $year, 'month' => $month, 'day' => $day, 'slug' => $slug];
+        /** @var Article $article */
         $article = $this->Socials
             ->find('socials')
             ->find('published')

@@ -7,15 +7,22 @@
 namespace SUSC\Controller;
 
 
+use App\Model\Entity\Article;
+use Cake\Controller\Component\AuthComponent;
 use Cake\Network\Exception\NotFoundException;
+use Cake\Network\Session;
 use Cake\ORM\TableRegistry;
 use huwcbjones\markdown\GithubMarkdownExtended;
+use SUSC\Model\Table\ArticlesTable;
+use SUSC\Model\Table\StaticContentTable;
 
 /**
  * Class FixturesController
  * @package SUSC\Controller
- * @property \SUSC\Model\Table\ArticlesTable $Articles
- * @property \Cake\Network\Session $Session
+ * @property ArticlesTable $Articles
+ * @property StaticContentTable $Static
+ * @property Session $Session
+ * @property AuthComponent $Auth
  */
 class FixturesController extends AppController
 {
@@ -30,11 +37,16 @@ class FixturesController extends AppController
     public function initialize()
     {
         parent::initialize();
-        require_once(ROOT .DS. "vendor" . DS  . "huwcbjones" . DS . "markdown" . DS . "GithubMarkdownExtended.php");
-        //$this->Auth->allow();
+
+        // Get table instances
         $this->Articles = TableRegistry::get('Articles');
-        $this->Static = TableRegistry::get('scontent');
+        $this->Static = TableRegistry::get('StaticContent');
+
+        // Get session controller
         $this->Session = $this->request->session();
+
+        // Set auth
+        $this->Auth->allow();
     }
 
     public function calendar(){
@@ -60,6 +72,7 @@ class FixturesController extends AppController
     public function view($year = null, $slug = null)
     {
         $options = ['year' => $year, 'slug' => $slug];
+        /** @var Article $fixture */
         $fixture = $this->Articles
             ->find('fixtures')
             ->find('published')

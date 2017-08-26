@@ -10,7 +10,7 @@ use Cake\ORM\Entity;
  * @property string $key
  * @property string $value
  */
-class Scontent extends Entity
+class StaticContent extends Entity
 {
 
     /**

@@ -6,15 +6,20 @@
 
 namespace SUSC\Controller;
 
+use App\Model\Entity\Article;
+use Cake\Controller\Component\AuthComponent;
 use Cake\Event\Event;
 use Cake\Network\Exception\NotFoundException;
+use Cake\Network\Session;
 use Cake\ORM\TableRegistry;
+use SUSC\Model\Table\ArticlesTable;
 
 /**
  * News Controller
  *
- * @property \SUSC\Model\Table\ArticlesTable $News
- * @property \Cake\Network\Session $Session
+ * @property ArticlesTable $News
+ * @property Session $Session
+ * @property AuthComponent $Auth
  */
 class NewsController extends AppController
 {
@@ -26,16 +31,14 @@ class NewsController extends AppController
         ]
     ];
 
-    public function beforeRender(Event $event)
-    {
-        parent::beforeRender($event);
-    }
-
     public function initialize()
     {
         parent::initialize();
-        //$this->Auth->allow();
+
+        // Set session
         $this->Session = $this->request->session();
+
+        // Get table instances
         $this->News = TableRegistry::get('Articles');
         $this->set('archives',
             $this->News->find('news')->find('published')
@@ -46,6 +49,9 @@ class NewsController extends AppController
                 ->order(['year' => 'DESC', 'month' => 'DESC'])
                 ->group(['year', 'month'])
                 ->toArray());
+
+        // Set auth
+        $this->Auth->allow();
     }
 
     public function index($year = null, $month = null, $day = null)
@@ -68,6 +74,7 @@ class NewsController extends AppController
     public function view($year = null, $month = null, $day = null, $slug = null)
     {
         $options = ['year' => $year, 'month' => $month, 'day' => $day, 'slug' => $slug];
+        /** @var Article $article */
         $article = $this->News
             ->find('news')
             ->find('published')

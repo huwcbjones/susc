@@ -2,22 +2,31 @@
 namespace SUSC\Controller;
 
 use Cake\Cache\Cache;
+use Cake\Controller\Component\AuthComponent;
 use Cake\Core\Configure;
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use phpthumb;
+use SUSC\Model\Entity\Image;
+use SUSC\Model\Table\GalleriesTable;
 
 /**
  * Galleries Controller
  *
- * @property \SUSC\Model\Table\GalleriesTable $Galleries
+ * @property GalleriesTable $Galleries
+ * @property AuthComponent $Auth
  */
 class GalleriesController extends AppController
 {
     public function initialize()
     {
         parent::initialize();
+
+        // Get table instance
         $this->Galleries = TableRegistry::get('Galleries');
+
+        // Set auth
+        $this->Auth->allow();
     }
 
 
@@ -37,13 +46,17 @@ class GalleriesController extends AppController
         if ($images->count() != 1) {
             return new NotFoundException();
         }
+
+        /** @var Image $image */
         $image = $images->first();
         $this->autoRender = false;
         $this->response->type($image->extension);
 
+        // Cache thumbnail using thumbnail rule (we are dynamically creating the thumbnail using php)
         $this->response->withBody(Cache::remember('image-thumb-' . $image->id, function () use ($image){
             $pt = new phpthumb();
 
+            // Set phpthumb's debug to use the app debug level
             $pt->config_disable_debug = !Configure::read('debug');
 
             $pt->setParameter('w', 500);

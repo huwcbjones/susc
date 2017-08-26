@@ -10,6 +10,7 @@ use Cake\ORM\Entity;
  * @property string $title
  * @property string $extension
  * @property string $copyright
+ * @property string $path
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
  * @property bool $status

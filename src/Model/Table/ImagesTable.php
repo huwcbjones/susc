@@ -1,22 +1,24 @@
 <?php
 namespace SUSC\Model\Table;
 
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use SUSC\Model\Entity\Image;
 
 /**
  * Images Model
  *
  * @property \Cake\ORM\Association\BelongsToMany $Galleries
  *
- * @method \SUSC\Model\Entity\Image get($primaryKey, $options = [])
- * @method \SUSC\Model\Entity\Image newEntity($data = null, array $options = [])
- * @method \SUSC\Model\Entity\Image[] newEntities(array $data, array $options = [])
- * @method \SUSC\Model\Entity\Image|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \SUSC\Model\Entity\Image patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \SUSC\Model\Entity\Image[] patchEntities($entities, array $data, array $options = [])
- * @method \SUSC\Model\Entity\Image findOrCreate($search, callable $callback = null, $options = [])
+ * @method Image get($primaryKey, $options = [])
+ * @method Image newEntity($data = null, array $options = [])
+ * @method Image[] newEntities(array $data, array $options = [])
+ * @method Image|bool save(EntityInterface $entity, $options = [])
+ * @method Image patchEntity(EntityInterface $entity, array $data, array $options = [])
+ * @method Image[] patchEntities($entities, array $data, array $options = [])
+ * @method Image findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
