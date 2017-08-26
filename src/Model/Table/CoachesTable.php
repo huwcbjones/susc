@@ -31,9 +31,9 @@ class CoachesTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('coaches');
-        $this->displayField('name');
-        $this->primaryKey('id');
+        $this->setTable('coaches');
+        $this->setDisplayField('name');
+        $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
     }

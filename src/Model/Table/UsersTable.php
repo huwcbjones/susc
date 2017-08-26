@@ -1,6 +1,8 @@
 <?php
+
 namespace SUSC\Model\Table;
 
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -33,9 +35,9 @@ class UsersTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('users');
-        $this->displayField('id');
-        $this->primaryKey('id');
+        $this->setTable('users');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
 
@@ -111,5 +113,10 @@ class UsersTable extends Table
         $rules->add($rules->isUnique(['username']));
 
         return $rules;
+    }
+
+    public function findActive(Query $query)
+    {
+        return $query->where(['is_enable' => true, 'is_active' => true]);
     }
 }

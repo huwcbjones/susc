@@ -1,0 +1,1 @@
+<p class="text-danger" onclick="this.classList.add('hidden');"><strong><?= h($message) ?></strong></p>

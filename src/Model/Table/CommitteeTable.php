@@ -31,9 +31,9 @@ class CommitteeTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('committee');
-        $this->displayField('name');
-        $this->primaryKey('id');
+        $this->setTable('committee');
+        $this->setDisplayField('name');
+        $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
     }

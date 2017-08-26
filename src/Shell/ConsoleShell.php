@@ -12,7 +12,7 @@
  * @since     3.0.0
  * @license   http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace App\Shell;
+namespace SUSC\Shell;
 
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
@@ -66,7 +66,7 @@ class ConsoleShell extends Shell
     public function getOptionParser()
     {
         $parser = new ConsoleOptionParser('console');
-        $parser->description(
+        $parser->setDescription(
             'This shell provides a REPL that you can use to interact ' .
             'with your application in an interactive fashion. You can use ' .
             'it to run adhoc queries with your models, or experiment ' .
