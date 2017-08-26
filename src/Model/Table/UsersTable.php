@@ -121,4 +121,17 @@ class UsersTable extends Table
     {
         return $query->where(['is_enable' => true, 'is_active' => true]);
     }
+
+    public function findId(Query $query, array $options = [])
+    {
+        return $query->where(['id' => $options['id']]);
+    }
+
+    public function findUsername(Query $query, array $options = []){
+        return $query->where(['username' => $options['username']]);
+    }
+
+    public function findEmail(Query $query, array $options = []){
+        return $query->where(['email_address' => $options['email']]);
+    }
 }

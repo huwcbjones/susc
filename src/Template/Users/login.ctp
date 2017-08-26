@@ -15,7 +15,7 @@ $this->end();
 <div class="form-login-container">
     <h2 class="form-login-heading">Log In</h2>
     <label for="email" class="sr-only">Username/Email Address</label>
-    <?= $this->Form->text('username', ['class' => ['form-control'], 'placeholder' => 'Username/Email Address', 'autofocus', 'required', 'id' => 'inputEmail']) ?>
+    <?= $this->Form->email('email_address', ['class' => ['form-control'], 'placeholder' => 'Email Address', 'autofocus', 'required', 'id' => 'inputEmail']) ?>
     <label for="inputPassword" class="sr-only">Password</label>
     <?= $this->Form->password('password', ['class' => ['form-control'], 'placeholder' => 'Password', 'required', 'id' => 'inputPassword']) ?>
 
