@@ -9,15 +9,25 @@
 namespace SUSC\Controller;
 
 
+use Cake\Controller\Component\AuthComponent;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
+use SUSC\Model\Table\UsersTable;
 
+/**
+ * Class UsersController
+ * @package SUSC\Controller
+ *
+ * @property AuthComponent $Auth
+ * @property UsersTable $Users
+ */
 class UsersController extends AppController
 {
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
         $this->Auth->allow(['register', 'logout']);
+        $this->Users = TableRegistry::get('Users');
     }
 
 

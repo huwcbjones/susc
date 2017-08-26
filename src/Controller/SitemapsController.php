@@ -6,13 +6,16 @@
 
 namespace SUSC\Controller;
 
+use Cake\Controller\Component\AuthComponent;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
+use SUSC\Model\Table\ArticlesTable;
 
 /**
  * Class SitemapsController
  * @package SUSC\Controller
- * @property $Articles \SUSC\Model\Table\ArticleTable
+ * @property ArticlesTable $Articles
+ * @property AuthComponent $Auth
  */
 class SitemapsController extends AppController
 {
@@ -21,6 +24,7 @@ class SitemapsController extends AppController
     {
         parent::initialize();
         $this->loadComponent('RequestHandler');
+        $this->Auth->allow();
         $this->Articles = TableRegistry::get('Articles');
     }
 
@@ -116,7 +120,7 @@ class SitemapsController extends AppController
 
         $data = array();
         foreach ($articles as $article) {
-            if($article->category == 'fixtures') {
+            if ($article->category == 'fixtures') {
                 $url = Router::url([
                     'controller' => $article->category,
                     'action' => 'view',

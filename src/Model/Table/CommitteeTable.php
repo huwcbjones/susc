@@ -1,20 +1,22 @@
 <?php
 namespace SUSC\Model\Table;
 
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use SUSC\Model\Entity\Committee;
 
 /**
  * Committee Model
  *
- * @method \SUSC\Model\Entity\Committee get($primaryKey, $options = [])
- * @method \SUSC\Model\Entity\Committee newEntity($data = null, array $options = [])
- * @method \SUSC\Model\Entity\Committee[] newEntities(array $data, array $options = [])
- * @method \SUSC\Model\Entity\Committee|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \SUSC\Model\Entity\Committee patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \SUSC\Model\Entity\Committee[] patchEntities($entities, array $data, array $options = [])
- * @method \SUSC\Model\Entity\Committee findOrCreate($search, callable $callback = null, $options = [])
+ * @method Committee get($primaryKey, $options = [])
+ * @method Committee newEntity($data = null, array $options = [])
+ * @method Committee[] newEntities(array $data, array $options = [])
+ * @method Committee|bool save(EntityInterface $entity, $options = [])
+ * @method Committee patchEntity(EntityInterface $entity, array $data, array $options = [])
+ * @method Committee[] patchEntities($entities, array $data, array $options = [])
+ * @method Committee findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */

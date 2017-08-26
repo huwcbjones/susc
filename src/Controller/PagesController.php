@@ -19,27 +19,28 @@ use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\View\Exception\MissingTemplateException;
 use huwcbjones\markdown\GithubMarkdownExtended;
+use SUSC\Model\Entity\StaticContent;
 
 /**
  * Static content controller
  *
  *
  * @property \SUSC\Model\Table\ArticlesTable $Articles
- * @property \SUSC\Model\Table\ScontentTable $Static
+ * @property \SUSC\Model\Table\StaticContentTable $Static
  */
 class PagesController extends AppController
 {
 
     public function initialize()
     {
-        require_once(ROOT . DS . "vendor" . DS . "huwcbjones" . DS . "markdown" . DS . "GithubMarkdownExtended.php");
         parent::initialize();
-        $this->Static = TableRegistry::get('scontent');
+
+        // Get table instances
+        $this->Static = TableRegistry::get('StaticContent');
         $this->Articles = TableRegistry::get('Articles');
-        if ($this->Auth !== false) {
-            // Allow access to all pages
-            $this->Auth->allow();
-        }
+
+        // Set auth
+        $this->Auth->allow();
     }
 
     public function home()
@@ -80,7 +81,9 @@ class PagesController extends AppController
 
         try {
             $parser = new GithubMarkdownExtended();
-            $this->set($path[0], $parser->parse($this->Static->find('training', ['section' => $path[0]])->first()->value));
+            /** @var StaticContent $content */
+            $content = $this->Static->find('training', ['section' => $path[0]])->first();
+            $this->set($path[0], $parser->parse($content->value));
             $this->render('training_' . $path[0]);
 
         } catch (MissingTemplateException $e) {

@@ -1,23 +1,25 @@
 <?php
 namespace SUSC\Model\Table;
 
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use SUSC\Model\Entity\StaticContent;
 
 /**
  * Static Model
  *
- * @method \SUSC\Model\Entity\Scontent get($primaryKey, $options = [])
- * @method \SUSC\Model\Entity\Scontent newEntity($data = null, array $options = [])
- * @method \SUSC\Model\Entity\Scontent[] newEntities(array $data, array $options = [])
- * @method \SUSC\Model\Entity\Scontent|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \SUSC\Model\Entity\Scontent patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \SUSC\Model\Entity\Scontent[] patchEntities($entities, array $data, array $options = [])
- * @method \SUSC\Model\Entity\Scontent findOrCreate($search, callable $callback = null, $options = [])
+ * @method StaticContent get($primaryKey, $options = [])
+ * @method StaticContent newEntity($data = null, array $options = [])
+ * @method StaticContent[] newEntities(array $data, array $options = [])
+ * @method StaticContent|bool save(EntityInterface $entity, $options = [])
+ * @method StaticContent patchEntity(EntityInterface $entity, array $data, array $options = [])
+ * @method StaticContent[] patchEntities($entities, array $data, array $options = [])
+ * @method StaticContent findOrCreate($search, callable $callback = null, $options = [])
  */
-class ScontentTable extends Table
+class StaticContentTable extends Table
 {
 
     /**
@@ -87,5 +89,9 @@ class ScontentTable extends Table
 
     public function findFixtures(Query $query){
         return $query->where(['key' => 'fixtures'])->limit(1);
+    }
+
+    public function findKitTerms(Query $query){
+        return $query->where(['key' => 'kit_terms'])->limit(1);
     }
 }

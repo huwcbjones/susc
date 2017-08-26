@@ -1,20 +1,22 @@
 <?php
 namespace SUSC\Model\Table;
 
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use SUSC\Model\Entity\Coach;
 
 /**
  * Coaches Model
  *
- * @method \SUSC\Model\Entity\Coach get($primaryKey, $options = [])
- * @method \SUSC\Model\Entity\Coach newEntity($data = null, array $options = [])
- * @method \SUSC\Model\Entity\Coach[] newEntities(array $data, array $options = [])
- * @method \SUSC\Model\Entity\Coach|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \SUSC\Model\Entity\Coach patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \SUSC\Model\Entity\Coach[] patchEntities($entities, array $data, array $options = [])
- * @method \SUSC\Model\Entity\Coach findOrCreate($search, callable $callback = null, $options = [])
+ * @method Coach get($primaryKey, $options = [])
+ * @method Coach newEntity($data = null, array $options = [])
+ * @method Coach[] newEntities(array $data, array $options = [])
+ * @method Coach|bool save(EntityInterface $entity, $options = [])
+ * @method Coach patchEntity(EntityInterface $entity, array $data, array $options = [])
+ * @method Coach[] patchEntities($entities, array $data, array $options = [])
+ * @method Coach findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */

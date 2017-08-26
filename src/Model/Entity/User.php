@@ -2,6 +2,7 @@
 namespace SUSC\Model\Entity;
 
 use Cake\Auth\DefaultPasswordHasher;
+use Cake\I18n\Time;
 use Cake\ORM\Entity;
 
 /**
@@ -12,13 +13,14 @@ use Cake\ORM\Entity;
  * @property string $email_address
  * @property string $first_name
  * @property string $last_name
- * @property \Cake\I18n\Time $activation_date
- * @property string|resource $password
+ * @property Time $activation_date
+ * @property string $password
  * @property bool $is_active
  * @property bool $is_enable
  * @property bool $change_password
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
+ * @property Time $created
+ * @property Time $modified
+ * @property string $fullname
  *
  * @property \App\Model\Entity\Article[] $articles
  */
