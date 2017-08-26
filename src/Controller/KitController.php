@@ -51,6 +51,21 @@ class KitController extends AppController
         $this->loadKitBag();
     }
 
+    public function order()
+    {
+
+    }
+
+    public function viewOrder()
+    {
+
+    }
+
+    public function order_complete()
+    {
+
+    }
+
     protected function processKitBag()
     {
         $kitBagForm = new KitBagForm();

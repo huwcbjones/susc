@@ -74,7 +74,7 @@ $kitBagForm = new KitBagForm();
                     <tr>
                         <td><?= $this->Html->link('<span class="glyphicon glyphicon-chevron-left"></span> Continue Shopping', ['_name' => 'kit'], ['class' => ['btn', 'btn-warning', 'btn-lg'], 'escape' => false]) ?></td>
                         <td class="hidden-xs" colspan="2"></td>
-                        <td><?= $this->Html->link('Confirm Order <span class="glyphicon glyphicon-shopping-cart"></span>', '', ['class' => ['btn', 'btn-success', 'btn-block', 'btn-lg'], 'escape' => false]) ?></td>
+                        <td><?= $this->Html->link('Complete Order <span class="glyphicon glyphicon-shopping-cart"></span>', ['_name'=>'order'], ['class' => ['btn', 'btn-success', 'btn-block', 'btn-lg'], 'escape' => false]) ?></td>
                     </tr>
                     </tfoot>
                 </table>

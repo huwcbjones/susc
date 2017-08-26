@@ -163,7 +163,16 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     // Connect Kit
     $routes->connect('/kit', ['controller' => 'Kit', 'action' => 'index'], ['_name' => 'kit']);
-    $routes->connect('/kit/basket', ['controller' => 'Kit', 'action' => 'basket'], ['_name'=>'basket']);
+    $routes->connect('/kit/basket', ['controller' => 'Kit', 'action' => 'basket'], ['_name' => 'basket']);
+    $routes->connect('/kit/order', ['controller' => 'Kit', 'action' => 'order'], ['_name' => 'order']);
+    $routes->connect('/kit/order/success', ['controller' => 'Kit', 'action' => 'order_complete'], ['_name' => 'order_complete']);
+    $routes->connect('/kit/order/:orderid',
+        ['controller' => 'Kit', 'action' => 'view_order'],
+        [
+            'pass' => ['orderid'],
+            'slug' => '[0-9]+'
+        ]
+    );
     $routes->connect('/kit/item/:slug',
         ['controller' => 'Kit', 'action' => 'view'],
         [
