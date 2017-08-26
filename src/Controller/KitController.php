@@ -9,7 +9,7 @@ use SUSC\Form\KitBagForm;
 /**
  * Kit Controller
  *
- * @property \SUSC\Model\Table\KitTable $Kit
+ * @property \SUSC\Model\Table\KitItemsTable $Kit
  * @property array $BasketData
  */
 class KitController extends AppController

@@ -1,21 +1,23 @@
 <?php
 namespace SUSC\Model\Table;
 
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use SUSC\Model\Entity\KitItem;
 
 /**
  * KitItems Model
  *
- * @method \SUSC\Model\Entity\KitItem get($primaryKey, $options = [])
- * @method \SUSC\Model\Entity\KitItem newEntity($data = null, array $options = [])
- * @method \SUSC\Model\Entity\KitItem[] newEntities(array $data, array $options = [])
- * @method \SUSC\Model\Entity\KitItem|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \SUSC\Model\Entity\KitItem patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \SUSC\Model\Entity\KitItem[] patchEntities($entities, array $data, array $options = [])
- * @method \SUSC\Model\Entity\KitItem findOrCreate($search, callable $callback = null, $options = [])
+ * @method KitItem get($primaryKey, $options = [])
+ * @method KitItem newEntity($data = null, array $options = [])
+ * @method KitItem[] newEntities(array $data, array $options = [])
+ * @method KitItem|bool save(EntityInterface $entity, $options = [])
+ * @method KitItem patchEntity(EntityInterface $entity, array $data, array $options = [])
+ * @method KitItem[] patchEntities($entities, array $data, array $options = [])
+ * @method KitItem findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
@@ -32,9 +34,9 @@ class KitItemsTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('kit_items');
-        $this->displayField('title');
-        $this->primaryKey('id');
+        $this->getTable('kit_items');
+        $this->getDisplayField('title');
+        $this->getPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
     }
