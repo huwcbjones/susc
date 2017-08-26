@@ -7,19 +7,36 @@
 namespace SUSC\Controller;
 
 
+use Cake\Controller\Component\AuthComponent;
 use Cake\ORM\TableRegistry;
 use huwcbjones\markdown\GithubMarkdownExtended;
+use SUSC\Model\Table\CoachesTable;
+use SUSC\Model\Table\CommitteeTable;
+use SUSC\Model\Table\StaticContentTable;
 
+/**
+ * Class AboutController
+ * @package SUSC\Controller
+ *
+ * @property StaticContentTable $Static
+ * @property CommitteeTable $Committee
+ * @property CoachesTable $Coaches
+ * @property AuthComponent $Auth
+ */
 class AboutController extends AppController
 {
 
     public function initialize()
     {
         parent::initialize();
-        require_once(ROOT .DS. "vendor" . DS  . "huwcbjones" . DS . "markdown" . DS . "GithubMarkdownExtended.php");
+
+        // Get table instances
+        $this->Static = TableRegistry::get('StaticContent');
         $this->Committee = TableRegistry::get('committee');
         $this->Coaches = TableRegistry::get('coaches');
-        $this->Static = TableRegistry::get('scontent');
+
+        // Set Auth
+        $this->Auth->allow();
     }
 
     public function contact()

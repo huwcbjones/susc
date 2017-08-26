@@ -2,23 +2,25 @@
 
 namespace SUSC\Model\Table;
 
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use SUSC\Model\Entity\User;
 
 /**
  * Users Model
  *
  * @property \Cake\ORM\Association\HasMany $Articles
  *
- * @method \SUSC\Model\Entity\User get($primaryKey, $options = [])
- * @method \SUSC\Model\Entity\User newEntity($data = null, array $options = [])
- * @method \SUSC\Model\Entity\User[] newEntities(array $data, array $options = [])
- * @method \SUSC\Model\Entity\User|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \SUSC\Model\Entity\User patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \SUSC\Model\Entity\User[] patchEntities($entities, array $data, array $options = [])
- * @method \SUSC\Model\Entity\User findOrCreate($search, callable $callback = null, $options = [])
+ * @method User get($primaryKey, $options = [])
+ * @method User newEntity($data = null, array $options = [])
+ * @method User[] newEntities(array $data, array $options = [])
+ * @method User|bool save(EntityInterface $entity, $options = [])
+ * @method User patchEntity(EntityInterface $entity, array $data, array $options = [])
+ * @method User[] patchEntities($entities, array $data, array $options = [])
+ * @method User findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */

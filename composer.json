@@ -31,7 +31,8 @@
   "autoload": {
     "psr-4": {
       "SUSC\\": "src",
-      "App\\": "src"
+      "App\\": "src",
+      "huwcbjones\\markdown\\": "./vendor/huwcbjones/markdown"
     }
   },
   "autoload-dev": {

@@ -1,20 +1,24 @@
 <?php
 namespace App\Model\Entity;
 
+use Cake\I18n\Time;
 use Cake\ORM\Entity;
 use huwcbjones\markdown\GithubMarkdownExtended;
+use SUSC\Model\Entity\User;
 
 /**
  * News Entity.
  *
  * @property int $id
  * @property string $title
+ * @property string $slug
  * @property int $author
+ * @property User $user
  * @property string $content
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
- * @property \Cake\I18n\Time $start
- * @property \Cake\I18n\Time $end
+ * @property Time $created
+ * @property Time $modified
+ * @property Time $start
+ * @property Time $end
  * @property int $hits
  * @property bool $status
  */
@@ -39,7 +43,6 @@ class Article extends Entity
 
     protected function _getContent($content)
     {
-        require_once(ROOT .DS. "vendor" . DS  . "huwcbjones" . DS . "markdown" . DS . "GithubMarkdownExtended.php");
         $parser = new GithubMarkdownExtended();
         return $parser->parse($content);
     }

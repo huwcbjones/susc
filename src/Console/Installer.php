@@ -14,6 +14,7 @@
  */
 namespace SUSC\Console {
 
+    use Composer\IO\IOInterface;
     use Composer\Script\Event;
     use Exception;
 
@@ -75,7 +76,7 @@ namespace SUSC\Console {
          * Create the config/app.php file if it does not exist.
          *
          * @param string $dir The application's root directory.
-         * @param \Composer\IO\IOInterface $io IO interface to write to console.
+         * @param IOInterface $io IO interface to write to console.
          * @return void
          */
         public static function createAppConfig($dir, $io)
@@ -92,7 +93,7 @@ namespace SUSC\Console {
          * Create the `logs` and `tmp` directories.
          *
          * @param string $dir The application's root directory.
-         * @param \Composer\IO\IOInterface $io IO interface to write to console.
+         * @param IOInterface $io IO interface to write to console.
          * @return void
          */
         public static function createWritableDirectories($dir, $io)
@@ -129,7 +130,7 @@ namespace SUSC\Console {
          * This is not the most secure default, but it gets people up and running quickly.
          *
          * @param string $dir The application's root directory.
-         * @param \Composer\IO\IOInterface $io IO interface to write to console.
+         * @param IOInterface $io IO interface to write to console.
          * @return void
          */
         public static function setFolderPermissions($dir, $io)
@@ -174,7 +175,7 @@ namespace SUSC\Console {
          * Set the security.salt value in the application's config file.
          *
          * @param string $dir The application's root directory.
-         * @param \Composer\IO\IOInterface $io IO interface to write to console.
+         * @param IOInterface $io IO interface to write to console.
          * @return void
          */
         public static function setSecuritySalt($dir, $io)
