@@ -41,7 +41,7 @@ class GalleriesController extends AppController
         $this->autoRender = false;
         $this->response->type($image->extension);
 
-        $this->response->body(Cache::remember('image-thumb-' . $image->id, function () use ($image){
+        $this->response->withBody(Cache::remember('image-thumb-' . $image->id, function () use ($image){
             $pt = new phpthumb();
 
             $pt->config_disable_debug = !Configure::read('debug');
@@ -68,7 +68,7 @@ class GalleriesController extends AppController
     {
         $gallery = $this->Galleries->newEntity();
         if ($this->request->is('post')) {
-            $gallery = $this->Galleries->patchEntity($gallery, $this->request->data);
+            $gallery = $this->Galleries->patchEntity($gallery, $this->request->getData());
             if ($this->Galleries->save($gallery)) {
                 $this->Flash->success(__('The gallery has been saved.'));
 
@@ -95,7 +95,7 @@ class GalleriesController extends AppController
             'contain' => ['Images']
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $gallery = $this->Galleries->patchEntity($gallery, $this->request->data);
+            $gallery = $this->Galleries->patchEntity($gallery, $this->request->getData());
             if ($this->Galleries->save($gallery)) {
                 $this->Flash->success(__('The gallery has been saved.'));
 

@@ -30,9 +30,9 @@ class ScontentTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('scontent');
-        $this->displayField('id');
-        $this->primaryKey('id');
+        $this->setTable('scontent');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
     }
 
     /**

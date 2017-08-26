@@ -34,9 +34,9 @@ class GalleriesTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('galleries');
-        $this->displayField('title');
-        $this->primaryKey('id');
+        $this->setTable('galleries');
+        $this->setDisplayField('title');
+        $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
 
