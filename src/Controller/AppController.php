@@ -16,6 +16,7 @@
 namespace SUSC\Controller {
 
     use Cake\Cache\Cache;
+    use Cake\Controller\Component\AuthComponent;
     use Cake\Controller\Controller as BaseController;
     use Cake\Event\Event;
 
@@ -61,18 +62,35 @@ namespace SUSC\Controller {
                         );
                 }
             );
+
+            $this->loadComponent('Auth', [
+                'loginRedirect' => [
+                    '_name' => 'home'
+                ],
+                'logoutRedirect' => [
+                    '_name' => 'home'
+                ],
+                'authenticate' => [
+                    AuthComponent::ALL => ['userModel' => 'Users'],
+                    'Form' => [
+                        'fields' => ['username' => 'username', 'password' => 'password']
+                    ]
+                ],
+
+                'storage' => 'Session'
+            ]);
             //TableRegistry::config('Articles', ['table' => 'News']);
         }
 
         public function isAuthorized($user = null)
         {
             // Any registered user can access public functions
-            if (empty($this->request->params['prefix'])) {
+            if (empty($this->request->getAttribute('params')['prefix'])) {
                 return true;
             }
 
             // Only admins can access admin functions
-            if ($this->request->params['prefix'] === 'admin') {
+            if ($this->request->getAttribute('params')['prefix'] === 'admin') {
                 return (bool)($user['role'] === 'admin');
             }
 
@@ -84,7 +102,7 @@ namespace SUSC\Controller {
         {
             parent::beforeFilter($event);
             // TODO: Enable cache in production
-            $this->response->disableCache();
+            $this->response->withDisabledCache();
             Cache::disable();
         }
 

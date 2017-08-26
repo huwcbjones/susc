@@ -30,10 +30,10 @@ class ArticlesTable extends Table
         $this->belongsTo('Users', [
             'joinType' => 'LEFT',
         ]);
-        $this->table('articles');
-        $this->displayField('title');
-        $this->primaryKey('id');
-        $this->entityClass('App\Model\Entity\Article');
+        $this->setTable('articles');
+        $this->setDisplayField('title');
+        $this->setPrimaryKey('id');
+        $this->setEntityClass('App\Model\Entity\Article');
 
         $this->addBehavior('Timestamp');
     }
