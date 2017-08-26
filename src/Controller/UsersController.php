@@ -12,6 +12,7 @@ namespace SUSC\Controller;
 use Cake\Controller\Component\AuthComponent;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
+use SUSC\Model\Entity\User;
 use SUSC\Model\Table\UsersTable;
 
 /**
@@ -78,7 +79,26 @@ class UsersController extends AppController
 
     public function password()
     {
-        $this->set('user', $this->Users->find('id', ['id' => $this->Auth->user('id')])->first());
+        /** @var User $user */
+        $user = $this->Users->find('id', ['id' => $this->Auth->user('id')])->first();
+
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $user = $this->Users->patchEntity($user, [
+                'old_password' => $this->request->getData('old_password'),
+                'password' => $this->request->getData('new_password'),
+                'new_password' => $this->request->getData('new_password'),
+                'conf_password' => $this->request->getData('conf_password')],
+                ['validate' => 'changePassword']
+            );
+            if ($this->Users->save($user)) {
+                // TODO: Email user to say password has been changed
+                $this->Flash->success(__('Your password has been changed!'));
+            } else {
+                $this->Flash->error(__('Your password could not be changed. Please, try again.'));
+            }
+        }
+        $this->set(compact('user'));
+        $this->set('_serialize', ['user']);
     }
 
     public function email()

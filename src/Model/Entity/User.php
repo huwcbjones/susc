@@ -1,4 +1,5 @@
 <?php
+
 namespace SUSC\Model\Entity;
 
 use Cake\Auth\DefaultPasswordHasher;
@@ -49,17 +50,21 @@ class User extends Entity
         'password'
     ];
 
-    protected function _getFullname(){
+    protected function _getFullname()
+    {
         return $this->first_name . ' ' . $this->last_name;
     }
 
-    protected function _setPassword($password){
-        if(strlen($password) > 0){
+    protected function _setPassword($password)
+    {
+        if (strlen($password) > 0) {
             return (new DefaultPasswordHasher)->hash($password);
         }
     }
 
-    protected function _getPassword($password){
+    protected function _getPassword($password)
+    {
+        if (is_string($password)) return $password;
         return stream_get_contents($password);
     }
 }

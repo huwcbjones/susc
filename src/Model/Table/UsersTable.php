@@ -2,6 +2,7 @@
 
 namespace SUSC\Model\Table;
 
+use Cake\Auth\DefaultPasswordHasher;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -127,11 +128,50 @@ class UsersTable extends Table
         return $query->where(['id' => $options['id']]);
     }
 
-    public function findUsername(Query $query, array $options = []){
+    public function findUsername(Query $query, array $options = [])
+    {
         return $query->where(['username' => $options['username']]);
     }
 
-    public function findEmail(Query $query, array $options = []){
+    public function findEmail(Query $query, array $options = [])
+    {
         return $query->where(['email_address' => $options['email']]);
+    }
+
+    public function validationChangePassword(Validator $validator)
+    {
+
+        $validator
+            ->add('old_password', 'custom', [
+                'rule' => function ($value, $context) {
+                    $user = $this->get($context['data']['id']);
+                    if ($user) {
+                        if ((new DefaultPasswordHasher)->check($value, $user->password)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                },
+                'message' => 'Old password was incorrect.',
+            ])
+            ->notEmpty('old_password');
+
+        $validator
+            ->add('new_password', [
+                'length' => [
+                    'rule' => ['minLength', 6],
+                    'message' => 'Passwords have to be at least 6 characters.',
+                ]
+            ])
+            ->notEmpty('password');
+        $validator
+            ->add('conf_password', [
+                'match' => [
+                    'rule' => ['compareWith', 'new_password'],
+                    'message' => 'Passwords do not match!',
+                ]
+            ]);
+
+        return $validator;
     }
 }
