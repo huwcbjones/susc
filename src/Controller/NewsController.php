@@ -8,7 +8,7 @@ namespace SUSC\Controller;
 
 use App\Model\Entity\Article;
 use Cake\Controller\Component\AuthComponent;
-use Cake\Event\Event;
+
 use Cake\Network\Exception\NotFoundException;
 use Cake\Network\Session;
 use Cake\ORM\TableRegistry;

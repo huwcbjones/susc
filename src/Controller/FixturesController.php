@@ -13,6 +13,7 @@ use Cake\Network\Exception\NotFoundException;
 use Cake\Network\Session;
 use Cake\ORM\TableRegistry;
 use huwcbjones\markdown\GithubMarkdownExtended;
+use SUSC\Model\Entity\StaticContent;
 use SUSC\Model\Table\ArticlesTable;
 use SUSC\Model\Table\StaticContentTable;
 
@@ -51,7 +52,10 @@ class FixturesController extends AppController
 
     public function calendar(){
         $parser = new GithubMarkdownExtended();
-        $this->set('calendar', $parser->parse($this->Static->find('fixtures')->first()->value));
+
+        /** @var StaticContent $content */
+        $content = $parser->parse($this->Static->find('fixtures')->first());
+        $this->set('calendar', $content->value);
     }
 
     public function index($year = null)

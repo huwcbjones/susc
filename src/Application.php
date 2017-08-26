@@ -15,7 +15,7 @@
 
 namespace SUSC;
 
-use Cake\Core\Configure;
+
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Http\BaseApplication;
 use Cake\Routing\Middleware\AssetMiddleware;

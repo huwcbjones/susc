@@ -10,6 +10,7 @@ namespace SUSC\Controller;
 use Cake\Controller\Component\AuthComponent;
 use Cake\ORM\TableRegistry;
 use huwcbjones\markdown\GithubMarkdownExtended;
+use SUSC\Model\Entity\StaticContent;
 use SUSC\Model\Table\CoachesTable;
 use SUSC\Model\Table\CommitteeTable;
 use SUSC\Model\Table\StaticContentTable;
@@ -42,13 +43,19 @@ class AboutController extends AppController
     public function contact()
     {
         $parser = new GithubMarkdownExtended();
-        $this->set('content', $parser->parse($this->Static->find('contact')->first()->value));
+
+        /** @var StaticContent $content */
+        $content = $parser->parse($this->Static->find('contact')->first());
+        $this->set('content', $content->value);
     }
 
     public function club()
     {
         $parser = new GithubMarkdownExtended();
-        $this->set('content', $parser->parse($this->Static->find('club')->first()->value));
+
+        /** @var StaticContent $content */
+        $content = $parser->parse($this->Static->find('club')->first());
+        $this->set('content', $content->value);
     }
 
     public function committee(){
