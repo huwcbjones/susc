@@ -1,1 +1,1 @@
-<div class="message error" onclick="this.classList.add('hidden');"><?= h($message) ?></div>
+<div class="alert alert-error" role="alert" onclick="this.classList.add('hidden');"><?= h($message) ?></div>
