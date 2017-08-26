@@ -54,6 +54,8 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->connect('/login', ['controller' => 'Users', 'action' => 'login'], ['_name' => 'login']);
     $routes->connect('/logout', ['controller' => 'Users', 'action' => 'logout'], ['_name' => 'logout']);
     $routes->connect('/user/profile', ['controller' => 'Users', 'action' => 'profile'], ['_name' => 'profile']);
+    $routes->connect('/user/password', ['controller' => 'Users', 'action' => 'password'], ['_name' => 'change_password']);
+    $routes->connect('/user/email', ['controller' => 'Users', 'action' => 'email'], ['_name' => 'change_email']);
 
     // Connect News
     $routes->connect('/news', ['controller' => 'News'], ['_name' => 'news']);

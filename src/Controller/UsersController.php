@@ -62,6 +62,27 @@ class UsersController extends AppController
 
     public function profile()
     {
+        $user = $this->Users->find('id', ['id' => $this->Auth->user('id')])->first();
 
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $user = $this->Users->patchEntity($user, $this->request->getData());
+            if ($this->Users->save($user)) {
+                $this->Flash->success(__('Your profile has been updated!'));
+            } else {
+                $this->Flash->error(__('Your profile could not be updated. Please, try again.'));
+            }
+        }
+        $this->set(compact('user'));
+        $this->set('_serialize', ['user']);
+    }
+
+    public function password()
+    {
+        $this->set('user', $this->Users->find('id', ['id' => $this->Auth->user('id')])->first());
+    }
+
+    public function email()
+    {
+        $this->set('user', $this->Users->find('id', ['id' => $this->Auth->user('id')])->first());
     }
 }

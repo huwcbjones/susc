@@ -73,7 +73,7 @@ namespace SUSC\Controller {
                 'authenticate' => [
                     AuthComponent::ALL => ['userModel' => 'Users'],
                     'Form' => [
-                        'fields' => ['username' => 'username', 'password' => 'password']
+                        'fields' => ['username' => 'email_address', 'password' => 'password']
                     ]
                 ],
 
