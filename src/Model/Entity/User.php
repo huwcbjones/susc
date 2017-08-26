@@ -57,4 +57,8 @@ class User extends Entity
             return (new DefaultPasswordHasher)->hash($password);
         }
     }
+
+    protected function _getPassword($password){
+        return stream_get_contents($password);
+    }
 }

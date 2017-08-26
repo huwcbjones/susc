@@ -36,7 +36,7 @@ body {
 .form-login .form-control:focus {
     z-index: 2;
 }
-.form-login input[type="email"] {
+.form-login input[type="text"] {
     margin-bottom: -1px;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
