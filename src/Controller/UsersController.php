@@ -103,6 +103,25 @@ class UsersController extends AppController
 
     public function email()
     {
-        $this->set('user', $this->Users->find('id', ['id' => $this->Auth->user('id')])->first());
+        /** @var User $user */
+        $user = $this->Users->find('id', ['id' => $this->Auth->user('id')])->first();
+
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $user = $this->Users->patchEntity($user, [
+                'password' => $this->request->getData('password'),
+                'email_address' => $this->request->getData('new_email_address'),
+                'new_email_address' => $this->request->getData('new_email_address'),
+                'conf_email_address' => $this->request->getData('conf_email_address')],
+                ['validate' => 'changeEmail']
+            );
+            if ($this->Users->save($user)) {
+                // TODO: Email to confirm new email address
+                $this->Flash->success(__('An email has been sent to "' . $this->request->getData('new_email_address') . '", please click on the link to verify your email address.'));
+            } else {
+                $this->Flash->error(__('Your email address could not be changed. Please, try again.'));
+            }
+        }
+        $this->set(compact('user'));
+        $this->set('_serialize', ['user']);
     }
 }

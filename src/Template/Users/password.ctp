@@ -1,11 +1,9 @@
 <?php
 
 use SUSC\Model\Entity\User;
-use SUSC\Form\ChangePasswordForm;
 
 /** @var User $user */
 
-$passwordForm = new ChangePasswordForm();
 $this->assign('title', 'Change Password');
 $this->layout('profile');
 ?>
@@ -16,4 +14,3 @@ $this->layout('profile');
 <?= $this->Form->control('conf_password', ['type' => 'password', 'label' => 'Confirm Password', 'placeholder' => 'Confirm Password']) ?>
 <?= $this->Form->button('Change Password', ['class' => 'btn-primary']) ?>
 <?= $this->Form->end() ?>
-<br/>
