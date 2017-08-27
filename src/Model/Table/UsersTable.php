@@ -4,6 +4,9 @@ namespace SUSC\Model\Table;
 
 use Cake\Auth\DefaultPasswordHasher;
 use Cake\Datasource\EntityInterface;
+use Cake\ORM\Association\BelongsTo;
+use Cake\ORM\Association\BelongsToMany;
+use Cake\ORM\Association\HasMany;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -13,7 +16,11 @@ use SUSC\Model\Entity\User;
 /**
  * Users Model
  *
- * @property \Cake\ORM\Association\HasMany $Articles
+ * @property ArticlesTable|HasMany $Articles
+ * @property GroupsTable|BelongsTo $Group
+ * @property |\Cake\ORM\Association\HasMany $KitCompletedOrders
+ * @property |\Cake\ORM\Association\HasMany $KitOrders
+ * @property AclsTable|BelongsToMany $Acls
  *
  * @method User get($primaryKey, $options = [])
  * @method User newEntity($data = null, array $options = [])
@@ -39,9 +46,6 @@ class UsersTable extends Table
         parent::initialize($config);
 
         $this->setTable('users');
-        $this->belongsTo('Groups')
-            ->setJoinType('LEFT')
-            ->setForeignKey('gid');
         $this->setDisplayField('email');
         $this->setPrimaryKey('id');
 
@@ -50,6 +54,19 @@ class UsersTable extends Table
         $this->hasMany('Articles', [
             'foreignKey' => 'user_id'
         ]);
+        $this->hasMany('KitCompletedOrders', [
+            'foreignKey' => 'user_id'
+        ]);
+        $this->hasMany('KitOrders', [
+            'foreignKey' => 'user_id'
+        ]);
+        $this->belongsTo('Groups')
+            ->setForeignKey('group_id')
+            ->setJoinType('INNER');
+
+        $this->belongsToMany('Acls', ['joinTable' => 'users_acls',])
+            ->setForeignKey('user_id')
+            ->setTargetForeignKey('acl_id');
     }
 
     /**
@@ -65,12 +82,14 @@ class UsersTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->requirePresence('username', 'create')
-            ->notEmpty('username');
+            ->uuid('gid')
+            ->requirePresence('gid', 'create')
+            ->notEmpty('gid');
 
         $validator
             ->requirePresence('email_address', 'create')
-            ->notEmpty('email_address');
+            ->notEmpty('email_address')
+            ->add('email_address', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         $validator
             ->requirePresence('first_name', 'create')
@@ -130,6 +149,11 @@ class UsersTable extends Table
         });
 
         return $rules;
+    }
+
+    public function find($type = 'all', $options = [])
+    {
+        return parent::find($type, $options)->contain(['Groups', 'Acls']);
     }
 
     public function findActive(Query $query)

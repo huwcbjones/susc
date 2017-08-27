@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: huw
- * Date: 26/08/2017
- * Time: 11:08
- */
-
 namespace SUSC\Controller;
 
 

@@ -19,6 +19,7 @@
  */
 
 use Cake\Core\Plugin;
+use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 
@@ -47,8 +48,8 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->connect('/', ['controller' => 'Pages', 'action' => 'home'], ['_name' => 'home']);
 
     // Connect Admin pages
-    Router::prefix('admin', function ($routes) {
-        $routes->fallbacks('DashedRoute');
+    Router::prefix('admin', function (RouteBuilder $routes) {
+        $routes->fallbacks(DashedRoute::class);
     });
 
     $routes->connect('/login', ['controller' => 'Users', 'action' => 'login'], ['_name' => 'login']);
@@ -154,7 +155,7 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->connect('/gallery',
         ['controller' => 'Galleries', 'action' => 'index'], ['_name' => 'gallery']
     );
-    Router::scope('/gallery/thumb', function ($routes) {
+    Router::scope('/gallery/thumb', function (RouteBuilder $routes) {
         $routes->extensions(['jpg']);
         $routes->connect('/:thumbid',
             ['controller' => 'Galleries', 'action' => 'thumbnail'],
@@ -175,12 +176,12 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->connect('/about/coaches', ['controller' => 'About', 'action' => 'coaches'], ['_name' => 'coaches']);
     $routes->connect('/about/committee', ['controller' => 'About', 'action' => 'committee'], ['_name' => 'committee']);
 
-    Router::scope('/sitemap', function ($routes) {
+    Router::scope('/sitemap', function (RouteBuilder $routes) {
         $routes->extensions(['xml']);
         $routes->connect('/', ['controller' => 'Sitemaps'], ['_name'=> 'sitemap']);
         $routes->fallbacks('DashedRoute');
     });
-    Router::scope('/robots', function ($routes) {
+    Router::scope('/robots', function (RouteBuilder $routes) {
         $routes->extensions(['txt']);
         $routes->connect('/', ['controller' => 'Sitemaps', 'action' => 'robots']);
         $routes->fallbacks('DashedRoute');

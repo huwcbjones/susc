@@ -1,21 +1,26 @@
 <?php
 namespace SUSC\Model\Table;
 
+use Cake\Datasource\EntityInterface;
+use Cake\ORM\Association\BelongsTo;
+use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use SUSC\Model\Entity\Group;
 
 /**
  * Groups Model
  *
- * @property \SUSC\Model\Table\AclsTable|\Cake\ORM\Association\BelongsToMany $Acls
+ * @property GroupsTable|BelongsTo $Group
+ * @property AclsTable|BelongsToMany $Acls
  *
- * @method \SUSC\Model\Entity\Group get($primaryKey, $options = [])
- * @method \SUSC\Model\Entity\Group newEntity($data = null, array $options = [])
- * @method \SUSC\Model\Entity\Group[] newEntities(array $data, array $options = [])
- * @method \SUSC\Model\Entity\Group|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \SUSC\Model\Entity\Group patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \SUSC\Model\Entity\Group[] patchEntities($entities, array $data, array $options = [])
- * @method \SUSC\Model\Entity\Group findOrCreate($search, callable $callback = null, $options = [])
+ * @method Group get($primaryKey, $options = [])
+ * @method Group newEntity($data = null, array $options = [])
+ * @method Group[] newEntities(array $data, array $options = [])
+ * @method Group|bool save(EntityInterface $entity, $options = [])
+ * @method Group patchEntity(EntityInterface $entity, array $data, array $options = [])
+ * @method Group[] patchEntities($entities, array $data, array $options = [])
+ * @method Group findOrCreate($search, callable $callback = null, $options = [])
  */
 class GroupsTable extends Table
 {
@@ -33,6 +38,11 @@ class GroupsTable extends Table
         $this->setTable('groups');
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
+
+        $this->hasOne('Groups')
+            //->setAlias('GroupParent')
+            ->setForeignKey('parent')
+            ->setProperty('parent_id');
 
         $this->belongsToMany('Acls', [
             'foreignKey' => 'group_id',
@@ -57,5 +67,10 @@ class GroupsTable extends Table
             ->allowEmpty('name');
 
         return $validator;
+    }
+
+    public function find($type = 'all', $options = [])
+    {
+        return parent::find($type, $options)->contain(['Acls']);
     }
 }
