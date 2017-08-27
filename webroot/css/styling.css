@@ -127,3 +127,10 @@
     max-height: 105px;
     padding: 10px;
 }
+
+.navbar-user {
+    margin-top :5px;
+    margin-bottom: 5px;
+    margin-left: 20px;
+    margin-right: 10px !important;
+}

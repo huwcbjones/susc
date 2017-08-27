@@ -63,7 +63,5 @@
 }
 
 #mainCarousel {
-    margin-top: -25px;
-    margin-left: -15px;
-    margin-right: -15px;
+    margin: -25px -15px 15px;
 }

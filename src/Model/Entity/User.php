@@ -1,27 +1,31 @@
 <?php
+
 namespace SUSC\Model\Entity;
 
+
 use Cake\Auth\DefaultPasswordHasher;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Entity;
 
 /**
  * User Entity
  *
  * @property string $id
+ * @property string $gid
  * @property string $email_address
  * @property string $first_name
  * @property string $last_name
- * @property Time $activation_date
- * @property string $password
+ * @property FrozenTime $activation_date
+ * @property string|resource $password
  * @property bool $is_active
  * @property bool $is_enable
  * @property bool $change_password
- * @property Time $created
- * @property Time $modified
- * @property string $fullname
+ * @property FrozenTime $created
+ * @property FrozenTime $modified
  *
- * @property \App\Model\Entity\Article[] $articles
+ * @property Group $group
+ * @property Article[] $articles
+ * @property Acl[] $acls
  */
 class User extends Entity
 {
@@ -49,17 +53,33 @@ class User extends Entity
         'password'
     ];
 
-    protected function _getFullname(){
+    protected function _getFullname()
+    {
         return $this->first_name . ' ' . $this->last_name;
     }
 
-    protected function _setPassword($password){
-        if(strlen($password) > 0){
+    protected function _setPassword($password)
+    {
+        if (strlen($password) > 0) {
             return (new DefaultPasswordHasher)->hash($password);
         }
     }
 
-    protected function _getPassword($password){
+    protected function _getPassword($password)
+    {
+        if (is_string($password)) return $password;
         return stream_get_contents($password);
+    }
+
+    protected function _getAcls($acls){
+        // Convert numeric indexed array to Acl ID indexed array
+        $acls = array_column($acls, null, 'id');
+
+        // Merge User acls with group acls
+        return array_merge($acls, $this->group->acls);
+    }
+
+    public function isAuthorised($acl){
+        return array_key_exists($acl, $this->acls);
     }
 }

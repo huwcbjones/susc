@@ -1,17 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: huw
- * Date: 26/08/2017
- * Time: 11:08
- */
-
 namespace SUSC\Controller;
 
 
 use Cake\Controller\Component\AuthComponent;
 use Cake\Event\Event;
-use Cake\ORM\TableRegistry;
+use SUSC\Model\Entity\User;
 use SUSC\Model\Table\UsersTable;
 
 /**
@@ -27,14 +20,12 @@ class UsersController extends AppController
     {
         parent::beforeFilter($event);
         $this->Auth->allow(['register', 'logout']);
-        $this->Users = TableRegistry::get('Users');
     }
 
 
     public function initialize()
     {
         parent::initialize();
-        $this->Users = TableRegistry::get('user');
     }
 
     public function login()
@@ -62,7 +53,7 @@ class UsersController extends AppController
 
     public function profile()
     {
-        $user = $this->Users->find('id', ['id' => $this->Auth->user('id')])->first();
+        $user = $this->currentUser;
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $user = $this->Users->patchEntity($user, $this->request->getData());
@@ -78,11 +69,49 @@ class UsersController extends AppController
 
     public function password()
     {
-        $this->set('user', $this->Users->find('id', ['id' => $this->Auth->user('id')])->first());
+        /** @var User $user */
+        $user = $this->currentUser;
+
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $user = $this->Users->patchEntity($user, [
+                'old_password' => $this->request->getData('old_password'),
+                'password' => $this->request->getData('new_password'),
+                'new_password' => $this->request->getData('new_password'),
+                'conf_password' => $this->request->getData('conf_password')],
+                ['validate' => 'changePassword']
+            );
+            if ($this->Users->save($user)) {
+                // TODO: Email user to say password has been changed
+                $this->Flash->success(__('Your password has been changed!'));
+            } else {
+                $this->Flash->error(__('Your password could not be changed. Please, try again.'));
+            }
+        }
+        $this->set(compact('user'));
+        $this->set('_serialize', ['user']);
     }
 
     public function email()
     {
-        $this->set('user', $this->Users->find('id', ['id' => $this->Auth->user('id')])->first());
+        /** @var User $user */
+        $user = $this->currentUser;
+
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $user = $this->Users->patchEntity($user, [
+                'password' => $this->request->getData('password'),
+                'email_address' => $this->request->getData('new_email_address'),
+                'new_email_address' => $this->request->getData('new_email_address'),
+                'conf_email_address' => $this->request->getData('conf_email_address')],
+                ['validate' => 'changeEmail']
+            );
+            if ($this->Users->save($user)) {
+                // TODO: Email to confirm new email address
+                $this->Flash->success(__('An email has been sent to "' . $this->request->getData('new_email_address') . '", please click on the link to verify your email address.'));
+            } else {
+                $this->Flash->error(__('Your email address could not be changed. Please, try again.'));
+            }
+        }
+        $this->set(compact('user'));
+        $this->set('_serialize', ['user']);
     }
 }

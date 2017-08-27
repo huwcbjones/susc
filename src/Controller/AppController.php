@@ -19,6 +19,10 @@ namespace SUSC\Controller {
     use Cake\Controller\Component\AuthComponent;
     use Cake\Controller\Controller as BaseController;
     use Cake\Event\Event;
+    use Cake\Network\Request;
+    use Cake\ORM\TableRegistry;
+    use SUSC\Model\Entity\User;
+    use SUSC\Model\Table\UsersTable;
 
     /**
      * Application Controller
@@ -26,7 +30,9 @@ namespace SUSC\Controller {
      * Add your application-wide methods in the class below, your controllers
      * will inherit them.
      *
-     * @property $request \Cake\Network\Request;
+     * @property Request $request
+     * @property UsersTable $users
+     * @property User $currentUser
      * @link http://book.cakephp.org/3.0/en/controllers.html#the-app-controller
      */
     class AppController extends BaseController
@@ -54,48 +60,50 @@ namespace SUSC\Controller {
             $this->loadComponent('Csrf');
             $this->request->addDetector(
                 'crawler',
-                function($request){
+                function ($request) {
 
-                        return (
-                            $request->hasHeader('User-Agent')
-                            && preg_match('/bot|crawl|slurp|spider/i', $request->getHeaderLine('User-Agent'))
-                        );
+                    return (
+                        $request->hasHeader('User-Agent')
+                        && preg_match('/bot|crawl|slurp|spider/i', $request->getHeaderLine('User-Agent'))
+                    );
                 }
             );
 
             $this->loadComponent('Auth', [
-                'loginRedirect' => [
-                    '_name' => 'home'
-                ],
-                'logoutRedirect' => [
-                    '_name' => 'home'
-                ],
+                'loginAction' => ['_name' => 'login'],
+                'loginRedirect' => ['_name' => 'profile'],
+                'logoutRedirect' => ['_name' => 'home'],
+                'unauthorizedRedirect' => false,
                 'authenticate' => [
                     AuthComponent::ALL => ['userModel' => 'Users'],
                     'Form' => [
                         'fields' => ['username' => 'email_address', 'password' => 'password']
                     ]
                 ],
+                'authError' => 'You are not allowed to access that location.',
+                'authorize' => ['Controller'],
 
                 'storage' => 'Session'
             ]);
-            //TableRegistry::config('Articles', ['table' => 'News']);
+
+            $this->users = TableRegistry::get('Users');
+            $this->currentUser = null;
+            if ($this->Auth->user('id') !== null) $this->currentUser = $this->users->get($this->Auth->user('id'));
+            $this->set('currentUser', $this->currentUser);
         }
 
         public function isAuthorized($user = null)
         {
-            // Any registered user can access public functions
-            if (empty($this->request->getAttribute('params')['prefix'])) {
-                return true;
-            }
+            if ($this->currentUser == null) return false;
 
-            // Only admins can access admin functions
-            if ($this->request->getAttribute('params')['prefix'] === 'admin') {
-                return (bool)($user['role'] === 'admin');
-            }
+            /** @var User $user */
 
-            // Default deny
-            return false;
+            // Create Acl id ($prefix).$controller.$action
+            $acl = strtolower($this->request->getParam('controller'));
+            if ($this->request->getParam('prefix') != '') $acl = strtolower($this->request->getParam('prefix' != '')) . '.' . $acl;
+            if ($this->request->getParam('action') != '') $acl .= '.' . strtolower($this->request->getParam('action'));
+
+            return $this->currentUser->isAuthorised($acl);
         }
 
         public function beforeFilter(Event $event)
@@ -122,8 +130,10 @@ namespace SUSC\Controller {
         }
     }
 }
+
 namespace App\Controller {
 
-    class AppController extends \SUSC\Controller\AppController {
+    class AppController extends \SUSC\Controller\AppController
+    {
     }
 }

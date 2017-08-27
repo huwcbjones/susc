@@ -1,4 +1,6 @@
 <?php
+
+
 use Cake\Core\Configure;
 use Cake\Routing\Router;
 
@@ -20,6 +22,7 @@ $links['about_contact'] = $currentUrl === Router::url(['_name' => 'contact']);
 $links['about_club'] = $currentUrl === Router::url(['controller' => 'About', 'action' => 'club']);
 $links['about_coaches'] = $currentUrl === Router::url(['controller' => 'About', 'action' => 'coaches']);
 $links['about_committee'] = $currentUrl === Router::url(['controller' => 'About', 'action' => 'committee']);
+$links['admin'] = $currentUrl === Router::url(['controller' => 'Admin', 'action' => 'index']);
 ?>
 <nav class="navbar navbar-inverse container fix-menu-margin" id="nav">
     <div class="container" id="nav-container">
@@ -55,7 +58,9 @@ $links['about_committee'] = $currentUrl === Router::url(['controller' => 'About'
                         <li<?= $links['fixtures_calendar'] ? ' class="active"' : '' ?>><?= $this->Html->link('Fixture Calendar', ['_name' => 'fixture_calendar']) ?></li>
                     </ul>
                 </li>
-                <li<?= $links['socials'] ? ' class="active"' : '' ?>><?= $this->Html->link('Socials', ['_name' => 'socials']) ?></li>
+                <?php if ($currentUser !== null && $currentUser->isAuthorised('socials.index')): ?>
+                    <li<?= $links['socials'] ? ' class="active"' : '' ?>><?= $this->Html->link('Socials', ['_name' => 'socials']) ?></li>
+                <?php endif; ?>
                 <li class="dropdown<?= $links['training'] ? ' active' : '' ?>">
                     <a href="#" class="dropdown-toggle" title="SUSC Training"
                        data-toggle="dropdown"
@@ -79,7 +84,32 @@ $links['about_committee'] = $currentUrl === Router::url(['controller' => 'About'
                         <li<?= $links['about_committee'] ? ' class="active"' : '' ?>><?= $this->Html->link('Our Committee', ['controller' => 'About', 'action' => 'committee']) ?></li>
                     </ul>
                 </li>
+                <?php if ($currentUser !== null && $currentUser->isAuthorised('admin.index')): ?>
+                    <li class="dropdown<?= $links['admin'] ? ' active' : '' ?>">
+                        <a href="<?= Router::url(['_name' => 'admin']) ?>" class="dropdown-toggle"
+                           data-toggle="dropdown"
+                           role="button" aria-haspopup="true"
+                           aria-expanded="false">Admin <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li<?= $links['admin'] ? ' class="active"' : '' ?>><?= $this->Html->link('Admin Panel', ['_name' => 'admin']) ?></li>
+                            <li<?= $links['about_club'] ? ' class="active"' : '' ?>><?= $this->Html->link('Our Club', ['_name' => 'about']) ?></li>
+                            <li<?= $links['about_coaches'] ? ' class="active"' : '' ?>><?= $this->Html->link('Our Coaches', ['controller' => 'About', 'action' => 'coaches']) ?></li>
+                            <li<?= $links['about_committee'] ? ' class="active"' : '' ?>><?= $this->Html->link('Our Committee', ['controller' => 'About', 'action' => 'committee']) ?></li>
+                        </ul>
+                    </li>
+                <?php endif; ?>
             </ul>
+            <p class="navbar-text navbar-right text-center navbar-user">
+                <?php if ($currentUser !== null && $currentUser->isAuthorised('users.profile')): ?>
+                    Hi <?= h($currentUser->first_name) ?>!
+                    <br/><?= $this->Html->link('My Profile', ['_name' => 'profile'], ['class' => ['navbar-link']]) ?>
+                    | <?= $this->Html->link('Logout', ['_name' => 'logout'], ['class' => ['navbar-link']]) ?>
+                <?php else: ?>
+                    &nbsp;
+                    <br/><?= $this->Html->link('Register', ['_name' => 'register'], ['class' => ['navbar-link']]) ?>
+                    | <?= $this->Html->link('Log in', ['_name' => 'login'], ['class' => ['navbar-link']]) ?>
+                <?php endif; ?>
+            </p>
         </div>
     </div>
 </nav>
