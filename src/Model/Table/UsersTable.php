@@ -39,7 +39,10 @@ class UsersTable extends Table
         parent::initialize($config);
 
         $this->setTable('users');
-        $this->setDisplayField('id');
+        $this->belongsTo('Groups')
+            ->setJoinType('LEFT')
+            ->setForeignKey('gid');
+        $this->setDisplayField('email');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
