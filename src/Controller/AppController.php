@@ -65,7 +65,7 @@ namespace SUSC\Controller {
 
             $this->loadComponent('Auth', [
                 'loginRedirect' => [
-                    '_name' => 'home'
+                    '_name' => 'profile'
                 ],
                 'logoutRedirect' => [
                     '_name' => 'home'
