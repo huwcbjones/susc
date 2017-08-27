@@ -32,6 +32,7 @@ namespace SUSC\Controller {
      *
      * @property Request $request
      * @property UsersTable $users
+     * @property User $currentUser
      * @link http://book.cakephp.org/3.0/en/controllers.html#the-app-controller
      */
     class AppController extends BaseController
@@ -86,21 +87,23 @@ namespace SUSC\Controller {
             ]);
 
             $this->users = TableRegistry::get('Users');
+            $this->currentUser = null;
+            if ($this->Auth->user('id') !== null) $this->currentUser = $this->users->get($this->Auth->user('id'));
+            $this->set('currentUser', $this->currentUser);
         }
 
         public function isAuthorized($user = null)
         {
-            if ($user == null) return false;
+            if ($this->currentUser == null) return false;
 
             /** @var User $user */
-            $user = $this->users->get($user['id']);
 
             // Create Acl id ($prefix).$controller.$action
             $acl = strtolower($this->request->getParam('controller'));
             if ($this->request->getParam('prefix') != '') $acl = strtolower($this->request->getParam('prefix' != '')) . '.' . $acl;
             if ($this->request->getParam('action') != '') $acl .= '.' . strtolower($this->request->getParam('action'));
 
-            return array_key_exists($acl, $user->acls);
+            return $this->currentUser->isAuthorised($acl);
         }
 
         public function beforeFilter(Event $event)

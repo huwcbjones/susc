@@ -4,7 +4,6 @@ namespace SUSC\Controller;
 
 use Cake\Controller\Component\AuthComponent;
 use Cake\Event\Event;
-use Cake\ORM\TableRegistry;
 use SUSC\Model\Entity\User;
 use SUSC\Model\Table\UsersTable;
 
@@ -21,14 +20,12 @@ class UsersController extends AppController
     {
         parent::beforeFilter($event);
         $this->Auth->allow(['register', 'logout']);
-        $this->Users = TableRegistry::get('Users');
     }
 
 
     public function initialize()
     {
         parent::initialize();
-        $this->Users = TableRegistry::get('user');
     }
 
     public function login()
@@ -56,7 +53,7 @@ class UsersController extends AppController
 
     public function profile()
     {
-        $user = $this->Users->find('id', ['id' => $this->Auth->user('id')])->first();
+        $user = $this->currentUser;
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $user = $this->Users->patchEntity($user, $this->request->getData());
@@ -73,7 +70,7 @@ class UsersController extends AppController
     public function password()
     {
         /** @var User $user */
-        $user = $this->Users->find('id', ['id' => $this->Auth->user('id')])->first();
+        $user = $this->currentUser;
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $user = $this->Users->patchEntity($user, [
@@ -97,7 +94,7 @@ class UsersController extends AppController
     public function email()
     {
         /** @var User $user */
-        $user = $this->Users->find('id', ['id' => $this->Auth->user('id')])->first();
+        $user = $this->currentUser;
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $user = $this->Users->patchEntity($user, [

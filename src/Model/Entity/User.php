@@ -78,4 +78,8 @@ class User extends Entity
         // Merge User acls with group acls
         return array_merge($acls, $this->group->acls);
     }
+
+    public function isAuthorised($acl){
+        return array_key_exists($acl, $this->acls);
+    }
 }

@@ -8,7 +8,7 @@ $this->assign('title', 'My Profile');
 $this->layout('profile');
 ?>
 
-<?= $this->Form->create($user); ?>
+<?= $this->Form->create($currentUser); ?>
 <?= $this->Form->control('first_name') ?>
 <?= $this->Form->control('last_name') ?>
 <?= $this->Form->control('email_address', ['disabled' => true]) ?>
