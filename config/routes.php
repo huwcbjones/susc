@@ -54,6 +54,7 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     $routes->connect('/login', ['controller' => 'Users', 'action' => 'login'], ['_name' => 'login']);
     $routes->connect('/logout', ['controller' => 'Users', 'action' => 'logout'], ['_name' => 'logout']);
+    $routes->connect('/register', ['controller' => 'Users', 'action' => 'register'], ['_name' => 'register']);
     $routes->connect('/user/profile', ['controller' => 'Users', 'action' => 'profile'], ['_name' => 'profile']);
     $routes->connect('/user/profile/password', ['controller' => 'Users', 'action' => 'password'], ['_name' => 'change_password']);
     $routes->connect('/user/profile/email', ['controller' => 'Users', 'action' => 'email'], ['_name' => 'change_email']);
@@ -178,7 +179,7 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     Router::scope('/sitemap', function (RouteBuilder $routes) {
         $routes->extensions(['xml']);
-        $routes->connect('/', ['controller' => 'Sitemaps'], ['_name'=> 'sitemap']);
+        $routes->connect('/', ['controller' => 'Sitemaps'], ['_name' => 'sitemap']);
         $routes->fallbacks('DashedRoute');
     });
     Router::scope('/robots', function (RouteBuilder $routes) {
