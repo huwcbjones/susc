@@ -47,6 +47,8 @@ Router::scope('/', function (RouteBuilder $routes) {
     // Connect Home (/)
     $routes->connect('/', ['controller' => 'Pages', 'action' => 'home'], ['_name' => 'home']);
 
+    $routes->connect('/admin', ['controller' => 'Admin', 'action' => 'index'], ['_name' => 'admin']);
+
     // Connect Admin pages
     Router::prefix('admin', function (RouteBuilder $routes) {
         $routes->fallbacks(DashedRoute::class);
