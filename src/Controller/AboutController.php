@@ -45,8 +45,8 @@ class AboutController extends AppController
         $parser = new GithubMarkdownExtended();
 
         /** @var StaticContent $content */
-        $content = $parser->parse($this->Static->find('contact')->first());
-        $this->set('content', $content->value);
+        $content = $this->Static->find('contact')->first();
+        $this->set('content', $parser->parse($content->value));
     }
 
     public function club()
@@ -54,15 +54,17 @@ class AboutController extends AppController
         $parser = new GithubMarkdownExtended();
 
         /** @var StaticContent $content */
-        $content = $parser->parse($this->Static->find('club')->first());
-        $this->set('content', $content->value);
+        $content = $this->Static->find('club')->first();
+        $this->set('content', $parser->parse($content->value));
     }
 
-    public function committee(){
+    public function committee()
+    {
         $this->set('committee', $this->Committee->find('published')->order(['display_order' => 'ASC']));
     }
 
-    public function coaches(){
+    public function coaches()
+    {
         $this->set('coaches', $this->Coaches->find('published')->order(['display_order' => 'ASC']));
     }
 }

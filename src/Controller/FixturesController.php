@@ -54,8 +54,8 @@ class FixturesController extends AppController
         $parser = new GithubMarkdownExtended();
 
         /** @var StaticContent $content */
-        $content = $parser->parse($this->Static->find('fixtures')->first());
-        $this->set('calendar', $content->value);
+        $content = $this->Static->find('fixtures')->first();
+        $this->set('calendar', $parser->parse($content->value));
     }
 
     public function index($year = null)
