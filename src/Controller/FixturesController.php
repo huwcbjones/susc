@@ -7,12 +7,12 @@
 namespace SUSC\Controller;
 
 
-use App\Model\Entity\Article;
 use Cake\Controller\Component\AuthComponent;
 use Cake\Network\Exception\NotFoundException;
 use Cake\Network\Session;
 use Cake\ORM\TableRegistry;
 use huwcbjones\markdown\GithubMarkdownExtended;
+use SUSC\Model\Entity\Article;
 use SUSC\Model\Entity\StaticContent;
 use SUSC\Model\Table\ArticlesTable;
 use SUSC\Model\Table\StaticContentTable;
