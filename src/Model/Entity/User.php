@@ -20,7 +20,7 @@ use DateTime;
  * @property string $activation_code
  * @property string $reset_code
  * @property FrozenTime $activation_date
-* @property FrozenTime $reset_code_date
+ * @property FrozenTime $reset_code_date
  * @property string|resource $password
  * @property bool $is_active
  * @property bool $is_enable
@@ -45,10 +45,9 @@ class User extends Entity
      * @var array
      */
     protected $_accessible = [
-        'first_name' => true,
-        'last_name' => true,
+        'id' => false,
         'email_address' => false,
-        'id' => false
+        '*' => true
     ];
 
     /**
@@ -137,9 +136,11 @@ class User extends Entity
         }
     }
 
-    public function isResetPasswordValid(){
+    public function isResetPasswordValid()
+    {
         return (new DateTime()) < $this->reset_code_date->addHours(3);
     }
+
     protected function _getFull_name()
     {
         return $this->first_name . ' ' . $this->last_name;
@@ -154,7 +155,7 @@ class User extends Entity
 
     protected function _getPassword($password)
     {
-        if($password == null) return null;
+        if ($password == null) return null;
         if (is_string($password)) return $password;
         return stream_get_contents($password);
     }

@@ -229,8 +229,7 @@ class UsersController extends AppController
                 return;
             }
 
-            /** @var User $user */
-            $user = $this->Users->newEntity();
+
             $now = new DateTime;
             $timestamp = $now->getTimestamp();
             $activation_code = sha1(
@@ -239,20 +238,17 @@ class UsersController extends AppController
                     $timestamp . $this->request->getData('first_name') . ' ' . $this->request->getData('last_name')
                 );
 
-            $user = $this->Users->patchEntity(
-                $user,
-                [
-                    'group_id' => $registration_code->group_id,
-                    'first_name' => $this->request->getData('first_name'),
-                    'last_name' => $this->request->getData('last_name'),
-                    'email_address' => $this->request->getData('email_address'),
-                    'password' => $this->request->getData('password'),
-                    'activation_code' => $activation_code
-                ],
-                [
-                    'guard' => false
-                ]
-            );
+            /** @var User $user */
+            $user = $this->Users->newEntity([
+                'group_id' => $registration_code->group_id,
+                'first_name' => $this->request->getData('first_name'),
+                'last_name' => $this->request->getData('last_name'),
+                'password' => $this->request->getData('password'),
+                'activation_code' => $activation_code
+            ], ['guard' => false]);
+
+            $user->setAccess('email_address', true);
+            $user->email_address = $this->request->getData('email_address');
 
             if ($this->Users->save($user)) {
                 $email = new Email();
