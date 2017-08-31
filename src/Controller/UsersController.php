@@ -234,9 +234,9 @@ class UsersController extends AppController
             $now = new DateTime;
             $timestamp = $now->getTimestamp();
             $activation_code = sha1(
-                    $timestamp . $user->email_address
+                    $timestamp . $this->request->getData('email_address')
                 ) . sha1(
-                    $timestamp . $user->full_name
+                    $timestamp . $this->request->getData('first_name') . ' ' . $this->request->getData('last_name')
                 );
 
             $user = $this->Users->patchEntity(
