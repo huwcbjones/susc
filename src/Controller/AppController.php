@@ -21,7 +21,10 @@ namespace SUSC\Controller {
     use Cake\Event\Event;
     use Cake\Network\Request;
     use Cake\ORM\TableRegistry;
+    use Cake\Routing\Router;
+    use Psr\Log\LogLevel;
     use SUSC\Model\Entity\User;
+    use SUSC\Model\Table\ConfigTable;
     use SUSC\Model\Table\UsersTable;
 
     /**
@@ -31,7 +34,8 @@ namespace SUSC\Controller {
      * will inherit them.
      *
      * @property Request $request
-     * @property UsersTable $users
+     * @property UsersTable $Users
+     * @property ConfigTable $Config
      * @property User $currentUser
      * @link http://book.cakephp.org/3.0/en/controllers.html#the-app-controller
      */
@@ -61,7 +65,7 @@ namespace SUSC\Controller {
             $this->request->addDetector(
                 'crawler',
                 function ($request) {
-
+                    /** @var Request $request */
                     return (
                         $request->hasHeader('User-Agent')
                         && preg_match('/bot|crawl|slurp|spider/i', $request->getHeaderLine('User-Agent'))
@@ -77,7 +81,8 @@ namespace SUSC\Controller {
                 'authenticate' => [
                     AuthComponent::ALL => ['userModel' => 'Users'],
                     'Form' => [
-                        'fields' => ['username' => 'email_address', 'password' => 'password']
+                        'fields' => ['username' => 'email_address', 'password' => 'password'],
+                        'finder' => 'active'
                     ]
                 ],
                 'authError' => 'You are not allowed to access that location.',
@@ -86,24 +91,38 @@ namespace SUSC\Controller {
                 'storage' => 'Session'
             ]);
 
-            $this->users = TableRegistry::get('Users');
+            // Get Table instances
+            $this->Users = TableRegistry::get('Users');
+            $this->Config = TableRegistry::get('Config');
+            
+            
+            // Setup Authentication
             $this->currentUser = null;
-            if ($this->Auth->user('id') !== null) $this->currentUser = $this->users->get($this->Auth->user('id'));
+            if ($this->Auth->user('id') !== null) {
+                $this->currentUser = $this->Users->get($this->Auth->user('id'));
+            }
             $this->set('currentUser', $this->currentUser);
         }
 
         public function isAuthorized($user = null)
         {
             if ($this->currentUser == null) return false;
+            $acl = $this->getACL();
+            $this->log('acl: ' . $acl, LogLevel::DEBUG);
+            return $this->currentUser->isAuthorised($acl);
+        }
 
-            /** @var User $user */
-
+        /**
+         * Converts the current request into an ACL string
+         * @return string acl string
+         */
+        public function getACL()
+        {
             // Create Acl id ($prefix).$controller.$action
             $acl = strtolower($this->request->getParam('controller'));
-            if ($this->request->getParam('prefix') != '') $acl = strtolower($this->request->getParam('prefix' != '')) . '.' . $acl;
+            if ($this->request->getParam('prefix') != '') $acl = strtolower($this->request->getParam('prefix')) . '.' . $acl;
             if ($this->request->getParam('action') != '') $acl .= '.' . strtolower($this->request->getParam('action'));
-
-            return $this->currentUser->isAuthorised($acl);
+            return $acl;
         }
 
         public function beforeFilter(Event $event)
@@ -112,6 +131,29 @@ namespace SUSC\Controller {
             // TODO: Enable cache in production
             $this->response->withDisabledCache();
             Cache::disable();
+
+
+            if($this->currentUser === null) return;
+
+            // Logout inactive users
+            if(!$this->currentUser->isEnabled()){
+                $this->Flash->error("Your account has been disabled.");
+                $this->Auth->logout();
+            }
+
+            if(!$this->currentUser->isActivated()){
+                $this->Flash->error("Your account needs to be activated first.");
+                $this->Auth->logout();
+            }
+
+            // Force user to password change if needs password change
+            if($this->currentUser->isChangePassword()){
+                if(Router::normalize($this->request->getUri()->getPath()) !== Router::url(['_name'=>'change_password'])){
+                    return $this->redirect(['_name' => 'change_password']);
+                } else {
+                    $this->Flash->set("You must change your password before continuing.", ['element'=>'warn']);
+                }
+            }
         }
 
         /**
@@ -126,6 +168,9 @@ namespace SUSC\Controller {
                 in_array($this->response->type(), ['application/json', 'application/xml'])
             ) {
                 $this->set('_serialize', true);
+            }
+            if($this->request->getParam('prefix') == 'admin' || strtolower($this->request->getParam('controller')) == 'admin'){
+                $this->viewBuilder()->setLayout('admin');
             }
         }
     }

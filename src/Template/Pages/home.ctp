@@ -33,7 +33,7 @@ $this->assign('title', 'Home');
 </div>
 <?php $this->end() ?>
 
-<?php if ($currentUser !== null && $currentUser->isAuthorised('socials.index')) : ?>
+<?php if ($currentUser !== null && $currentUser->isAuthorised('socials.*')) : ?>
 <div class="col-md-4">
     <?php else: ?>
     <div class="col-md-6">
@@ -67,7 +67,7 @@ $this->assign('title', 'Home');
             <h3 class="h4">There is currently no news.</h3>
         <?php endif ?>
     </div>
-    <?php if ($currentUser !== null && $currentUser->isAuthorised('socials.index')) : ?>
+    <?php if ($currentUser !== null && $currentUser->isAuthorised('socials.*')) : ?>
     <div class="col-md-4">
         <?php else: ?>
         <div class="col-md-6">
@@ -98,7 +98,7 @@ $this->assign('title', 'Home');
             else: ?>
                 <h3 class="h4">There are currently no fixtures.</h3>
             <?php endif ?>
-        </div><?php if ($currentUser !== null && $currentUser->isAuthorised('socials.index')) : ?>
+        </div><?php if ($currentUser !== null && $currentUser->isAuthorised('socials.*')) : ?>
             <div class="col-md-4">
                 <h2>Socials</h2>
                 <hr/>

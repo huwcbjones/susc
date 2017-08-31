@@ -82,9 +82,9 @@ class UsersTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->uuid('gid')
-            ->requirePresence('gid', 'create')
-            ->notEmpty('gid');
+            ->uuid('group_id')
+            ->requirePresence('group_id', 'create')
+            ->notEmpty('group_id');
 
         $validator
             ->requirePresence('email_address', 'create')
@@ -101,27 +101,21 @@ class UsersTable extends Table
 
         $validator
             ->dateTime('activation_date')
-            ->requirePresence('activation_date', 'create')
-            ->notEmpty('activation_date');
+            ->allowEmpty('activation_date', 'create');
 
         $validator
-            ->requirePresence('password', 'create')
             ->notEmpty('password');
 
         $validator
-            ->boolean('is_active')
-            ->requirePresence('is_active', 'create')
-            ->notEmpty('is_active');
+            ->allowEmpty('activation_code');
 
         $validator
             ->boolean('is_enable')
-            ->requirePresence('is_enable', 'create')
-            ->notEmpty('is_enable');
+            ->allowEmpty('is_enable', 'create');
 
         $validator
-            ->boolean('change_password')
-            ->requirePresence('change_password', 'create')
-            ->notEmpty('change_password');
+            ->boolean('is_change_password')
+            ->allowEmpty('is_change_password');
 
         return $validator;
     }
@@ -158,7 +152,7 @@ class UsersTable extends Table
 
     public function findActive(Query $query)
     {
-        return $query->where(['is_enable' => true, 'is_active' => true]);
+        return $query->where(['is_enable' => true, 'activation_code IS' => null]);
     }
 
     public function findId(Query $query, array $options = [])
@@ -166,15 +160,22 @@ class UsersTable extends Table
         return $query->where(['id' => $options['id']]);
     }
 
-    public function findUsername(Query $query, array $options = [])
-    {
-        return $query->where(['username' => $options['username']]);
-    }
 
     public function findEmail(Query $query, array $options = [])
     {
-        return $query->where(['email_address' => $options['email']]);
+        return $query->where(['email_address' => $options['email_address']]);
     }
+
+    public function findActivationCode(Query $query, array $options = [])
+    {
+        return $query->where(['activation_code' => $options['activation_code']]);
+    }
+
+    public function findPasswordReset(Query $query, array $options = [])
+    {
+        return $query->where(['reset_code' => $options['reset_code']]);
+    }
+
 
     public function validationChangePassword(Validator $validator)
     {
@@ -184,9 +185,7 @@ class UsersTable extends Table
                 'rule' => function ($value, $context) {
                     $user = $this->get($context['data']['id']);
                     if ($user) {
-                        if ((new DefaultPasswordHasher)->check($value, $user->password)) {
-                            return true;
-                        }
+                        return (new DefaultPasswordHasher)->check($value, $user->password);
                     }
                     return false;
                 },
@@ -221,9 +220,7 @@ class UsersTable extends Table
                 'rule' => function ($value, $context) {
                     $user = $this->get($context['data']['id']);
                     if ($user) {
-                        if ((new DefaultPasswordHasher)->check($value, $user->password)) {
-                            return true;
-                        }
+                        return (new DefaultPasswordHasher)->check($value, $user->password);
                     }
                     return false;
                 },

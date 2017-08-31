@@ -50,6 +50,11 @@
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
     }
+
+    #email-content {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
 }
 
 @media (min-width: 768px) {
@@ -73,6 +78,13 @@
     padding-top: 70px;
     background-color: #fff;
     height: calc(100% - 100vh);
+}
+
+#email-content {
+    padding-top: 20px;
+    background-color: #fff;
+    height: calc(100% - 100vh);
+    border-radius: 5px;
 }
 
 #logo {

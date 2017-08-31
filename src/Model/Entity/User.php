@@ -6,6 +6,7 @@ namespace SUSC\Model\Entity;
 use Cake\Auth\DefaultPasswordHasher;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Entity;
+use DateTime;
 
 /**
  * User Entity
@@ -15,11 +16,15 @@ use Cake\ORM\Entity;
  * @property string $email_address
  * @property string $first_name
  * @property string $last_name
+ * @property string $full_name
+ * @property string $activation_code
+ * @property string $reset_code
  * @property FrozenTime $activation_date
+* @property FrozenTime $reset_code_date
  * @property string|resource $password
  * @property bool $is_active
  * @property bool $is_enable
- * @property bool $change_password
+ * @property bool $is_change_password
  * @property FrozenTime $created
  * @property FrozenTime $modified
  *
@@ -55,7 +60,87 @@ class User extends Entity
         'password'
     ];
 
-    protected function _getFullname()
+    public function isChangePassword()
+    {
+        return $this->is_change_password !== "0";
+    }
+
+    /**
+     * Returns whether a user is active or not
+     *
+     * If a user is not activated, or is disabled, this method will return false
+     * @return bool
+     */
+    public function isActive()
+    {
+        return $this->isEnabled() && $this->isActivated();
+    }
+
+    public function isEnabled()
+    {
+        return $this->is_enable !== "0";
+    }
+
+    /**
+     * Returns whether a user has activated their account or not
+     * @return bool
+     */
+    public function isActivated()
+    {
+        return $this->activation_code === null;
+    }
+
+    /**
+     * Returns whether or not a user is authorised for an ACL
+     * @param $acl string to test
+     * @return bool
+     */
+    public function isAuthorised($acl)
+    {
+
+
+        $acl_array = explode('.', $acl);
+        /** @var array|Acl $acls */
+        $acls = $this->acls;
+        $count = 1;
+        foreach ($acl_array as $bit) {
+            // Wildcard checking
+            if ($bit == '*') {
+
+                // If no nodes in this ACL, return false
+                if (count($acls) == 0) return false;
+
+                // We are at the end of the acl
+                if ($count == count($acl_array)) {
+                    // Return true if there are elements in this acl
+                    return count($acls) != 0;
+                }
+            }
+
+            // Normal Checking
+            if (!array_key_exists($bit, $acls)) {
+                // If the current bit doesn't exist in this acl, return false
+                return false;
+            }
+
+            // Updated acl reference
+            $acls = &$acls[$bit];
+
+
+            if ($count == count($acl_array)) {
+                // Since we are at the end of the acl
+                // Return whether or not the acl exists ('_' index)
+                return array_key_exists('_', $acls);
+            }
+
+            $count++;
+        }
+    }
+
+    public function isResetPasswordValid(){
+        return (new DateTime()) < $this->reset_code_date->addHours(3);
+    }
+    protected function _getFull_name()
     {
         return $this->first_name . ' ' . $this->last_name;
     }
@@ -69,19 +154,29 @@ class User extends Entity
 
     protected function _getPassword($password)
     {
+        if($password == null) return null;
         if (is_string($password)) return $password;
         return stream_get_contents($password);
     }
 
-    protected function _getAcls($acls){
+    protected function _getAcls($acls)
+    {
         // Convert numeric indexed array to Acl ID indexed array
-        $acls = array_column($acls, null, 'id');
+        $new_acls = array();
+        /** @var Acl $acl */
+        foreach ($acls as $acl) {
+            $id = explode('.', $acl->id);
+            $head = &$new_acls;
+            foreach ($id as $bit) {
+                $head[$bit] = array();
+                $head = &$head[$bit];
+            }
+            $head['_'] = $acl;
+        }
+
+        $acls = $new_acls;
 
         // Merge User acls with group acls
         return array_merge($acls, $this->group->acls);
-    }
-
-    public function isAuthorised($acl){
-        return array_key_exists($acl, $this->acls);
     }
 }

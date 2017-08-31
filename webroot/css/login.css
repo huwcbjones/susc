@@ -9,7 +9,7 @@ body {
 }
 
 .form-login {
-    max-width: 380px;
+    max-width: 520px;
     padding: 15px;
     margin: 0 auto;
     background-color: #eee;
@@ -36,12 +36,16 @@ body {
 .form-login .form-control:focus {
     z-index: 2;
 }
-.form-login input[type="text"] {
+.form-login .top {
     margin-bottom: -1px;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
 }
-.form-login input[type="password"] {
+.form-login .middle {
+    margin-bottom: 0;
+    border-radius: 0;
+}
+.form-login .bottom {
     margin-bottom: 10px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;

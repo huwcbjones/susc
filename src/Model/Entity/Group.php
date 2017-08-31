@@ -34,7 +34,22 @@ class Group extends Entity
     protected function _getAcls($acls)
     {
         // Convert numeric indexed array to Acl ID indexed array
-        $acls = array_column($acls, null, 'id');
+        $new_acls = array();
+        /** @var Acl $acl */
+        foreach($acls as $acl) {
+            //if($this->name == 'Member') var_dump($acl);
+            $id = explode('.', $acl->id);
+            $head = &$new_acls;
+            foreach($id as $bit) {
+                if(!array_key_exists($bit, $head)){
+                    $head[$bit] = array();
+                }
+                $head = &$head[$bit];
+            }
+            $head['_'] = $acl;
+        }
+
+        $acls = $new_acls;
 
         if ($this->parent === null) return $acls;
 

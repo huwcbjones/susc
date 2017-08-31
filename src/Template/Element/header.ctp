@@ -23,9 +23,16 @@ $links['about_club'] = $currentUrl === Router::url(['controller' => 'About', 'ac
 $links['about_coaches'] = $currentUrl === Router::url(['controller' => 'About', 'action' => 'coaches']);
 $links['about_committee'] = $currentUrl === Router::url(['controller' => 'About', 'action' => 'committee']);
 $links['admin'] = $currentUrl === Router::url(['controller' => 'Admin', 'action' => 'index']);
+$links['admin_user'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index']);
+$links['admin_socials'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Socials', 'action' => 'index']);
+$links['admin_news'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'News', 'action' => 'index']);
+$links['admin_fixtures'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'index']);
+$links['admin_training'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Training', 'action' => 'index']);
+$links['admin_coaches'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Coaches', 'action' => 'index']);
+$links['admin_committee'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Committee', 'action' => 'index']);
 ?>
-<nav class="navbar navbar-inverse container fix-menu-margin" id="nav">
-    <div class="container" id="nav-container">
+<nav class="navbar navbar-inverse <?php if(!isset($fixedTop) || !$fixedTop): ?>container fix-menu-margin <?php endif ?><?php if(isset($fixedTop) && $fixedTop): ?>navbar-fixed-top <?php endif ?>" id="nav">
+    <div class="container<?php if(isset($fixedTop) && $fixedTop): ?>-fluid<?php endif; ?>" id="nav-container">
         <div class="navbar-header" id="nav-header">
             <?php if (!$this->fetch('navbar.top')): ?>
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
@@ -58,7 +65,7 @@ $links['admin'] = $currentUrl === Router::url(['controller' => 'Admin', 'action'
                         <li<?= $links['fixtures_calendar'] ? ' class="active"' : '' ?>><?= $this->Html->link('Fixture Calendar', ['_name' => 'fixture_calendar']) ?></li>
                     </ul>
                 </li>
-                <?php if ($currentUser !== null && $currentUser->isAuthorised('socials.index')): ?>
+                <?php if ($currentUser !== null && $currentUser->isAuthorised('socials.*')): ?>
                     <li<?= $links['socials'] ? ' class="active"' : '' ?>><?= $this->Html->link('Socials', ['_name' => 'socials']) ?></li>
                 <?php endif; ?>
                 <li class="dropdown<?= $links['training'] ? ' active' : '' ?>">
@@ -84,17 +91,34 @@ $links['admin'] = $currentUrl === Router::url(['controller' => 'Admin', 'action'
                         <li<?= $links['about_committee'] ? ' class="active"' : '' ?>><?= $this->Html->link('Our Committee', ['controller' => 'About', 'action' => 'committee']) ?></li>
                     </ul>
                 </li>
-                <?php if ($currentUser !== null && $currentUser->isAuthorised('admin.index')): ?>
+                <?php if ($currentUser !== null && $currentUser->isAuthorised('admin.*')): ?>
                     <li class="dropdown<?= $links['admin'] ? ' active' : '' ?>">
                         <a href="<?= Router::url(['_name' => 'admin']) ?>" class="dropdown-toggle"
                            data-toggle="dropdown"
-                           role="button" aria-haspopup="true"
                            aria-expanded="false">Admin <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li<?= $links['admin'] ? ' class="active"' : '' ?>><?= $this->Html->link('Admin Panel', ['_name' => 'admin']) ?></li>
-                            <li<?= $links['about_club'] ? ' class="active"' : '' ?>><?= $this->Html->link('Our Club', ['_name' => 'about']) ?></li>
-                            <li<?= $links['about_coaches'] ? ' class="active"' : '' ?>><?= $this->Html->link('Our Coaches', ['controller' => 'About', 'action' => 'coaches']) ?></li>
-                            <li<?= $links['about_committee'] ? ' class="active"' : '' ?>><?= $this->Html->link('Our Committee', ['controller' => 'About', 'action' => 'committee']) ?></li>
+                            <?php if ($currentUser->isAuthorised('admin.users.*')): ?>
+                                <li<?= $links['admin_user'] ? ' class="active"' : '' ?>><?= $this->Html->link('Users & Groups', ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index']) ?></li>
+                            <?php endif; ?>
+                            <?php if ($currentUser->isAuthorised('admin.news.*')): ?>
+                                <li<?= $links['admin_news'] ? ' class="active"' : '' ?>><?= $this->Html->link('News', ['prefix' => 'admin', 'controller' => 'News', 'action' => 'index']) ?></li>
+                            <?php endif; ?>
+                            <?php if ($currentUser->isAuthorised('admin.socials.*')): ?>
+                                <li<?= $links['admin_socials'] ? ' class="active"' : '' ?>><?= $this->Html->link('Socials', ['prefix' => 'admin', 'controller' => 'Socials', 'action' => 'index']) ?></li>
+                            <?php endif; ?>
+                            <?php if ($currentUser->isAuthorised('admin.fixtures.*')): ?>
+                                <li<?= $links['admin_fixtures'] ? ' class="active"' : '' ?>><?= $this->Html->link('Fixtures', ['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'index']) ?></li>
+                            <?php endif; ?>
+                            <?php if ($currentUser->isAuthorised('admin.coaches.*')): ?>
+                                <li<?= $links['admin_coaches'] ? ' class="active"' : '' ?>><?= $this->Html->link('Coaches', ['prefix' => 'admin', 'controller' => 'Coaches', 'action' => 'index']) ?></li>
+                            <?php endif; ?>
+                            <?php if ($currentUser->isAuthorised('admin.committee.*')): ?>
+                                <li<?= $links['admin_committee'] ? ' class="active"' : '' ?>><?= $this->Html->link('Committee', ['prefix' => 'admin', 'controller' => 'Committee', 'action' => 'index']) ?></li>
+                            <?php endif; ?>
+                            <?php if ($currentUser->isAuthorised('admin.training.*')): ?>
+                                <li<?= $links['admin_training'] ? ' class="active"' : '' ?>><?= $this->Html->link('Training', ['prefix' => 'admin', 'controller' => 'Training', 'action' => 'index']) ?></li>
+                            <?php endif; ?>
                         </ul>
                     </li>
                 <?php endif; ?>
