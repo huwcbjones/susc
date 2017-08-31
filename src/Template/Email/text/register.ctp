@@ -11,6 +11,3 @@ Before you can login to the website, you'll need to activate your account.
 To do so visit <?= Router::url(['_name' => 'activate']) ?> and paste the following code into the activation code box.
 
 Activation Code: <?= $activationCode ?>
-
-Many thanks,
-Southampton University Swimming Club
