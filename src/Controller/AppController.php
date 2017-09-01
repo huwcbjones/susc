@@ -133,7 +133,10 @@ namespace SUSC\Controller {
             Cache::disable();
 
 
-            if($this->currentUser === null) return;
+            if($this->currentUser === null) {
+                $this->Auth->setConfig('authError', false);
+                return;
+            }
 
             // Logout inactive users
             if(!$this->currentUser->isEnabled()){
