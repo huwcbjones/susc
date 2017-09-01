@@ -28,7 +28,7 @@ class UsersController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        $this->Auth->allow(['register', 'logout', 'activate', 'reset', 'resetPassword']);
+        $this->Auth->allow(['register', 'logout', 'activateAccount', 'forgotPassword', 'resetPassword']);
     }
 
 
@@ -68,6 +68,7 @@ class UsersController extends AppController
     public function profile()
     {
         $user = $this->currentUser;
+        $this->viewBuilder()->setTemplate('user_profile');
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $user = $this->Users->patchEntity($user, $this->request->getData());
@@ -84,7 +85,7 @@ class UsersController extends AppController
     /**
      * Handles password changing
      */
-    public function password()
+    public function changePassword()
     {
         /** @var User $user */
         $user = $this->currentUser;
@@ -126,7 +127,7 @@ class UsersController extends AppController
      * Handles user account activation
      * @return \Cake\Http\Response|null
      */
-    public function activate()
+    public function activateAccount()
     {
         $this->set('activationCode', $this->request->getQuery('activation_code'));
         if ($this->request->is(['patch', 'post', 'put'])) {
@@ -169,7 +170,7 @@ class UsersController extends AppController
     /**
      * Handles user email address change
      */
-    public function email()
+    public function changeEmail()
     {
         /** @var User $user */
         $user = $this->currentUser;
@@ -275,9 +276,9 @@ class UsersController extends AppController
     }
 
     /**
-     * Handles password resetting
+     * Handles password loss
      */
-    public function reset()
+    public function forgotPassword()
     {
         if (!$this->request->is(['patch', 'post', 'put'])) {
             return;

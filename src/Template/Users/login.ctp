@@ -35,5 +35,6 @@ $this->assign('title', 'Log In');
             <p><?= $this->Html->link('Register', ['_name'=>'register'], ['class' => ['btn', 'btn-md', 'btn-default', 'btn-block']]) ?></p>
         </div>
     </div>
+    <?= $this->element('form_footer') ?>
 </div>
 <?= $this->Form->end() ?>

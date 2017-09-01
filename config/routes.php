@@ -57,10 +57,10 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->connect('/login', ['controller' => 'Users', 'action' => 'login'], ['_name' => 'login']);
     $routes->connect('/logout', ['controller' => 'Users', 'action' => 'logout'], ['_name' => 'logout']);
     $routes->connect('/register', ['controller' => 'Users', 'action' => 'register'], ['_name' => 'register']);
-    $routes->connect('/activate', ['controller' => 'Users', 'action' => 'activate'], ['_name' => 'activate']);
-    $routes->connect('/reset', ['controller' => 'Users', 'action' => 'reset'], ['_name' => 'reset']);
+    $routes->connect('/activate', ['controller' => 'Users', 'action' => 'activateAccount'], ['_name' => 'activate']);
+    $routes->connect('/reset', ['controller' => 'Users', 'action' => 'forgotPassword'], ['_name' => 'reset']);
     $routes->connect('/reset/:reset_code',
-        ['controller' => 'Users', 'action' => 'reset_password'],
+        ['controller' => 'Users', 'action' => 'resetPassword'],
         [
             'pass' => ['reset_code'],
             'reset_code' => '[\da-f]{80}',
@@ -68,8 +68,8 @@ Router::scope('/', function (RouteBuilder $routes) {
         ]
     );
     $routes->connect('/user/profile', ['controller' => 'Users', 'action' => 'profile'], ['_name' => 'profile']);
-    $routes->connect('/user/profile/password', ['controller' => 'Users', 'action' => 'password'], ['_name' => 'change_password']);
-    $routes->connect('/user/profile/email', ['controller' => 'Users', 'action' => 'email'], ['_name' => 'change_email']);
+    $routes->connect('/user/profile/password', ['controller' => 'Users', 'action' => 'changePassword'], ['_name' => 'change_password']);
+    $routes->connect('/user/profile/email', ['controller' => 'Users', 'action' => 'changeEmail'], ['_name' => 'change_email']);
 
     // Connect News
     $routes->connect('/news', ['controller' => 'News'], ['_name' => 'news']);
