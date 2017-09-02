@@ -1,6 +1,8 @@
 <?php
 
-use Cake\Routing\Router;
+use Cake\View\View;
+
+/** @var View $this */
 
 ?>
 Hi <?= $user->first_name ?>,
@@ -18,7 +20,7 @@ Date Registered: <?= $user->created ?>
 
 Use the following link to reset your password:
 
-<?= Router::url(['_name' => 'reset_password', 'reset_code' => $reset_code], true) ?>
+<?= $this->Url->build(['_name' => 'reset_password', 'reset_code' => $reset_code], ['fullBase' => true]) ?>
 
 
-If you don't use the link within 3 hours, it will expire. To get a new password reset link, visit <?= Router::url(['_name' => 'reset'], true) ?>
+If you don't use the link within 3 hours, it will expire. To get a new password reset link, visit <?= $this->Url->build(['_name' => 'reset'], ['fullBase' => true]) ?>

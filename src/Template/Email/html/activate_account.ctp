@@ -5,7 +5,7 @@
 </p>
 
 <p>Use the following link to activate your account: <br/>
-    <?= $this->Html->link($this->Url->build(['_name' => 'activate', 'activation_code' => $activation_code], true), ['_name' => 'activate', 'activation_code' => $activation_code], ['fullBase' => true]) ?>
+    <?= $this->Html->link($this->Url->build(['_name' => 'activate', 'activation_code' => $activation_code], ['fullBase' => true]), ['_name' => 'activate', 'activation_code' => $activation_code, '_full' => true]) ?>
 </p>
 
 <p>Your activation code is:<br/><kbd><?= $activation_code ?></kbd></p>

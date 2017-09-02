@@ -4,7 +4,7 @@ Your account for the Southampton University Swimming Club website has been creat
 But, before you can log in you need to activate your account.
 
 Use the following link to activate your account:
-<?= $this->Url->build(['_name' => 'activate', 'activation_code' => $activation_code], true) ?>
+<?= $this->Url->build(['_name' => 'activate', 'activation_code' => $activation_code], ['fullBase' => true]) ?>
 
 
 Your activation code is:
