@@ -13,7 +13,7 @@ use SUSC\Controller\AppController;
 
 class AppExceptionRenderer extends ExceptionRenderer
 {
-    protected function _getController($exception)
+    protected function _getController()
     {
         return new ErrorController();
     }
