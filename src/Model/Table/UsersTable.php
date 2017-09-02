@@ -4,6 +4,7 @@ namespace SUSC\Model\Table;
 
 use Cake\Auth\DefaultPasswordHasher;
 use Cake\Datasource\EntityInterface;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Association\HasMany;
@@ -145,11 +146,6 @@ class UsersTable extends Table
         return $rules;
     }
 
-    public function find($type = 'all', $options = [])
-    {
-        return parent::find($type, $options)->contain(['Groups', 'Acls']);
-    }
-
     public function findActive(Query $query)
     {
         return $query->where(['is_enable' => true, 'activation_code IS' => null]);
@@ -159,7 +155,6 @@ class UsersTable extends Table
     {
         return $query->where(['id' => $options['id']]);
     }
-
 
     public function findEmail(Query $query, array $options = [])
     {
@@ -174,6 +169,11 @@ class UsersTable extends Table
     public function findPasswordReset(Query $query, array $options = [])
     {
         return $query->where(['reset_code' => $options['reset_code']]);
+    }
+
+    public function findChangeEmail(Query $query, array $options = [])
+    {
+        return $query->where(['new_email_code' => $options['code']]);
     }
 
 
@@ -229,7 +229,18 @@ class UsersTable extends Table
             ->notEmpty('password');
 
         $validator
-            ->add('new_email_address', 'same-email', [
+            ->add('new_email', 'existing-email', [
+                'rule' => function ($value, $context) {
+                    try {
+                        $this->find('email', ['email_address' => $value])->firstOrFail();
+                        return false;
+                    } catch (RecordNotFoundException $ex) {
+                        return true;
+                    }
+                },
+                'message' => 'Email address is already associated with an account.'
+            ])
+            ->add('new_email', 'same-email', [
                 'rule' => function ($value, $context) {
                     $user = $this->get($context['data']['id']);
                     if ($user) {
@@ -239,16 +250,21 @@ class UsersTable extends Table
                 },
                 'message' => 'New email address is the same as the current email address.',
             ])
-            ->add('new_email_address', 'valid-email', ['rule' => 'email'])
+            ->add('new_email', 'valid-email', ['rule' => 'email'])
             ->notEmpty('email');
         $validator
-            ->add('conf_email_address', [
+            ->add('conf_email', [
                 'match' => [
-                    'rule' => ['compareWith', 'new_email_address'],
+                    'rule' => ['compareWith', 'new_email'],
                     'message' => 'Email addresses do not match!',
                 ]
             ]);
 
         return $validator;
+    }
+
+    public function find($type = 'all', $options = [])
+    {
+        return parent::find($type, $options)->contain(['Groups', 'Acls']);
     }
 }

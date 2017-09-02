@@ -70,6 +70,14 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->connect('/user/profile', ['controller' => 'Users', 'action' => 'profile'], ['_name' => 'profile']);
     $routes->connect('/user/profile/password', ['controller' => 'Users', 'action' => 'changePassword'], ['_name' => 'change_password']);
     $routes->connect('/user/profile/email', ['controller' => 'Users', 'action' => 'changeEmail'], ['_name' => 'change_email']);
+    $routes->connect('/verify/:email_code',
+        ['controller' => 'Users', 'action' => 'verifyEmailChange'],
+        [
+            'pass' => ['email_code'],
+            'reset_code' => '[\da-f]{80}',
+            '_name' => 'verify_email'
+        ]
+    );
 
     // Connect News
     $routes->connect('/news', ['controller' => 'News'], ['_name' => 'news']);

@@ -19,8 +19,11 @@ use DateTime;
  * @property string $full_name
  * @property string $activation_code
  * @property string $reset_code
+ * @property string $new_email
+ * @property string $new_email_code
  * @property FrozenTime $activation_date
  * @property FrozenTime $reset_code_date
+ * @property FrozenTime $new_email_code_date
  * @property string|resource $password
  * @property bool $is_active
  * @property bool $is_enable
@@ -139,6 +142,11 @@ class User extends Entity
     public function isResetPasswordValid()
     {
         return (new DateTime()) < $this->reset_code_date->addHours(3);
+    }
+
+    public function isChangeEmailValid()
+    {
+        return (new DateTime()) < $this->new_email_code_date->addHours(3);
     }
 
     protected function _getFull_name()
