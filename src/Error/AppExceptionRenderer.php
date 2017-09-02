@@ -29,6 +29,8 @@ class ErrorController extends AppController {
      */
     public function beforeRender(Event $event)
     {
+        // TODO: Remove in 4.0.0
+        $this->request->webroot = '/';
         $this->viewBuilder()->setTemplatePath('Error');
     }
 }
