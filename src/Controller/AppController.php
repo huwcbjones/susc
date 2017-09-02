@@ -85,7 +85,7 @@ namespace SUSC\Controller {
                         'finder' => 'active'
                     ]
                 ],
-                'authError' => 'You are not allowed to access that location.',
+                'authError' => 'You are not allowed to access that.',
                 'authorize' => ['Controller'],
 
                 'storage' => 'Session'
@@ -101,15 +101,23 @@ namespace SUSC\Controller {
             if ($this->Auth->user('id') !== null) {
                 $this->currentUser = $this->Users->get($this->Auth->user('id'));
             }
+
             $this->set('currentUser', $this->currentUser);
         }
 
         public function isAuthorized($user = null)
         {
-            if ($this->currentUser == null) return false;
             $acl = $this->getACL();
             $this->log('acl: ' . $acl, LogLevel::DEBUG);
-            return $this->currentUser->isAuthorised($acl);
+
+            if ($this->currentUser != null) {
+                return $this->currentUser->isAuthorised($acl);
+            }
+
+            if($user == null) return false;
+
+            $user = $this->Users->get($user['id']);
+            return $user->isAuthorised($acl);
         }
 
         /**
