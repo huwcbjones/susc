@@ -126,11 +126,11 @@ $links['admin_committee'] = $currentUrl === Router::url(['prefix' => 'admin', 'c
 
                 <?php if ($currentUser !== null): ?>
                     Hi <?= h($currentUser->first_name) ?>!
-                    <li><?= $this->Html->link('My Profile', ['_name' => 'profile'], ['class' => ['navbar-link']]) ?></li>
-                    <li><?= $this->Html->link('Logout', ['_name' => 'logout'], ['class' => ['navbar-link']]) ?></li>
+                    <li class="visible-xs"><?= $this->Html->link('My Profile', ['_name' => 'profile'], ['class' => ['navbar-link']]) ?></li>
+                    <li class="visible-xs"><?= $this->Html->link('Logout', ['_name' => 'logout'], ['class' => ['navbar-link']]) ?></li>
                 <?php else: ?>
-                    <li><?= $this->Html->link('Register', ['_name' => 'register'], ['class' => ['navbar-link']]) ?></li>
-                    <li><?= $this->Html->link('Log in', ['_name' => 'login'], ['class' => ['navbar-link']]) ?></li>
+                    <li class="visible-xs"><?= $this->Html->link('Register', ['_name' => 'register'], ['class' => ['navbar-link']]) ?></li>
+                    <li class="visible-xs"><?= $this->Html->link('Log in', ['_name' => 'login'], ['class' => ['navbar-link']]) ?></li>
                 <?php endif; ?>
             </ul>
             <p class="navbar-text navbar-right text-center navbar-user hidden-xs">
