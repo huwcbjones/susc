@@ -125,7 +125,6 @@ $links['admin_committee'] = $currentUrl === Router::url(['prefix' => 'admin', 'c
                 <?php endif; ?>
 
                 <?php if ($currentUser !== null): ?>
-                    Hi <?= h($currentUser->first_name) ?>!
                     <li class="visible-xs"><?= $this->Html->link('My Profile', ['_name' => 'profile'], ['class' => ['navbar-link']]) ?></li>
                     <li class="visible-xs"><?= $this->Html->link('Logout', ['_name' => 'logout'], ['class' => ['navbar-link']]) ?></li>
                 <?php else: ?>
