@@ -19,6 +19,13 @@ namespace SUSC\Controller {
     use Cake\Controller\Component\AuthComponent;
     use Cake\Controller\Controller as BaseController;
     use Cake\Event\Event;
+    use Cake\Network\Request;
+    use Cake\ORM\TableRegistry;
+    use Cake\Routing\Router;
+    use Psr\Log\LogLevel;
+    use SUSC\Model\Entity\User;
+    use SUSC\Model\Table\ConfigTable;
+    use SUSC\Model\Table\UsersTable;
 
     /**
      * Application Controller
@@ -26,7 +33,10 @@ namespace SUSC\Controller {
      * Add your application-wide methods in the class below, your controllers
      * will inherit them.
      *
-     * @property $request \Cake\Network\Request;
+     * @property Request $request
+     * @property UsersTable $Users
+     * @property ConfigTable $Config
+     * @property User $currentUser
      * @link http://book.cakephp.org/3.0/en/controllers.html#the-app-controller
      */
     class AppController extends BaseController
@@ -54,48 +64,73 @@ namespace SUSC\Controller {
             $this->loadComponent('Csrf');
             $this->request->addDetector(
                 'crawler',
-                function($request){
-
-                        return (
-                            $request->hasHeader('User-Agent')
-                            && preg_match('/bot|crawl|slurp|spider/i', $request->getHeaderLine('User-Agent'))
-                        );
+                function ($request) {
+                    /** @var Request $request */
+                    return (
+                        $request->hasHeader('User-Agent')
+                        && preg_match('/bot|crawl|slurp|spider/i', $request->getHeaderLine('User-Agent'))
+                    );
                 }
             );
 
             $this->loadComponent('Auth', [
-                'loginRedirect' => [
-                    '_name' => 'home'
-                ],
-                'logoutRedirect' => [
-                    '_name' => 'home'
-                ],
+                'loginAction' => ['_name' => 'login'],
+                'loginRedirect' => ['_name' => 'profile'],
+                'logoutRedirect' => ['_name' => 'home'],
+                'unauthorizedRedirect' => false,
                 'authenticate' => [
                     AuthComponent::ALL => ['userModel' => 'Users'],
                     'Form' => [
-                        'fields' => ['username' => 'username', 'password' => 'password']
+                        'fields' => ['username' => 'email_address', 'password' => 'password'],
+                        'finder' => 'active'
                     ]
                 ],
+                'authError' => 'You are not allowed to access that.',
+                'authorize' => ['Controller'],
 
                 'storage' => 'Session'
             ]);
-            //TableRegistry::config('Articles', ['table' => 'News']);
+
+            // Get Table instances
+            $this->Users = TableRegistry::get('Users');
+            $this->Config = TableRegistry::get('Config');
+            
+            
+            // Setup Authentication
+            $this->currentUser = null;
+            if ($this->Auth->user('id') !== null) {
+                $this->currentUser = $this->Users->get($this->Auth->user('id'));
+            }
+
+            $this->set('currentUser', $this->currentUser);
         }
 
         public function isAuthorized($user = null)
         {
-            // Any registered user can access public functions
-            if (empty($this->request->getAttribute('params')['prefix'])) {
-                return true;
+            $acl = $this->getACL();
+            $this->log('acl: ' . $acl, LogLevel::DEBUG);
+
+            if ($this->currentUser != null) {
+                return $this->currentUser->isAuthorised($acl);
             }
 
-            // Only admins can access admin functions
-            if ($this->request->getAttribute('params')['prefix'] === 'admin') {
-                return (bool)($user['role'] === 'admin');
-            }
+            if($user == null) return false;
 
-            // Default deny
-            return false;
+            $user = $this->Users->get($user['id']);
+            return $user->isAuthorised($acl);
+        }
+
+        /**
+         * Converts the current request into an ACL string
+         * @return string acl string
+         */
+        public function getACL()
+        {
+            // Create Acl id ($prefix).$controller.$action
+            $acl = strtolower($this->request->getParam('controller'));
+            if ($this->request->getParam('prefix') != '') $acl = strtolower($this->request->getParam('prefix')) . '.' . $acl;
+            if ($this->request->getParam('action') != '') $acl .= '.' . strtolower($this->request->getParam('action'));
+            return $acl;
         }
 
         public function beforeFilter(Event $event)
@@ -104,6 +139,32 @@ namespace SUSC\Controller {
             // TODO: Enable cache in production
             $this->response->withDisabledCache();
             Cache::disable();
+
+
+            if($this->currentUser === null) {
+                $this->Auth->setConfig('authError', false);
+                return;
+            }
+
+            // Logout inactive users
+            if(!$this->currentUser->isEnabled()){
+                $this->Flash->error("Your account has been disabled.");
+                $this->Auth->logout();
+            }
+
+            if(!$this->currentUser->isActivated()){
+                $this->Flash->error("Your account needs to be activated first.");
+                $this->Auth->logout();
+            }
+
+            // Force user to password change if needs password change
+            if($this->currentUser->isChangePassword()){
+                if(Router::normalize($this->request->getUri()->getPath()) !== Router::url(['_name'=>'change_password'])){
+                    return $this->redirect(['_name' => 'change_password']);
+                } else {
+                    $this->Flash->set("You must change your password before continuing.", ['element'=>'warn']);
+                }
+            }
         }
 
         /**
@@ -119,11 +180,16 @@ namespace SUSC\Controller {
             ) {
                 $this->set('_serialize', true);
             }
+            if($this->request->getParam('prefix') == 'admin' || strtolower($this->request->getParam('controller')) == 'admin'){
+                $this->viewBuilder()->setLayout('admin');
+            }
         }
     }
 }
+
 namespace App\Controller {
 
-    class AppController extends \SUSC\Controller\AppController {
+    class AppController extends \SUSC\Controller\AppController
+    {
     }
 }

@@ -45,7 +45,7 @@ class AboutController extends AppController
         $parser = new GithubMarkdownExtended();
 
         /** @var StaticContent $content */
-        $content = $this->Static->find('contact')->first();
+        $content = $this->Static->find('contact')->firstOrFail();
         $this->set('content', $parser->parse($content->value));
     }
 
@@ -54,7 +54,7 @@ class AboutController extends AppController
         $parser = new GithubMarkdownExtended();
 
         /** @var StaticContent $content */
-        $content = $this->Static->find('club')->first();
+        $content = $this->Static->find('club')->firstOrFail();
         $this->set('content', $parser->parse($content->value));
     }
 

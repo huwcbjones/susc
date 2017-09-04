@@ -6,10 +6,10 @@
 
 namespace SUSC\Model\Table;
 
-use App\Model\Entity\Article;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use SUSC\Model\Entity\Article;
 
 /**
  * Class ArticlesTable
@@ -34,7 +34,6 @@ class ArticlesTable extends Table
         $this->setTable('articles');
         $this->setDisplayField('title');
         $this->setPrimaryKey('id');
-        $this->setEntityClass('App\Model\Entity\Article');
 
         $this->addBehavior('Timestamp');
     }

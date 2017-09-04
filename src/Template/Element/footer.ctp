@@ -1,4 +1,5 @@
 <footer>
+    <?php if(!isset($sponsors) || $sponsors): ?>
     <div class="row">
         <div class="col-md-4 col-xs-12 text-center">
             <div class="row">
@@ -56,6 +57,7 @@
             </div>
         </div>
     </div>
+    <?php endif ?>
     <div class="row">
         <div class="col-xs-12">
             <hr/>

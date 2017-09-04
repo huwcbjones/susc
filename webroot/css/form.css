@@ -1,15 +1,16 @@
 body {
     padding-top: 40px;
     padding-bottom: 40px;
-
 }
-.form-login-container {
+
+.form-layout-container {
     margin-left: 15px;
     margin-right: 15px;
 }
 
-.form-login {
-    max-width: 380px;
+
+.form-layout {
+    max-width: 520px;
     padding: 15px;
     margin: 0 auto;
     background-color: #eee;
@@ -17,14 +18,14 @@ body {
     -moz-border-radius: 5px;
     border-radius: 5px;
 }
-.form-login .form-login-heading,
-.form-login .checkbox {
+.form-layout .form-layout-heading,
+.form-layout .checkbox {
     margin-bottom: 10px;
 }
-.form-login .checkbox {
+.form-layout .checkbox {
     font-weight: normal;
 }
-.form-login .form-control {
+.form-layout .form-control {
     position: relative;
     height: auto;
     -webkit-box-sizing: border-box;
@@ -33,19 +34,42 @@ body {
     padding: 10px;
     font-size: 16px;
 }
-.form-login .form-control:focus {
+.form-layout .form-control:focus {
     z-index: 2;
 }
-.form-login input[type="text"] {
+.form-layout .top {
     margin-bottom: -1px;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
 }
-.form-login input[type="password"] {
+.form-layout .middle {
+    margin-bottom: 0;
+    border-radius: 0;
+}
+.form-layout .bottom {
     margin-bottom: 10px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
-.form-login .btn {
+.form-layout .btn {
     margin-bottom: 20px;
+}
+
+@media (max-width: 767px) {
+    body {
+        padding: 0;
+    }
+    .form-layout {
+        border-radius: 0;
+        min-height: 100vh;
+        max-width: none;
+        width: 100vw;
+    }
+    .form-layout-container {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    footer {
+        font-size: 13px;
+    }
 }

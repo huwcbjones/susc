@@ -7,10 +7,10 @@
 namespace SUSC\Controller;
 
 
-use App\Model\Entity\Article;
 use Cake\Network\Exception\NotFoundException;
 use Cake\Network\Session;
 use Cake\ORM\TableRegistry;
+use SUSC\Model\Entity\Article;
 use SUSC\Model\Table\ArticlesTable;
 
 /**
@@ -31,7 +31,6 @@ class SocialsController extends AppController
     public function initialize()
     {
         parent::initialize();
-        //$this->Auth->allow();
         $this->Session = $this->request->session();
         $this->Socials = TableRegistry::get('Articles');
         $this->set('archives',

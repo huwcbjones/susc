@@ -1,10 +1,9 @@
 <?php
-namespace App\Model\Entity;
+namespace SUSC\Model\Entity;
 
 use Cake\I18n\Time;
 use Cake\ORM\Entity;
 use huwcbjones\markdown\GithubMarkdownExtended;
-use SUSC\Model\Entity\User;
 
 /**
  * News Entity.

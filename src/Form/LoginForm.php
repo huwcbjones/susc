@@ -19,7 +19,7 @@ class LoginForm extends Form
     protected function _buildSchema(Schema $schema)
     {
         return $schema
-            ->addField('email', 'string')
+            ->addField('email_address', 'string')
             ->addField('password', 'string')
             ->addField('remember', 'boolean');
     }

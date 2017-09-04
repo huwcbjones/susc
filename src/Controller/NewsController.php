@@ -6,12 +6,11 @@
 
 namespace SUSC\Controller;
 
-use App\Model\Entity\Article;
 use Cake\Controller\Component\AuthComponent;
-
 use Cake\Network\Exception\NotFoundException;
 use Cake\Network\Session;
 use Cake\ORM\TableRegistry;
+use SUSC\Model\Entity\Article;
 use SUSC\Model\Table\ArticlesTable;
 
 /**
