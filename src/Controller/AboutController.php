@@ -58,11 +58,13 @@ class AboutController extends AppController
         $this->set('content', $parser->parse($content->value));
     }
 
-    public function committee(){
+    public function committee()
+    {
         $this->set('committee', $this->Committee->find('published')->order(['display_order' => 'ASC']));
     }
 
-    public function coaches(){
+    public function coaches()
+    {
         $this->set('coaches', $this->Coaches->find('published')->order(['display_order' => 'ASC']));
     }
 }
