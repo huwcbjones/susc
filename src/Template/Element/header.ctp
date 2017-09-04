@@ -31,8 +31,9 @@ $links['admin_training'] = $currentUrl === Router::url(['prefix' => 'admin', 'co
 $links['admin_coaches'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Coaches', 'action' => 'index']);
 $links['admin_committee'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Committee', 'action' => 'index']);
 ?>
-<nav class="navbar navbar-inverse <?php if(!isset($fixedTop) || !$fixedTop): ?>container fix-menu-margin <?php endif ?><?php if(isset($fixedTop) && $fixedTop): ?>navbar-fixed-top <?php endif ?>" id="nav">
-    <div class="container<?php if(isset($fixedTop) && $fixedTop): ?>-fluid<?php endif; ?>" id="nav-container">
+<nav class="navbar navbar-inverse <?php if (!isset($fixedTop) || !$fixedTop): ?>container fix-menu-margin <?php endif ?><?php if (isset($fixedTop) && $fixedTop): ?>navbar-fixed-top <?php endif ?>"
+     id="nav">
+    <div class="container<?php if (isset($fixedTop) && $fixedTop): ?>-fluid<?php endif; ?>" id="nav-container">
         <div class="navbar-header" id="nav-header">
             <?php if (!$this->fetch('navbar.top')): ?>
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
@@ -122,8 +123,17 @@ $links['admin_committee'] = $currentUrl === Router::url(['prefix' => 'admin', 'c
                         </ul>
                     </li>
                 <?php endif; ?>
+
+                <?php if ($currentUser !== null): ?>
+                    Hi <?= h($currentUser->first_name) ?>!
+                    <li><?= $this->Html->link('My Profile', ['_name' => 'profile'], ['class' => ['navbar-link']]) ?></li>
+                    <li><?= $this->Html->link('Logout', ['_name' => 'logout'], ['class' => ['navbar-link']]) ?></li>
+                <?php else: ?>
+                    <li><?= $this->Html->link('Register', ['_name' => 'register'], ['class' => ['navbar-link']]) ?></li>
+                    <li><?= $this->Html->link('Log in', ['_name' => 'login'], ['class' => ['navbar-link']]) ?></li>
+                <?php endif; ?>
             </ul>
-            <p class="navbar-text navbar-right text-center navbar-user">
+            <p class="navbar-text navbar-right text-center navbar-user hidden-xs">
                 <?php if ($currentUser !== null): ?>
                     Hi <?= h($currentUser->first_name) ?>!
                     <br/><?= $this->Html->link('My Profile', ['_name' => 'profile'], ['class' => ['navbar-link']]) ?>
