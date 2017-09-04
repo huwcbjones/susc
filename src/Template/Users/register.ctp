@@ -9,7 +9,7 @@ $register = new RegisterForm();
 
 $this->start('css');
 echo $this->fetch('css');
-echo $this->Html->css('login');
+echo $this->Html->css('form');
 $this->end();
 
 $this->start('script');
@@ -22,9 +22,9 @@ $this->assign('title', 'Register');
 /** @var \Cake\View\View $this */
 ?>
 
-<?= $this->Form->create($register, ['class' => ['form-login'], 'id' => 'registration-form']) ?>
-<div class="form-login-container">
-    <h2 class="form-login-heading">Register</h2>
+<?= $this->Form->create($register, ['class' => ['form-layout'], 'id' => 'registration-form']) ?>
+<div class="form-layout-container">
+    <h2 class="form-layout-heading">Register</h2>
     <?= $this->Form->control('first_name', ['class' => ['form-control'], 'placeholder' => 'First Name', 'autofocus', 'required', 'id' => 'first_name']) ?>
 
     <?= $this->Form->control('last_name', ['class' => ['form-control'], 'placeholder' => 'Surname', 'required', 'id' => 'last_name']) ?>

@@ -7,15 +7,15 @@ $login = new LoginForm();
 
 $this->start('css');
 echo $this->fetch('css');
-echo $this->Html->css('login');
+echo $this->Html->css('form');
 $this->end();
 
 $this->assign('title', 'Log In');
 ?>
 
-<?= $this->Form->create($login, ['class' => ['form-login']]) ?>
-<div class="form-login-container">
-    <h2 class="form-login-heading">Log In</h2>
+<?= $this->Form->create($login, ['class' => ['form-layout']]) ?>
+<div class="form-layout-container">
+    <h2 class="form-layout-heading">Log In</h2>
     <label for="email_address" class="sr-only">Email Address</label>
     <?= $this->Form->email('email_address', ['class' => ['form-control', 'top'], 'placeholder' => 'Email Address', 'autofocus', 'required', 'id' => 'email_address']) ?>
 

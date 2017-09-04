@@ -7,15 +7,15 @@ $activationForm = new ActivateForm();
 
 $this->start('css');
 echo $this->fetch('css');
-echo $this->Html->css('login');
+echo $this->Html->css('form');
 $this->end();
 
 $this->assign('title', 'Activate Account');
 ?>
 
-<?= $this->Form->create($activationForm, ['class' => ['form-login']]) ?>
-<div class="form-login-container">
-    <h2 class="form-login-heading">Activate Account</h2>
+<?= $this->Form->create($activationForm, ['class' => ['form-layout']]) ?>
+<div class="form-layout-container">
+    <h2 class="form-layout-heading">Activate Account</h2>
     <label for="activation_code" class="sr-only">Activation Code</label>
     <?= $this->Form->text('activation_code', ['class' => ['form-control'], 'placeholder' => 'Activation Code', 'autofocus', 'required', 'id' => 'activation_code', 'value' => $activationCode]) ?><br />
 
