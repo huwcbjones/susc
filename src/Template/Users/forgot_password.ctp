@@ -9,7 +9,7 @@ $resetForm = new ResetForm();
 
 $this->start('css');
 echo $this->fetch('css');
-echo $this->Html->css('login');
+echo $this->Html->css('form');
 $this->end();
 
 $this->start('script');
@@ -20,9 +20,9 @@ $this->end();
 $this->assign('title', 'Reset Password');
 ?>
 
-<?= $this->Form->create($resetForm, ['class' => ['form-login'], 'id' => 'reset-form']) ?>
-<div class="form-login-container">
-    <h2 class="form-login-heading">Forgotten Password</h2>
+<?= $this->Form->create($resetForm, ['class' => ['form-layout'], 'id' => 'reset-form']) ?>
+<div class="form-layout-container">
+    <h2 class="form-layout-heading">Forgotten Password</h2>
     <label for="activation_code" class="sr-only">Email Address</label>
     <?= $this->Form->email('email_address', ['class' => ['form-control'], 'placeholder' => 'Email Address', 'autofocus', 'required', 'id' => 'activation_code']) ?><br />
 

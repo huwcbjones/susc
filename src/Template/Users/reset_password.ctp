@@ -7,7 +7,7 @@ $this->layout('empty');
 
 $this->start('css');
 echo $this->fetch('css');
-echo $this->Html->css('login');
+echo $this->Html->css('form');
 $this->end();
 
 $this->start('script');
@@ -18,9 +18,9 @@ $this->end();
 $this->assign('title', 'Reset Password');
 ?>
 
-<?= $this->Form->create($resetForm, ['class' => ['form-login'], 'id' => 'reset-form']) ?>
-<div class="form-login-container">
-    <h2 class="form-login-heading">Reset Password</h2>
+<?= $this->Form->create($resetForm, ['class' => ['form-layout'], 'id' => 'reset-form']) ?>
+<div class="form-layout-container">
+    <h2 class="form-layout-heading">Reset Password</h2>
     <?= $this->Form->input('new_password', ['type' => 'password', 'value' => '', 'class' => ['form-control'], 'placeholder' => 'New Password', 'autofocus', 'required', 'id' => 'new_password']) ?>
 
     <?= $this->Form->input('conf_password', ['type' => 'password', 'value' => '', 'class' => ['form-control'], 'placeholder' => 'Confirm Password', 'id' => 'conf_password']) ?>
