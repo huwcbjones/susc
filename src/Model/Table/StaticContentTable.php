@@ -32,7 +32,7 @@ class StaticContentTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('scontent');
+        $this->setTable('static_content');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
     }

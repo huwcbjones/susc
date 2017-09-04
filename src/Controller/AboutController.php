@@ -45,8 +45,8 @@ class AboutController extends AppController
         $parser = new GithubMarkdownExtended();
 
         /** @var StaticContent $content */
-        $content = $parser->parse($this->Static->find('contact')->first());
-        $this->set('content', $content->value);
+        $content = $this->Static->find('contact')->firstOrFail();
+        $this->set('content', $parser->parse($content->value));
     }
 
     public function club()
@@ -54,8 +54,8 @@ class AboutController extends AppController
         $parser = new GithubMarkdownExtended();
 
         /** @var StaticContent $content */
-        $content = $parser->parse($this->Static->find('club')->first());
-        $this->set('content', $content->value);
+        $content = $this->Static->find('club')->firstOrFail();
+        $this->set('content', $parser->parse($content->value));
     }
 
     public function committee(){
