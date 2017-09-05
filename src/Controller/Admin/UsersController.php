@@ -108,7 +108,7 @@ class UsersController extends AppController
 
             $user = $this->Users->patchEntity($user, $this->request->getData());
             $user->is_active = true;
-            $user->activation_date = $timestamp;
+            $user->activation_date = $now;
             $user->email_address = $this->request->getData('email_address');
             $user->reset_code = $reset_code;
             $user->reset_code_date = $timestamp;
