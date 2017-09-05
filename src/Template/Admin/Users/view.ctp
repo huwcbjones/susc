@@ -88,7 +88,7 @@ $this->assign('title', 'View User: ' . $user->full_name);
     <div class="form-group">
         <label for="modified" class="col-sm-2 control-label">Account Last Modified</label>
         <div class="col-sm-10">
-            <input type="text" name="created" class="form-control" readonly="readonly"
+            <input type="text" name="modified" class="form-control" readonly="readonly"
                    value="<?= $this->Time->i18nFormat($user->modified, null, null, 'Europe/London') ?>"/>
         </div>
     </div>
@@ -123,9 +123,9 @@ $this->assign('title', 'View User: ' . $user->full_name);
             </p>
         </div>
     </div>
-</form>
-<div class="related">
-    <h2><?= __('Access Control Objects') ?></h2>
-    <?= $this->element('Admin/ACL', ['acls' => $user->acls, 'all_acls' => $all_acls]) ?>
-</div>
+    <div class="related">
+        <h2><?= __('Access Control Objects') ?></h2>
+        <?= $this->element('Admin/ACL', ['acls' => $user->acls, 'all_acls' => $all_acls, 'disabled' => true]) ?>
+    </div>
 
+</form>

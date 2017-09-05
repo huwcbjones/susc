@@ -6,7 +6,8 @@
 
 use SUSC\Model\Entity\Acl;
 
-$Form = $this->Form;
+if (!isset($Form)) $Form = $this->Form;
+
 $group_id = md5(microtime(true));
 if (!function_exists('print_acl')) {
     function print_acl($item, $key, $data)
@@ -14,7 +15,7 @@ if (!function_exists('print_acl')) {
         if ($item instanceof Acl) {
             ?>
             <tr>
-                <td><?= $data['Form']->checkbox('', ['disabled' => 'disabled', 'checked' => (Acl::hasAcl($data['test'], $item))]) ?></td>
+                <td><?= $data['Form']->checkbox('acls._ids[]', ['hiddenField' => true, 'value' => $item->id, 'checked' => (Acl::hasAcl($data['test'], $item)), 'disabled' => $data['disabled']]) ?></td>
                 <td><code><?= h($item->id) ?></code></td>
                 <td><?= h($item->name) ?></td>
                 <td><?= h($item->description) ?></td>
@@ -53,7 +54,7 @@ if (!function_exists('print_acl')) {
                     </tr>
                     </thead>
                     <tbody>
-                    <?php array_walk_recursive($t1_acls, 'print_acl', ['test' => $test, 'Form' => $this->Form]) ?>
+                    <?php array_walk_recursive($t1_acls, 'print_acl', ['test' => $test, 'Form' => $Form, 'disabled' => $disabled]) ?>
                     </tbody>
                 </table>
             </div>

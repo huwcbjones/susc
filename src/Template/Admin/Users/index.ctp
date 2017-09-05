@@ -35,7 +35,7 @@ $this->assign('title', 'Users');
                         <span class="text-<?= ($user->isEnabled()) ? 'success' : 'danger' ?> glyphicon glyphicon-<?= ($user->isEnabled()) ? 'ok' : 'remove' ?>-sign"></span>
                     </td>
                     <td>
-                        <span class="text-<?= ($user->isActivated()) ? 'success' : 'danger' ?> glyphicon glyphicon-<?= ($user->isActivated()) ? 'remove' : 'ok' ?>-sign"></span>
+                        <span class="text-<?= ($user->isActivated()) ? 'success' : 'danger' ?> glyphicon glyphicon-<?= ($user->isActivated()) ? 'ok' : 'remove' ?>-sign"></span>
                     </td>
                     <td><?= $this->Time->format($user->created, null, null, 'Europe/London') ?></td>
                     <td><?= $this->Time->format($user->modified, null, null, 'Europe/London') ?></td>
