@@ -1,24 +1,50 @@
 <?php
-/**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @since         0.10.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
- */
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= $this->fetch('title') ?></title>
+    <?= $this->Html->css('bootstrap.min.css') ?>
+    <?= $this->Html->css('styling.css') ?>
 </head>
 <body>
-    <?= $this->fetch('content') ?>
+<header class="main-masthead">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 text-center vertical-center"><h1>Southampton University Swimming Club</h1></div>
+        </div>
+
+    </div>
+</header>
+<div class="container" id="email-content">
+    <div class="row">
+        <div class="col-xs-12">
+            <?= $this->fetch('content') ?>
+
+            <p>Many thanks,<br/>
+                Southampton University Swimming Club</p>
+            <footer>
+                <div class="row">
+                    <div class="col-xs-12 text-center"><hr />
+                        <p class="text-center">
+                            <?= $this->Html->link('Website', 'https://www.susc.org.uk', ['target' => '_blank']) ?>
+                            &middot;
+                            <?= $this->Html->link('Facebook', 'https://www.facebook.com/sotonswimteam/', ['target' => '_blank']) ?>
+                            &middot;
+                            <?= $this->Html->link('Facebook Group', 'https://www.facebook.com/groups/114314605328729/', ['target' => '_blank']) ?>
+                            &middot;
+                            <?= $this->Html->link('Instagram', 'https://www.instagram.com/swimsusc/', ['target' => '_blank']) ?>
+                            &middot;
+                            <?= $this->Html->link('Twitter', 'https://twitter.com/swimsusc', ['target' => '_blank']) ?>
+                        </p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+</div>
 </body>
 </html>

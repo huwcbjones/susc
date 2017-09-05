@@ -1,7 +1,10 @@
 <?php
+
 use Cake\Core\Configure;
 use Cake\Routing\Router;
+use Cake\View\View;
 
+/** @var View $this */
 ?>
 <?= $this->Html->charset() ?>
 
@@ -40,7 +43,7 @@ use Cake\Routing\Router;
 <meta name="msvalidate.01" content="0507DB2FA5C0529E705119BE61898740"/>
 <meta name="ROBOTS" content="INDEX"/>
 <meta property="fb:app_id" content="1103769579691459"/>
-<meta property="og:url" content="<?= Router::url($this->request->here(), true) ?>"/>
+<meta property="og:url" content="<?= Router::url($this->request->getRequestTarget(), true) ?>"/>
 <meta property="og:title" content="<?= h($this->fetch('title')) ?>"/>
 <meta property="og:description" content="<?= h($this->fetch('description')) ?>"/>
 <meta property="og:image" content="<?= $this->Url->build('/img/logo.png', true) ?>"/>
@@ -50,14 +53,10 @@ use Cake\Routing\Router;
 ) ?>
 
 <title><?= h($this->fetch('title')) ?> | <?= Configure::read('App.name') ?></title>
-<meta itemprop="name" content="SUSC" />
-<link rel="canonical" href="<?= Router::url($this->request->here(), true) ?>" itemprop="url">
+<meta itemprop="name" content="SUSC"/>
+<link rel="canonical" href="<?= Router::url($this->request->getRequestTarget(), true) ?>" itemprop="url">
 
-<?= $this->Html->css('bootstrap.min.css') ?>
-
-<?= $this->Html->css('font-awesome.min.css') ?>
-
-<?= $this->Html->css('styling.css') ?>
+<?= $this->Html->css(['bootstrap.min.css', 'font-awesome.min.css', 'styling.css'], ['fullBase' => true]) ?>
 
 <?= $this->fetch('meta') ?>
 <?= $this->fetch('css') ?>

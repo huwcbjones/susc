@@ -9,5 +9,17 @@ namespace SUSC\Controller;
 
 class AdminController extends AppController
 {
-    function index(){}
+    function index()
+    {
+    }
+
+    public function getACL()
+    {
+        if ($this->request->getParam('action') == 'index') {
+            return 'admin.*';
+        }
+        return parent::getACL();
+    }
+
+
 }

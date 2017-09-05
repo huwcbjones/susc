@@ -1,10 +1,9 @@
 <?php
-namespace App\Model\Entity;
+namespace SUSC\Model\Entity;
 
 use Cake\I18n\Time;
 use Cake\ORM\Entity;
 use huwcbjones\markdown\GithubMarkdownExtended;
-use SUSC\Model\Entity\User;
 
 /**
  * News Entity.
@@ -51,7 +50,7 @@ class Article extends Entity
         if (is_null($this->user)) {
             return 'SUSC';
         } else {
-            return $this->user->fullname;
+            return $this->user->full_name;
         }
     }
 }

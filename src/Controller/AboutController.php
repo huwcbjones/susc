@@ -10,6 +10,7 @@ namespace SUSC\Controller;
 use Cake\Controller\Component\AuthComponent;
 use Cake\ORM\TableRegistry;
 use huwcbjones\markdown\GithubMarkdownExtended;
+use SUSC\Model\Entity\StaticContent;
 use SUSC\Model\Table\CoachesTable;
 use SUSC\Model\Table\CommitteeTable;
 use SUSC\Model\Table\StaticContentTable;
@@ -42,20 +43,28 @@ class AboutController extends AppController
     public function contact()
     {
         $parser = new GithubMarkdownExtended();
-        $this->set('content', $parser->parse($this->Static->find('contact')->first()->value));
+
+        /** @var StaticContent $content */
+        $content = $this->Static->find('contact')->firstOrFail();
+        $this->set('content', $parser->parse($content->value));
     }
 
     public function club()
     {
         $parser = new GithubMarkdownExtended();
-        $this->set('content', $parser->parse($this->Static->find('club')->first()->value));
+
+        /** @var StaticContent $content */
+        $content = $this->Static->find('club')->firstOrFail();
+        $this->set('content', $parser->parse($content->value));
     }
 
-    public function committee(){
+    public function committee()
+    {
         $this->set('committee', $this->Committee->find('published')->order(['display_order' => 'ASC']));
     }
 
-    public function coaches(){
+    public function coaches()
+    {
         $this->set('coaches', $this->Coaches->find('published')->order(['display_order' => 'ASC']));
     }
 }
