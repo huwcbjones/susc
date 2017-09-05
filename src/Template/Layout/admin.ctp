@@ -15,9 +15,9 @@ $this->end();
 $currentUrl = Router::normalize($this->request->here);
 $links = array();
 $links['admin'] = $currentUrl === Router::url(['_name' => 'admin']);
-$links['users'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index']);
+$links['users'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index'])) !== false;
 $links['users_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Users', 'action' => 'add']);
-$links['groups'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index']);
+$links['groups'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index'])) !== false;
 $links['groups_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'add']);
 ?>
 
@@ -33,24 +33,30 @@ $links['groups_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'contro
             <?php if ($currentUser->isAuthorised('admin.users.*')): ?>
                 <ul class="nav nav-sidebar">
                     <li<?= $links['users'] ? ' class="active"' : '' ?>><?= $this->Html->link('Users', ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index']) ?></li>
-                    <?php if ($currentUser->isAuthorised('admin.users.add')): ?>
-                        <li<?= $links['users_add'] ? ' class="active"' : '' ?>><?= $this->Html->link('Add User', ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'add']) ?></li>
+                    <?php if ($links['users']) : ?>
+                        <?php if ($currentUser->isAuthorised('admin.users.add')): ?>
+                            <li<?= $links['users_add'] ? ' class="active"' : '' ?>><?= $this->Html->link('Add User', ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'add']) ?></li>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </ul>
             <?php endif ?>
             <?php if ($currentUser->isAuthorised('admin.groups.*')): ?>
                 <ul class="nav nav-sidebar">
-                    <li<?= $links['groups'] ? ' class="active"' : '' ?>><?= $this->Html->link('Groups', ['prefix' => 'admin', 'controller' => 'Groups']) ?></li>
-                    <?php if ($currentUser->isAuthorised('admin.groups.add')): ?>
-                        <li<?= $links['groups_add'] ? ' class="active"' : '' ?>><?= $this->Html->link('Add Group', ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'add']) ?></li>
+                    <li<?= $links['groups'] ? ' class="active"' : '' ?>><?= $this->Html->link('Groups', ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index']) ?></li>
+                    <?php if ($links['groups']) : ?>
+                        <?php if ($currentUser->isAuthorised('admin.groups.add')): ?>
+                            <li<?= $links['groups_add'] ? ' class="active"' : '' ?>><?= $this->Html->link('Add Group', ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'add']) ?></li>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </ul>
             <?php endif; ?>
             <?php if ($currentUser->isAuthorised('admin.news.*')): ?>
                 <ul class="nav nav-sidebar">
                     <li><?= $this->Html->link('News', ['prefix' => 'admin', 'controller' => 'News', 'action' => 'index']) ?></li>
-                    <?php if ($currentUser->isAuthorised('admin.news.add')): ?>
-                        <li><?= $this->Html->link('Add Article', ['prefix' => 'admin', 'controller' => 'News', 'action' => 'add']) ?></li>
+                    <?php if ($links['news']) : ?>
+                        <?php if ($currentUser->isAuthorised('admin.news.add')): ?>
+                            <li><?= $this->Html->link('Add Article', ['prefix' => 'admin', 'controller' => 'News', 'action' => 'add']) ?></li>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </ul>
             <?php endif ?>
@@ -86,7 +92,7 @@ $links['groups_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'contro
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <h1 class="page-header"><?= h($this->fetch('title')) ?></h1>
-
+            <?= $this->Flash->render() ?>
             <?= $this->fetch('content') ?>
 
             <?= $this->element('footer', ['sponsors' => false]) ?>

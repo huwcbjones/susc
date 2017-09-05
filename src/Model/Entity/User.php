@@ -50,8 +50,14 @@ class User extends Entity
     protected $_accessible = [
         'id' => false,
         'email_address' => false,
+        'users_acls' => true,
+        'activation_code' => false,
+        'reset_code' => false,
+        'new_email_code' => false,
         '*' => true
     ];
+
+    protected $_effectiveAcls = null;
 
     /**
      * Fields that are excluded from JSON versions of the entity.
@@ -59,12 +65,15 @@ class User extends Entity
      * @var array
      */
     protected $_hidden = [
-        'password'
+        'password',
+        'activation_code',
+        'reset_code',
+        'new_email_code'
     ];
 
     public function isChangePassword()
     {
-        return $this->is_change_password !== "0";
+        return $this->is_change_password;
     }
 
     /**
@@ -84,7 +93,7 @@ class User extends Entity
      */
     public function isEnabled()
     {
-        return $this->is_enable !== "0";
+        return $this->is_enable;
     }
 
     /**
@@ -93,7 +102,7 @@ class User extends Entity
      */
     public function isActivated()
     {
-        return $this->activation_code === null;
+        return $this->is_active;
     }
 
     /**
@@ -141,13 +150,20 @@ class User extends Entity
         }
     }
 
+    public function getEffectiveAcls()
+    {
+        if ($this->_effectiveAcls != null) return $this->_effectiveAcls;
+        $this->_effectiveAcls = array_merge_recursive(Acl::splattify($this->acls), $this->group->getEffectiveAcls());
+        return $this->_effectiveAcls;
+    }
+
     /**
      * Gets whether or not the reset password code is still valid (not expired)
      * @return bool
      */
     public function isResetPasswordValid()
     {
-        if($this->reset_code_date == null) return false;
+        if ($this->reset_code_date == null) return false;
         return (new DateTime()) < $this->reset_code_date->addHours(3);
     }
 
@@ -167,7 +183,7 @@ class User extends Entity
      */
     public function isChangeEmailValid()
     {
-        if($this->new_email_code_date == null) return false;
+        if ($this->new_email_code_date == null) return false;
         return (new DateTime()) < $this->new_email_code_date->addHours(3);
     }
 
@@ -197,14 +213,5 @@ class User extends Entity
         if ($password == null) return null;
         if (is_string($password)) return $password;
         return stream_get_contents($password);
-    }
-
-    public function getEffectiveAcls(){
-        return array_merge_recursive($this->acls, $this->group->getEffectiveAcls());
-    }
-
-    protected function _getAcls($acls)
-    {
-        return Acl::splattify($acls);
     }
 }

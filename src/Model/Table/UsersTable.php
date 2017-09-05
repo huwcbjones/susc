@@ -65,7 +65,7 @@ class UsersTable extends Table
             ->setForeignKey('group_id')
             ->setJoinType('INNER');
 
-        $this->belongsToMany('Acls', ['joinTable' => 'users_acls',])
+        $this->belongsToMany('Acls', ['joinTable' => 'users_acls'])
             ->setForeignKey('user_id')
             ->setTargetForeignKey('acl_id');
     }
@@ -102,10 +102,11 @@ class UsersTable extends Table
 
         $validator
             ->dateTime('activation_date')
-            ->allowEmpty('activation_date', 'create');
+            ->allowEmpty('activation_date');
 
         $validator
-            ->notEmpty('password');
+            ->notEmpty('password')
+            ->allowEmpty('password');
 
         $validator
             ->allowEmpty('activation_code');

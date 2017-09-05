@@ -4,6 +4,7 @@ namespace SUSC\Model\Table;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\BelongsToMany;
+use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use SUSC\Model\Entity\Group;
@@ -44,9 +45,10 @@ class GroupsTable extends Table
             ->setForeignKey('parent')
             ->setProperty('parent_id');
 
+        $this->hasMany('Users')
+            ->setForeignKey('group_id');
+
         $this->belongsToMany('Acls', [
-            'foreignKey' => 'group_id',
-            'targetForeignKey' => 'acl_id',
             'joinTable' => 'groups_acls'
         ]);
     }
@@ -66,8 +68,38 @@ class GroupsTable extends Table
         $validator
             ->allowEmpty('name');
 
+        $validator
+            ->boolean('is_enable')
+            ->allowEmpty('is_enable', 'create');
+
         return $validator;
     }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     */
+    public function buildRules(RulesChecker $rules)
+    {
+        $rules->add($rules->isUnique(['name']));
+
+        // Add Validation rules to Application rules
+        $rules->add(function ($entity) {
+            /** @var EntityInterface $entity */
+            $data = $entity->extract($this->getSchema()->columns(), true);
+            $validator = $this->validator('default');
+            $errors = $validator->errors($data, $entity->isNew());
+            $entity->errors($errors);
+
+            return empty($errors);
+        });
+
+        return $rules;
+    }
+
 
     public function find($type = 'all', $options = [])
     {
