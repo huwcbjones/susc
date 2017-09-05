@@ -1,4 +1,8 @@
 <?php
+
+use Cake\Routing\Router;
+use SUSC\Model\Entity\User;
+
 $this->extend('empty');
 
 $this->start('css');
@@ -6,35 +10,89 @@ echo $this->fetch('css');
 echo $this->Html->css('admin');
 $this->end();
 
+/** @var User $currentUser */
+
+$currentUrl = Router::normalize($this->request->here);
+$links = array();
+$links['admin'] = $currentUrl === Router::url(['_name' => 'admin']);
+$links['users'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index'])) !== false;
+$links['users_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Users', 'action' => 'add']);
+$links['groups'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index'])) !== false;
+$links['groups_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'add']);
 ?>
 
-<?= $this->element('header', ['fixedTop' =>true]) ?>
+<?= $this->element('header', ['fixedTop' => true]) ?>
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar">
-                <li class="active"><a href="#">Site Administration <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">Reports</a></li>
-                <li><a href="#">Analytics</a></li>
-                <li><a href="#">Export</a></li>
+                <li<?= $links['admin'] ? ' class="active"' : '' ?>><?= $this->Html->link('Site Administration', ['_name' => 'admin']) ?></li>
             </ul>
-            <ul class="nav nav-sidebar">
-                <li><a href="">Nav item</a></li>
-                <li><a href="">Nav item again</a></li>
-                <li><a href="">One more nav</a></li>
-                <li><a href="">Another nav item</a></li>
-                <li><a href="">More navigation</a></li>
-            </ul>
-            <ul class="nav nav-sidebar">
-                <li><a href="">Nav item again</a></li>
-                <li><a href="">One more nav</a></li>
-                <li><a href="">Another nav item</a></li>
-            </ul>
+
+            <?php if ($currentUser->isAuthorised('admin.users.*')): ?>
+                <ul class="nav nav-sidebar">
+                    <li<?= $links['users'] ? ' class="active"' : '' ?>><?= $this->Html->link('Users', ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index']) ?></li>
+                    <?php if ($links['users']) : ?>
+                        <?php if ($currentUser->isAuthorised('admin.users.add')): ?>
+                            <li<?= $links['users_add'] ? ' class="active"' : '' ?>><?= $this->Html->link('Add User', ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'add']) ?></li>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </ul>
+            <?php endif ?>
+            <?php if ($currentUser->isAuthorised('admin.groups.*')): ?>
+                <ul class="nav nav-sidebar">
+                    <li<?= $links['groups'] ? ' class="active"' : '' ?>><?= $this->Html->link('Groups', ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index']) ?></li>
+                    <?php if ($links['groups']) : ?>
+                        <?php if ($currentUser->isAuthorised('admin.groups.add')): ?>
+                            <li<?= $links['groups_add'] ? ' class="active"' : '' ?>><?= $this->Html->link('Add Group', ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'add']) ?></li>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </ul>
+            <?php endif; ?>
+            <?php if ($currentUser->isAuthorised('admin.news.*')): ?>
+                <ul class="nav nav-sidebar">
+                    <li><?= $this->Html->link('News', ['prefix' => 'admin', 'controller' => 'News', 'action' => 'index']) ?></li>
+                    <?php if ($links['news']) : ?>
+                        <?php if ($currentUser->isAuthorised('admin.news.add')): ?>
+                            <li><?= $this->Html->link('Add Article', ['prefix' => 'admin', 'controller' => 'News', 'action' => 'add']) ?></li>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </ul>
+            <?php endif ?>
+            <?php if ($currentUser->isAuthorised('admin.fixtures.*')): ?>
+                <ul class="nav nav-sidebar">
+                    <li><?= $this->Html->link('Fixtures', ['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'index']) ?></li>
+                </ul>
+                <?php if ($currentUser->isAuthorised('admin.fixtures.add')): ?>
+                    <li><?= $this->Html->link('Add Fixture', ['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'add']) ?></li>
+                <?php endif; ?>
+                <?php if ($currentUser->isAuthorised('admin.fixtures.calendar')): ?>
+                    <li><?= $this->Html->link('Edit Calendar', ['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'calendar']) ?></li>
+                <?php endif; ?>
+            <?php endif ?>
+            <?php if ($currentUser->isAuthorised('admin.socials.*')): ?>
+                <ul class="nav nav-sidebar">
+                    <li><?= $this->Html->link('Socials', ['prefix' => 'admin', 'controller' => 'Socials', 'action' => 'index']) ?></li>
+                </ul>
+                <?php if ($currentUser->isAuthorised('admin.socials.add')): ?>
+                    <li><?= $this->Html->link('Add Social', ['prefix' => 'admin', 'controller' => 'Socials', 'action' => 'add']) ?></li>
+                <?php endif; ?>
+            <?php endif ?>
+            <?php if ($currentUser->isAuthorised('admin.membership.*')): ?>
+                <ul class="nav nav-sidebar">
+                    <li><?= $this->Html->link('Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index']) ?></li>
+                </ul>
+            <?php endif ?>
+            <?php if ($currentUser->isAuthorised('admin.kit.*')): ?>
+                <ul class="nav nav-sidebar">
+                    <li><?= $this->Html->link('Kit Orders', ['prefix' => 'admin', 'controller' => 'Kit', 'action' => 'index']) ?></li>
+                </ul>
+            <?php endif ?>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <h1 class="page-header"><?= h($this->fetch('title')) ?></h1>
-
+            <?= $this->Flash->render() ?>
             <?= $this->fetch('content') ?>
 
             <?= $this->element('footer', ['sponsors' => false]) ?>

@@ -4,10 +4,7 @@ namespace SUSC\Controller\Admin;
 
 
 use Cake\Controller\Component\AuthComponent;
-use Cake\Event\Event;
-use Cake\Mailer\Email;
 use Cake\ORM\TableRegistry;
-use DateTime;
 use SUSC\Controller\AppController;
 use SUSC\Model\Entity\Acl;
 use SUSC\Model\Table\AclsTable;
@@ -23,26 +20,19 @@ use SUSC\Model\Table\UsersTable;
  * @property GroupsTable $Groups
  * @property AclsTable $Acls;
  */
-class UsersController extends AppController
+class GroupsController extends AppController
 {
-    public function beforeFilter(Event $event)
+    public function initialize()
     {
-        parent::beforeFilter($event);
+        parent::initialize();
         $this->Users = TableRegistry::get('Users');
         $this->Groups = TableRegistry::get('Groups');
         $this->Acls = TableRegistry::get('Acls');
     }
 
-
-    public function initialize()
-    {
-        parent::initialize();
-        $this->Users = TableRegistry::get('user');
-    }
-
     public function getACL()
     {
-        if ($this->request->getParam('action') == 'index') return 'admin.users.*';
+        if ($this->request->getParam('action') == 'index') return 'admin.groups.*';
         return parent::getACL();
     }
 
@@ -54,13 +44,13 @@ class UsersController extends AppController
      */
     public function index()
     {
-        $this->paginate = [
+        /*$this->paginate = [
             'contain' => ['Groups']
-        ];
-        $users = $this->paginate($this->Users);
+        ];*/
+        $groups = $this->paginate($this->Groups);
 
-        $this->set(compact('users'));
-        $this->set('_serialize', ['users']);
+        $this->set(compact('groups'));
+        $this->set('_serialize', ['groups']);
     }
 
     /**
@@ -76,12 +66,12 @@ class UsersController extends AppController
         $all_acls = Acl::splattify($all_acls);
         $this->set('all_acls', $all_acls);
 
-        $user = $this->Users->get($id, [
-            'contain' => ['Groups', 'Acls', 'Articles', 'KitCompletedOrders', 'KitOrders']
+        $group = $this->Groups->get($id, [
+            'contain' => ['Acls', 'Users']
         ]);
 
-        $this->set('user', $user);
-        $this->set('_serialize', ['user']);
+        $this->set('group', $group);
+        $this->set('_serialize', ['group']);
     }
 
     /**
@@ -97,30 +87,10 @@ class UsersController extends AppController
 
         $user = $this->Users->newEntity();
         if ($this->request->is('post')) {
-
-            $now = new DateTime;
-            $timestamp = $now->getTimestamp();
-            $reset_code = sha1(
-                    $timestamp . $user->email_address
-                ) . sha1(
-                    $timestamp . $user->full_name
-                );
-
             $user = $this->Users->patchEntity($user, $this->request->getData());
-            $user->is_active = true;
-            $user->activation_date = $now;
-            $user->email_address = $this->request->getData('email_address');
-            $user->reset_code = $reset_code;
-            $user->reset_code_date = $timestamp;
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
-                $email = new Email();
-                $email
-                    ->setTo($user->email_address, $user->full_name)
-                    ->setSubject('Set Password')
-                    ->setViewVars(['user' => $user, 'reset_code' => $reset_code])
-                    ->setTemplate('set_password')
-                    ->send();
+
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The user could not be saved. Please, try again.'));
@@ -144,21 +114,21 @@ class UsersController extends AppController
         $all_acls = Acl::splattify($all_acls);
         $this->set('all_acls', $all_acls);
 
-        $user = $this->Users->get($id);
+        $group = $this->Groups->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $user->setAccess('*', true);
-            $user->setAccess('id', false);
-            $user = $this->Users->patchEntity($user, $this->request->getData());
-            if ($this->Users->save($user)) {
-                $this->Flash->success(__('The user has been saved.'));
+            $group->setAccess('*', true);
+            $group->setAccess('id', false);
+            $group = $this->Groups->patchEntity($group, $this->request->getData());
+            if ($this->Groups->save($group)) {
+                $this->Flash->success(__('The group has been saved.'));
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The user could not be saved. Please, try again.'));
+            $this->Flash->error(__('The group could not be saved. Please, try again.'));
         }
-        $groups = $this->Users->Groups->find('list', ['limit' => 200]);
-        $acls = $this->Users->Acls->find('list', ['limit' => 200]);
-        $this->set(compact('user', 'groups', 'acls'));
-        $this->set('_serialize', ['user']);
+        $groups = $this->Groups->Groups->find('list', ['limit' => 200]);
+        $acls = $this->Groups->Acls->find('list', ['limit' => 200]);
+        $this->set(compact('group', 'groups', 'acls'));
+        $this->set('_serialize', ['group']);
     }
 
     /**
@@ -170,16 +140,26 @@ class UsersController extends AppController
      */
     public function delete($id = null)
     {
-        if($this->currentUser->id == $id){
-            $this->Flash->error(__('Failed to delete user. You cannot delete yourself (unfortunately)!'));
+        $this->request->allowMethod(['post', 'delete']);
+
+        if($this->currentUser->group->id == $id) {
+        $this->Flash->error(__('The group could not be deleted. You can\'t delete your own group!'));
             return $this->redirect(['action' => 'index']);
         }
-        $this->request->allowMethod(['post', 'delete']);
-        $user = $this->Users->get($id);
-        if ($this->Users->delete($user)) {
-            $this->Flash->success(__('The user has been deleted.'));
+        $group = $this->Groups->get($id);
+        $parent = $this->currentUser->group;
+        while($parent->id != null){
+            if($parent->id == $id) {
+                $this->Flash->error(__('The group could not be deleted. You can\'t delete a group that\'s a parent of your group!'));
+                return $this->redirect(['action' => 'index']);
+            }
+            $parent = $parent->parent;
+        }
+
+        if ($this->Groups->delete($group)) {
+            $this->Flash->success(__('The group has been deleted.'));
         } else {
-            $this->Flash->error(__('The user could not be deleted. Please, try again.'));
+            $this->Flash->error(__('The group could not be deleted. Please, try again.'));
         }
 
         return $this->redirect(['action' => 'index']);

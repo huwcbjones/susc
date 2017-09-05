@@ -82,10 +82,10 @@ namespace SUSC\Controller {
                     AuthComponent::ALL => ['userModel' => 'Users'],
                     'Form' => [
                         'fields' => ['username' => 'email_address', 'password' => 'password'],
-                        'finder' => 'active'
+                        //'finder' => 'active'
                     ]
                 ],
-                'authError' => 'You are not allowed to access that.',
+                'authError' => false,
                 'authorize' => ['Controller'],
 
                 'storage' => 'Session'
@@ -148,6 +148,12 @@ namespace SUSC\Controller {
 
             // Logout inactive users
             if(!$this->currentUser->isEnabled()){
+                $this->Flash->error("Your account has been disabled.");
+                $this->Auth->logout();
+            }
+
+            // Logout users that are not active in any way
+            if(!$this->currentUser->isActive()){
                 $this->Flash->error("Your account has been disabled.");
                 $this->Auth->logout();
             }
