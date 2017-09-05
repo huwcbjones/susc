@@ -78,6 +78,10 @@ class User extends Entity
         return $this->isEnabled() && $this->isActivated();
     }
 
+    /**
+     * Returns whether or not a user is enabled
+     * @return bool
+     */
     public function isEnabled()
     {
         return $this->is_enable !== "0";
@@ -99,11 +103,9 @@ class User extends Entity
      */
     public function isAuthorised($acl)
     {
-
-
-        $acl_array = explode('.', $acl);
         /** @var array|Acl $acls */
-        $acls = $this->acls;
+        $acls = $this->getEffectiveAcls();
+        $acl_array = explode('.', $acl);
         $count = 1;
         foreach ($acl_array as $bit) {
             // Wildcard checking
@@ -139,14 +141,43 @@ class User extends Entity
         }
     }
 
+    /**
+     * Gets whether or not the reset password code is still valid (not expired)
+     * @return bool
+     */
     public function isResetPasswordValid()
     {
+        if($this->reset_code_date == null) return false;
         return (new DateTime()) < $this->reset_code_date->addHours(3);
     }
 
+    /**
+     * Gets whether or the user is trying to reset their password
+     * @return bool
+     */
+    public function isResettingPassword()
+    {
+        return ($this->reset_code_date !== null);
+    }
+
+
+    /**
+     * Gets whether or not the change email code is still valid (not expired)
+     * @return bool
+     */
     public function isChangeEmailValid()
     {
+        if($this->new_email_code_date == null) return false;
         return (new DateTime()) < $this->new_email_code_date->addHours(3);
+    }
+
+    /**
+     * Gets whether or not the user is trying to change their email
+     * @return bool
+     */
+    public function isChangingEmail()
+    {
+        return ($this->new_email_code_date !== null);
     }
 
     protected function _getFull_name()
@@ -168,24 +199,12 @@ class User extends Entity
         return stream_get_contents($password);
     }
 
+    public function getEffectiveAcls(){
+        return array_merge_recursive($this->acls, $this->group->getEffectiveAcls());
+    }
+
     protected function _getAcls($acls)
     {
-        // Convert numeric indexed array to Acl ID indexed array
-        $new_acls = array();
-        /** @var Acl $acl */
-        foreach ($acls as $acl) {
-            $id = explode('.', $acl->id);
-            $head = &$new_acls;
-            foreach ($id as $bit) {
-                $head[$bit] = array();
-                $head = &$head[$bit];
-            }
-            $head['_'] = $acl;
-        }
-
-        $acls = $new_acls;
-
-        // Merge User acls with group acls
-        return array_merge($acls, $this->group->acls);
+        return Acl::splattify($acls);
     }
 }

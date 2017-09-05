@@ -31,33 +31,19 @@ class Group extends Entity
         'id' => false
     ];
 
-    protected function _getAcls($acls)
+    public function getEffectiveAcls()
     {
-        // Convert numeric indexed array to Acl ID indexed array
-        $new_acls = array();
-        /** @var Acl $acl */
-        foreach($acls as $acl) {
-            //if($this->name == 'Member') var_dump($acl);
-            $id = explode('.', $acl->id);
-            $head = &$new_acls;
-            foreach($id as $bit) {
-                if(!array_key_exists($bit, $head)){
-                    $head[$bit] = array();
-                }
-                $head = &$head[$bit];
-            }
-            $head['_'] = $acl;
-        }
-
-        $acls = $new_acls;
-
-        if ($this->parent === null) return $acls;
+        if ($this->parent === null) return $this->acls;
 
         // Merge parent group acls with this group's acls
         /** @var Group $parent */
         $parent = TableRegistry::get('Groups')->get($this->parent);
+        return array_merge_recursive($this->acls, $parent->getEffectiveAcls());
+    }
 
-        return array_merge($acls, $parent->acls);
+    protected function _getAcls($acls)
+    {
+        return Acl::splattify($acls);
     }
 
     protected function _getParentName()

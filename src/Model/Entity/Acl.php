@@ -1,4 +1,5 @@
 <?php
+
 namespace SUSC\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -28,4 +29,44 @@ class Acl extends Entity
         '*' => true,
         'id' => false
     ];
+
+    public static function splattify($acls)
+    {
+        if ($acls == null) {
+            return [];
+        }
+
+        // Convert numeric indexed array to Acl ID indexed array
+        $new_acls = array();
+        /** @var Acl $acl */
+        foreach ($acls as $acl) {
+            $id = explode('.', $acl->id);
+            $head = &$new_acls;
+            foreach ($id as $bit) {
+                if (!array_key_exists($bit, $head)) {
+                    $head[$bit] = array();
+                }
+
+                $head = &$head[$bit];
+            }
+
+            $head['_'] = $acl;
+        }
+        return $new_acls;
+    }
+
+    public static function hasAcl(array $acls, Acl $test)
+    {
+        $acl_array = explode('.', $test->id);
+
+        $head = &$acls;
+        foreach ($acl_array as $bit) {
+            if (array_key_exists($bit, $head)) {
+                $head = &$head[$bit];
+            } else {
+                return false;
+            }
+        }
+        return array_key_exists('_', $head);
+    }
 }
