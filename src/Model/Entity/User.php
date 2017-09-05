@@ -84,7 +84,7 @@ class User extends Entity
      */
     public function isActive()
     {
-        return $this->isEnabled() && $this->isActivated();
+        return $this->isEnabled() && $this->isActivated() && $this->group->isEnabled();
     }
 
     /**

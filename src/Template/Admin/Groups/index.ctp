@@ -35,7 +35,7 @@ $this->assign('title', 'Groups');
                     </td>
 
                     <td>
-                        <span class="text-<?= ($group->isEnabled()) ? 'success' : 'danger' ?> glyphicon glyphicon-<?= ($group->isEnabled()) ? 'ok' : 'remove' ?>-sign"></span>
+                        <span class="text-<?= ($group->is_enable) ? 'success' : 'danger' ?> glyphicon glyphicon-<?= ($group->is_enable) ? 'ok' : 'remove' ?>-sign"></span>
                     </td>
                     <td><?= $this->Time->format($group->created, null, null, 'Europe/London') ?></td>
                     <td><?= $this->Time->format($group->modified, null, null, 'Europe/London') ?></td>

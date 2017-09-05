@@ -21,6 +21,16 @@ $this->assign('title', 'Edit Group: ' . $group->name);
         </div>
     </div>
     <div class="form-group">
+        <label for="description" class="col-sm-2 control-label">Parent Group</label>
+        <div class="col-sm-10">
+            <p class="form-control-static"> <?php if ($currentUser->isAuthorised('admin.groups.view')): ?>
+                    <?= $group->has('parent') ? $this->Html->link($group->parent->name, ['controller' => 'Groups', 'action' => 'view', $group->parent->id]) : '&mdash;' ?>
+                <?php else: ?>
+                    <?= $group->has('parent') ? $group->parent->name : '&mdash;' ?>
+                <?php endif; ?></p>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="description" class="col-sm-2 control-label">Description</label>
         <div class="col-sm-10">
             <?= $this->Form->text('description') ?>
@@ -30,11 +40,11 @@ $this->assign('title', 'Edit Group: ' . $group->name);
         <label for="is_enabled" class="col-sm-2 control-label">Is Enabled?</label>
         <div class="col-sm-10">
             <div class="btn-group" data-toggle="buttons">
-                <label class="btn btn-<?php if ($group->isEnabled()): ?>success active<?php else: ?>default<?php endif ?>" id="btn-isEnableY">
-                    <input type="radio" name="is_enable" id="isEnabledY" value="1"<?php if ($group->isEnabled()): ?> checked="checked"<?php endif ?> /> Yes
+                <label class="btn btn-<?php if ($group->is_enable): ?>success active<?php else: ?>default<?php endif ?>" id="btn-isEnableY">
+                    <input type="radio" name="is_enable" id="isEnabledY" value="1"<?php if ($group->is_enable): ?> checked="checked"<?php endif ?> /> Yes
                 </label>
-                <label class="btn btn-<?php if (!$group->isEnabled()): ?>danger active<?php else: ?>default<?php endif ?>" id="btn-isEnableN">
-                    <input type="radio" name="is_enable" id="isEnabledN" value="0"<?php if (!$group->isEnabled()): ?> checked="checked"<?php endif ?> /> No
+                <label class="btn btn-<?php if (!$group->is_enable): ?>danger active<?php else: ?>default<?php endif ?>" id="btn-isEnableN">
+                    <input type="radio" name="is_enable" id="isEnabledN" value="0"<?php if (!$group->is_enable): ?> checked="checked"<?php endif ?> /> No
                 </label>
             </div>
         </div>

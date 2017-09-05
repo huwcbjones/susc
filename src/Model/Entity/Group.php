@@ -16,7 +16,7 @@ use Cake\ORM\TableRegistry;
  * @property FrozenTime $created
  * @property FrozenTime $modified
  * @property string $description
- * @property bool $is_enable
+ * @property boolean $is_enable
  * @property null|string|Group $parent
  *
  * @property Acl[] $acls
@@ -54,7 +54,8 @@ class Group extends Entity
 
     public function isEnabled()
     {
-        return $this->is_enable !== "0";
+        if($this->parent == null) return $this->is_enable;
+        return $this->is_enable && $this->parent->isEnabled();
     }
 
     protected function _getParent($parent)

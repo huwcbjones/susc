@@ -5,7 +5,9 @@ namespace SUSC\Controller\Admin;
 
 use Cake\Controller\Component\AuthComponent;
 use Cake\Event\Event;
+use Cake\Mailer\Email;
 use Cake\ORM\TableRegistry;
+use DateTime;
 use SUSC\Controller\AppController;
 use SUSC\Model\Entity\Acl;
 use SUSC\Model\Table\AclsTable;
@@ -95,10 +97,28 @@ class UsersController extends AppController
 
         $user = $this->Users->newEntity();
         if ($this->request->is('post')) {
+
+            $now = new DateTime;
+            $timestamp = $now->getTimestamp();
+            $reset_code = sha1(
+                    $timestamp . $user->email_address
+                ) . sha1(
+                    $timestamp . $user->full_name
+                );
+
             $user = $this->Users->patchEntity($user, $this->request->getData());
+            $user->email_address = $this->request->getData('email_address');
+            $user->reset_code = $reset_code;
+            $user->reset_code_date = $timestamp;
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
-
+                $email = new Email();
+                $email
+                    ->setTo($user->email_address, $user->full_name)
+                    ->setSubject('Reset Password')
+                    ->setViewVars(['user' => $user, 'reset_code' => $reset_code])
+                    ->setTemplate('reset_password')
+                    ->send();
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The user could not be saved. Please, try again.'));
