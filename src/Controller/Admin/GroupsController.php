@@ -141,11 +141,25 @@ class GroupsController extends AppController
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
-        $user = $this->Users->get($id);
-        if ($this->Users->delete($user)) {
-            $this->Flash->success(__('The user has been deleted.'));
+
+        if($this->currentUser->group->id == $id) {
+        $this->Flash->error(__('The group could not be deleted. You can\'t delete your own group!'));
+            return $this->redirect(['action' => 'index']);
+        }
+        $group = $this->Groups->get($id);
+        $parent = $this->currentUser->group;
+        while($parent->id != null){
+            if($parent->id == $id) {
+                $this->Flash->error(__('The group could not be deleted. You can\'t delete a group that\'s a parent of your group!'));
+                return $this->redirect(['action' => 'index']);
+            }
+            $parent = $parent->parent;
+        }
+
+        if ($this->Groups->delete($group)) {
+            $this->Flash->success(__('The group has been deleted.'));
         } else {
-            $this->Flash->error(__('The user could not be deleted. Please, try again.'));
+            $this->Flash->error(__('The group could not be deleted. Please, try again.'));
         }
 
         return $this->redirect(['action' => 'index']);

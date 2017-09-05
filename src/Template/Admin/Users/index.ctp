@@ -50,7 +50,7 @@ $this->assign('title', 'Users');
                             <?= $this->Html->link(__('Edit'), ['action' => 'edit', $user->id]) ?>
                         </td>
                     <?php endif; ?>
-                    <?php if ($currentUser->isAuthorised('admin.users.delete')): ?>
+                    <?php if ($currentUser->isAuthorised('admin.users.delete') && $user->id != $currentUser->id): ?>
                         <td class="actions">
                             <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $user->id], ['confirm' => __('Are you sure you want to delete {0}?', $user->full_name)]) ?>
                         </td>

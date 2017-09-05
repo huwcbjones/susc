@@ -170,6 +170,10 @@ class UsersController extends AppController
      */
     public function delete($id = null)
     {
+        if($this->currentUser->id == $id){
+            $this->Flash->error(__('Failed to delete user. You cannot delete yourself (unfortunately)!'));
+            return $this->redirect(['action' => 'index']);
+        }
         $this->request->allowMethod(['post', 'delete']);
         $user = $this->Users->get($id);
         if ($this->Users->delete($user)) {
