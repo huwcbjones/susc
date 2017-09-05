@@ -27,6 +27,8 @@ class Acl extends Entity
      */
     protected $_accessible = [
         '*' => true,
+        'users_acls' => true,
+        'groups_acls' => true,
         'id' => false
     ];
 
@@ -40,6 +42,7 @@ class Acl extends Entity
         $new_acls = array();
         /** @var Acl $acl */
         foreach ($acls as $acl) {
+            if($acl == null) continue;
             $id = explode('.', $acl->id);
             $head = &$new_acls;
             foreach ($id as $bit) {
@@ -68,5 +71,21 @@ class Acl extends Entity
             }
         }
         return array_key_exists('_', $head);
+    }
+
+    public static function getAcl(array $acls, $id)
+    {
+        $acl_array = explode('.', $id);
+
+        $head = &$acls;
+        foreach ($acl_array as $bit) {
+            if (array_key_exists($bit, $head)) {
+                $head = &$head[$bit];
+            } else {
+                return false;
+            }
+        }
+        if (!array_key_exists('_', $head)) return null;
+        return $head['_'];
     }
 }
