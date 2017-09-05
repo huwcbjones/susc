@@ -50,7 +50,7 @@ class Article extends Entity
         if (is_null($this->user)) {
             return 'SUSC';
         } else {
-            return $this->user->fullname;
+            return $this->user->full_name;
         }
     }
 }
