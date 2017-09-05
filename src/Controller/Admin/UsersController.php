@@ -107,6 +107,8 @@ class UsersController extends AppController
                 );
 
             $user = $this->Users->patchEntity($user, $this->request->getData());
+            $user->is_active = true;
+            $user->activation_date = $timestamp;
             $user->email_address = $this->request->getData('email_address');
             $user->reset_code = $reset_code;
             $user->reset_code_date = $timestamp;
@@ -115,9 +117,9 @@ class UsersController extends AppController
                 $email = new Email();
                 $email
                     ->setTo($user->email_address, $user->full_name)
-                    ->setSubject('Reset Password')
+                    ->setSubject('Set Password')
                     ->setViewVars(['user' => $user, 'reset_code' => $reset_code])
-                    ->setTemplate('reset_password')
+                    ->setTemplate('set_password')
                     ->send();
                 return $this->redirect(['action' => 'index']);
             }
