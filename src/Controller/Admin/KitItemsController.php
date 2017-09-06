@@ -84,7 +84,17 @@ class KitItemsController extends AppController
 
     public function delete($id = null)
     {
+        $this->request->allowMethod(['post', 'delete']);
 
+        $item = $this->Items->get($id);
+
+        if ($this->Items->delete($item)) {
+            $this->Flash->success(__('The item has been deleted.'));
+        } else {
+            $this->Flash->error(__('The item could not be deleted. Please, try again.'));
+        }
+
+        return $this->redirect(['action' => 'index']);
     }
 
 }
