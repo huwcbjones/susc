@@ -14,7 +14,9 @@ class KitBagForm extends Form
         return $schema
             ->addField('id', 'string')
             ->addField('size', 'string')
-            ->addField('isRemove', 'number');
+            ->addField('quantity', 'number')
+            ->addField('isRemove', 'number')
+            ->addField('additionalInfo', 'string');
     }
 
     protected function _buildValidator(Validator $validator)

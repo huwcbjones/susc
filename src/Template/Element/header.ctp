@@ -23,9 +23,12 @@ $links['about_club'] = $currentUrl === Router::url(['controller' => 'About', 'ac
 $links['about_coaches'] = $currentUrl === Router::url(['controller' => 'About', 'action' => 'coaches']);
 $links['about_committee'] = $currentUrl === Router::url(['controller' => 'About', 'action' => 'committee']);
 $links['admin'] = $currentUrl === Router::url(['controller' => 'Admin', 'action' => 'index']);
-$links['admin_user'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index']);
+$links['admin_users'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index']);
+$links['admin_groups'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index']);
 $links['admin_socials'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Socials', 'action' => 'index']);
 $links['admin_news'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'News', 'action' => 'index']);
+$links['admin_kit'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index']);
+$links['kit'] = strpos($currentUrl, Router::url(['_name' => 'kit'])) !== false &&$currentUrl !== Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index']);
 $links['admin_fixtures'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'index']);
 $links['admin_training'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Training', 'action' => 'index']);
 $links['admin_coaches'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Coaches', 'action' => 'index']);
@@ -66,6 +69,9 @@ $links['admin_committee'] = $currentUrl === Router::url(['prefix' => 'admin', 'c
                         <li<?= $links['fixtures_calendar'] ? ' class="active"' : '' ?>><?= $this->Html->link('Fixture Calendar', ['_name' => 'fixture_calendar']) ?></li>
                     </ul>
                 </li>
+                <?php if ($currentUser !== null && $currentUser->isAuthorised('kit.*')): ?>
+                    <li<?= $links['kit'] ? ' class="active"' : '' ?>><?= $this->Html->link('Kit', ['_name' => 'kit']) ?></li>
+                <?php endif; ?>
                 <?php if ($currentUser !== null && $currentUser->isAuthorised('socials.*')): ?>
                     <li<?= $links['socials'] ? ' class="active"' : '' ?>><?= $this->Html->link('Socials', ['_name' => 'socials']) ?></li>
                 <?php endif; ?>
@@ -100,7 +106,10 @@ $links['admin_committee'] = $currentUrl === Router::url(['prefix' => 'admin', 'c
                         <ul class="dropdown-menu">
                             <li<?= $links['admin'] ? ' class="active"' : '' ?>><?= $this->Html->link('Admin Panel', ['_name' => 'admin']) ?></li>
                             <?php if ($currentUser->isAuthorised('admin.users.*')): ?>
-                                <li<?= $links['admin_user'] ? ' class="active"' : '' ?>><?= $this->Html->link('Users & Groups', ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index']) ?></li>
+                                <li<?= $links['admin_users'] ? ' class="active"' : '' ?>><?= $this->Html->link('Users', ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index']) ?></li>
+                            <?php endif; ?>
+                            <?php if ($currentUser->isAuthorised('admin.groups.*')): ?>
+                                <li<?= $links['admin_groups'] ? ' class="active"' : '' ?>><?= $this->Html->link('Groups', ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index']) ?></li>
                             <?php endif; ?>
                             <?php if ($currentUser->isAuthorised('admin.news.*')): ?>
                                 <li<?= $links['admin_news'] ? ' class="active"' : '' ?>><?= $this->Html->link('News', ['prefix' => 'admin', 'controller' => 'News', 'action' => 'index']) ?></li>

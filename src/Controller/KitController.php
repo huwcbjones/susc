@@ -3,13 +3,22 @@
 namespace SUSC\Controller;
 
 use Cake\Network\Exception\NotFoundException;
+use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
+use DateTime;
+use huwcbjones\markdown\GithubMarkdownExtended;
 use SUSC\Form\KitBagForm;
+use SUSC\Model\Entity\StaticContent;
+use SUSC\Model\Table\KitItemsTable;
+use SUSC\Model\Table\KitOrdersTable;
+use SUSC\Model\Table\StaticContentTable;
 
 /**
  * Kit Controller
  *
- * @property \SUSC\Model\Table\KitItemsTable $Kit
+ * @property KitOrdersTable $Orders
+ * @property KitItemsTable $Kit
+ * @property StaticContentTable $Static
  * @property array $BasketData
  */
 class KitController extends AppController
@@ -17,19 +26,29 @@ class KitController extends AppController
     public function initialize()
     {
         parent::initialize();
+        $this->Orders = TableRegistry::get('KitOrders');
         $this->Kit = TableRegistry::get('KitItems');
+        $this->Static = TableRegistry::get('StaticContent');
         $this->loadKitBag();
     }
 
     protected function loadKitBag()
     {
-        if (empty($this->BasketData)) $this->BasketData = $this->request->session()->read('Kit.Basket');
+        if (empty($this->BasketData)) $this->BasketData = $this->request->session()->read('Kit.Basket.Data');
         if (empty($this->BasketData)) $this->BasketData = array();
 
-        foreach ($this->BasketData as $k => $v) {
-            $this->BasketData[$k]['kit'] = $this->Kit->find('id', ['id' => $k])->find('published')->first();
+        foreach ($this->BasketData as $hash => $data) {
+            $this->BasketData[$hash]['item'] = $this->Kit->get($data['id']);
         }
         $this->set('basketData', $this->BasketData);
+        $this->set('basketTotal', $this->request->session()->read('Kit.Basket.Total'));
+    }
+
+    public function getACL()
+    {
+        if (in_array($this->request->getParam('action'), ['index', 'view', 'basket', 'orderComplete'])) return 'kit.*';
+
+        return parent::getACL();
     }
 
     /**
@@ -42,28 +61,6 @@ class KitController extends AppController
         $this->set('kit', $this->Kit->find('published'));
         $this->processKitBag();
         $this->loadKitBag();
-    }
-
-    public function basket()
-    {
-        $this->set('title', 'My Basket');
-        $this->processKitBag();
-        $this->loadKitBag();
-    }
-
-    public function order()
-    {
-
-    }
-
-    public function viewOrder()
-    {
-
-    }
-
-    public function order_complete()
-    {
-
     }
 
     protected function processKitBag()
@@ -81,19 +78,97 @@ class KitController extends AppController
         }
 
         $id = $request->getData('id');
+        $size = $request->getData('size');
+        $quantity = $request->getData('quantity');
+        $additionalInfo = $request->getData('additional_info');
         if ($request->getData('isRemove') == 0) {
-            $this->BasketData[$id] = [
+            $data = [
                 'id' => $id,
-                'kit' => $this->Kit->find('id', ['id' => $id])->find('published')->first(),
-                'size' => $request->getData('size')
+                'item' => $this->Kit->find('id', ['id' => $id])->find('published')->first(),
+                'size' => $size,
+                'quantity' => $quantity,
+                'additional_info' => $additionalInfo
             ];
+            $hash = md5($id . $size . $quantity . $additionalInfo);
+            $this->BasketData[$hash] = $data;
             $this->Flash->success('Successfully added item to basket.');
         } else {
-            unset($this->BasketData[$id]);
+            unset($this->BasketData[$request->getData('hash')]);
             $this->Flash->success('Successfully remove item from kit bag.');
         }
+        $total = 0;
+        foreach ($this->BasketData as $hash => $data) {
+            $total += $data['item']->price * $data['quantity'];
+        }
 
-        $request->session()->write('Kit.Basket', $this->BasketData);
+        $request->session()->write('Kit.Basket.Total', $total);
+        $request->session()->write('Kit.Basket.Data', $this->BasketData);
+    }
+
+    public function basket()
+    {
+        $this->set('title', 'My Basket');
+        $this->processKitBag();
+        $this->loadKitBag();
+    }
+
+    public function pay()
+    {
+        /** @var StaticContent $terms */
+        $terms = $this->Static->find('KitTerms')->firstOrFail();
+        $terms = (new GithubMarkdownExtended())->parse($terms->value);
+        $this->set('terms', $terms);
+
+        if (!$this->request->is('post')) return;
+
+        $ItemsOrder = TableRegistry::get('KitItemsOrders');
+
+        $data = [
+            'user_id' => $this->currentUser->id,
+            'payment' => $this->request->getData('payment'),
+            'date_ordered' => (new DateTime())->getTimestamp(),
+            'total' => 0,
+            'kit_items_order' => []
+        ];
+
+        $order = $this->Orders->newEntity($data);
+
+        if ($this->Orders->save($order)) {
+            $items = [];
+
+            foreach ($this->BasketData as $hash => $d) {
+                $item = $this->Kit->get($d['id']);
+
+                $item->_joinData = new Entity([
+                    'order_id' => $order->id,
+                    'kit_id' => $d['id'],
+                    'size' => $d['size'],
+                    'quantity' => $d['quantity'],
+                    'additional_info' => $d['additional_info'],
+                    'price' => $d['item']->price,
+                    'subtotal' => $d['item']->price * $d['quantity']
+                ]);
+                $items[] = $item;
+            }
+            $this->Orders->KitItems->link($order, $items);
+
+            $this->request->session()->write('Kit.Basket.Total', 0);
+            $this->request->session()->write('Kit.Basket.Data', []);
+
+            return $this->redirect(['_name' => 'order_complete']);
+        } else {
+            $this->Flash->error('There was an error whilst processing your order.');
+        }
+    }
+
+    public function viewOrder()
+    {
+
+    }
+
+    public function orderComplete()
+    {
+
     }
 
     public function view($slug)

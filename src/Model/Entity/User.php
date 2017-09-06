@@ -34,6 +34,7 @@ use DateTime;
  * @property Group $group
  * @property Article[] $articles
  * @property Acl[] $acls
+ * @property KitOrder[] $orders
  */
 class User extends Entity
 {
