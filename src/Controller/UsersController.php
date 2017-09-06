@@ -298,11 +298,12 @@ class UsersController extends AppController
                 'first_name' => $this->request->getData('first_name'),
                 'last_name' => $this->request->getData('last_name'),
                 'password' => $this->request->getData('password'),
-                'activation_code' => $activation_code
             ], ['guard' => false]);
 
             $user->setAccess('email_address', true);
             $user->email_address = $this->request->getData('email_address');
+            $user->setAccess('activation_code', true);
+            $user->activation_code = $activation_code;
 
             if ($this->Users->save($user)) {
                 $email = new Email();
