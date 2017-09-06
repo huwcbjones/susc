@@ -19,6 +19,8 @@ $links['users'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'control
 $links['users_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Users', 'action' => 'add']);
 $links['groups'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index'])) !== false;
 $links['groups_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'add']);
+$links['kit-items'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index'])) !== false;
+$links['kit-items_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'add']);
 ?>
 
 <?= $this->element('header', ['fixedTop' => true]) ?>
@@ -84,9 +86,14 @@ $links['groups_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'contro
                     <li><?= $this->Html->link('Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index']) ?></li>
                 </ul>
             <?php endif ?>
-            <?php if ($currentUser->isAuthorised('admin.kit.*')): ?>
+            <?php if ($currentUser->isAuthorised('admin.kit-items.*')): ?>
                 <ul class="nav nav-sidebar">
-                    <li><?= $this->Html->link('Kit Orders', ['prefix' => 'admin', 'controller' => 'Kit', 'action' => 'index']) ?></li>
+                    <li<?= $links['kit-items'] ? ' class="active"' : '' ?>><?= $this->Html->link('Kit Items', ['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index']) ?></li>
+                    <?php if ($links['kit-items']) : ?>
+                        <?php if ($currentUser->isAuthorised('admin.kit-items.add')): ?>
+                            <li<?= $links['kit-items_add'] ? ' class="active"' : '' ?>><?= $this->Html->link('Add Item', ['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'add']) ?></li>
+                        <?php endif; ?>
+                    <?php endif; ?>
                 </ul>
             <?php endif ?>
         </div>
