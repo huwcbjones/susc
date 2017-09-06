@@ -12,12 +12,15 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  * @property string $title
  * @property string $slug
  * @property string $image
+ * @property string $formatted_price
  * @property float $price
  * @property string $description
  * @property string $sizes
+ * @property boolean $status
+ * @property boolean $additional_info
+ * @property string $additional_info_description
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
- * @property string $status
  */
 class KitItem extends Entity
 {
@@ -33,14 +36,21 @@ class KitItem extends Entity
      */
     protected $_accessible = [
         '*' => true,
+        'created' => false,
+        'modified' => false,
+        'slug' => false,
         'id' => false
     ];
 
-    protected function _getDescription($description)
+    protected function _getRenderedDescription()
     {
-        require_once(ROOT . DS . "vendor" . DS . "huwcbjones" . DS . "markdown" . DS . "GithubMarkdownExtended.php");
         $parser = new GithubMarkdownExtended();
-        return $parser->parse($description);
+        return $parser->parse($this->description);
+    }
+
+    protected function _getRenderedAdditionalDescription(){
+        $parser = new GithubMarkdownExtended();
+        return $parser->parse($this->additional_info_description);
     }
 
     protected function _getImagePath()
@@ -48,7 +58,7 @@ class KitItem extends Entity
         if ($this->image == null) {
             return '/images/no_image.png';
         }
-        return '/images/kit/' . $this->id . '.jpg';
+        return '/images/store/kit/' . $this->id . '.jpg';
     }
 
     protected function _getSizeList()

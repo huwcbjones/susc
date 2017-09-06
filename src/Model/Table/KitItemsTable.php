@@ -1,4 +1,5 @@
 <?php
+
 namespace SUSC\Model\Table;
 
 use Cake\Datasource\EntityInterface;
@@ -34,11 +35,15 @@ class KitItemsTable extends Table
     {
         parent::initialize($config);
 
-        $this->getTable('kit_items');
-        $this->getDisplayField('title');
-        $this->getPrimaryKey('id');
+        $this->setTable('kit_items');
+        $this->setDisplayField('title');
+        $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+
+        $this->belongsToMany('KitOrders', [
+            'through' => 'KitItemsOrders'
+        ]);
     }
 
     /**
