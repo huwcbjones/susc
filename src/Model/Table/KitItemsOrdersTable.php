@@ -41,7 +41,7 @@ class KitItemsOrdersTable extends Table
         $this->belongsTo('KitOrders', [
             'foreignKey' => 'order_id',
             'joinType' => 'INNER'
-        ]);
+        ])->setBindingKey('id');
         $this->belongsTo('KitItems', [
             'foreignKey' => 'kit_id',
             'joinType' => 'INNER'

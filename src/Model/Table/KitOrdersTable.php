@@ -1,8 +1,10 @@
 <?php
+
 namespace SUSC\Model\Table;
 
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Association\BelongsTo;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -94,5 +96,10 @@ class KitOrdersTable extends Table
         $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;
+    }
+
+    public function findUser(Query $query, array $options = [])
+    {
+        return $query->where(['user_id' => $options['user_id']]);
     }
 }

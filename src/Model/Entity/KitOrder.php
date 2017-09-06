@@ -10,6 +10,7 @@ use Cake\ORM\Entity;
  * @property string $user_id
  * @property string $payment
  * @property float $total
+ * @property string $formattedTotal
  * @property \Cake\I18n\Time $date_ordered
  * @property \Cake\I18n\FrozenTime $paid_date
  * @property bool $is_paid
@@ -33,4 +34,18 @@ class KitOrder extends Entity
         '*' => true,
         'id' => false
     ];
+
+    protected function _getFormattedTotal()
+    {
+        return sprintf("£%.2f", $this->total);
+    }
+
+    protected function _getPaymentMethod(){
+        switch($this->payment){
+            case 'bat':
+                return 'Bank Account Transfer';
+            case 'cash':
+                return 'Cash';
+        }
+    }
 }

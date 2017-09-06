@@ -47,6 +47,7 @@ class KitController extends AppController
     public function getACL()
     {
         if (in_array($this->request->getParam('action'), ['index', 'view', 'basket', 'orderComplete'])) return 'kit.*';
+        if (in_array($this->request->getParam('action'), ['order', 'pay', 'orders', 'vieworder'])) return 'kit.order';
 
         return parent::getACL();
     }
@@ -121,19 +122,27 @@ class KitController extends AppController
 
         if (!$this->request->is('post')) return;
 
-        $ItemsOrder = TableRegistry::get('KitItemsOrders');
+        $total = 0;
+        foreach($this->BasketData as $hash=>$d){
+            $total += $d['quantity'] * $d['item']->price;
+        }
 
         $data = [
             'user_id' => $this->currentUser->id,
             'payment' => $this->request->getData('payment'),
             'date_ordered' => (new DateTime())->getTimestamp(),
-            'total' => 0,
+            'total' => $total,
             'kit_items_order' => []
         ];
 
         $order = $this->Orders->newEntity($data);
 
-        if ($this->Orders->save($order)) {
+        $result = $this->Orders->getConnection()->transactional(function () use ($order, $data) {
+
+
+            if (!$this->Orders->save($order)) {
+                return false;
+            }
             $items = [];
 
             foreach ($this->BasketData as $hash => $d) {
@@ -148,27 +157,45 @@ class KitController extends AppController
                     'price' => $d['item']->price,
                     'subtotal' => $d['item']->price * $d['quantity']
                 ]);
+                $order->total += $item->_joinData->subtotal;
                 $items[] = $item;
             }
             $this->Orders->KitItems->link($order, $items);
 
             $this->request->session()->write('Kit.Basket.Total', 0);
             $this->request->session()->write('Kit.Basket.Data', []);
+            return true;
+        });
 
-            return $this->redirect(['_name' => 'order_complete']);
+        if ($result) {
+            return $this->redirect(['_name' => 'order_complete', 'order_number' => $order->id]);
         } else {
             $this->Flash->error('There was an error whilst processing your order.');
+
         }
     }
 
-    public function viewOrder()
+    public function orders()
+    {
+        $orders = $this->paginate($this->Orders, [
+            'finder' => [
+                'user' => ['user_id' => $this->currentUser->id]
+            ],
+            'order' => ['date_ordered' => 'DESC']
+        ]);
+        //$this->Orders->find('user', ['user_id' => $this->currentUser->id]);
+
+        $this->set('orders', $orders);
+    }
+
+    public function viewOrder($id = null)
     {
 
     }
 
     public function orderComplete()
     {
-
+        $this->set('orderNumber', $this->request->getQuery('order_number'));
     }
 
     public function view($slug)

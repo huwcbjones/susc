@@ -42,8 +42,9 @@ class KitItemsTable extends Table
         $this->addBehavior('Timestamp');
 
         $this->belongsToMany('KitOrders', [
-            'through' => 'KitItemsOrders'
-        ]);
+            'through' => 'KitItemsOrders',
+            'foreign_key' => 'kit_id'
+        ])->setBindingKey('kit_id');
     }
 
     /**
