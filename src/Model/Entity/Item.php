@@ -6,12 +6,12 @@ use Cake\ORM\Entity;
 use huwcbjones\markdown\GithubMarkdownExtended;
 
 /**
- * KitItem Entity
+ * Item Entity
  *
  * @property string $id
  * @property string $title
  * @property string $slug
- * @property string $image
+ * @property boolean $image
  * @property string $formatted_price
  * @property float $price
  * @property string $description
@@ -55,7 +55,7 @@ class Item extends Entity
 
     protected function _getImagePath()
     {
-        if ($this->image == null) {
+        if (!$this->image) {
             return '/images/no_image.png';
         }
         return '/images/store/kit/' . $this->id . '.jpg';

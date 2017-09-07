@@ -81,8 +81,8 @@ class ItemsTable extends Table
             ->allowEmpty('sizes');
 
         $validator
-            ->requirePresence('status', 'create')
-            ->notEmpty('status');
+            ->boolean('status')
+            ->allowEmpty('status');
 
         return $validator;
     }
