@@ -67,7 +67,12 @@ class Item extends Entity
             return null;
         }
 
-        return str_getcsv($this->sizes);
+        $sizes = str_getcsv($this->sizes);
+        $size_array = [];
+        foreach($sizes as $size){
+            $size_array[$size] = $size;
+        }
+        return $size_array;
     }
 
     protected function _getFormattedPrice()

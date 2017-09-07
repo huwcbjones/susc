@@ -1,7 +1,13 @@
 <?php
 
 use SUSC\Form\KitBagForm;
+use SUSC\Model\Entity\Item;
+use SUSC\View\AppView;
 
+/**
+ * @var AppView $this
+ * @var Item $kit
+ */
 $this->layout('kit');
 $this->assign('title', h($kit->title));
 
@@ -30,7 +36,7 @@ $kitBagForm = new KitBagForm();
                 <?= $this->Form->create($kitBagForm) ?>
                 <?= $this->Form->hidden('id', ['value' => $kit->id]) ?>
                 <?= $this->Form->hidden('isRemove', ['value' => 0]) ?>
-                <?php if($kit->additional_info): ?>
+                <?php if ($kit->additional_info): ?>
                     <div class="form-group">
                         <label for="additionalInfo">Additional Information</label>
                         <?= $this->Form->text('additional_info') ?>
@@ -39,11 +45,7 @@ $kitBagForm = new KitBagForm();
                 <?php endif; ?>
                 <div class="form-group<?php if ($kit->sizeList == null): ?> hidden<?php endif; ?>">
                     <label for="sizeCombo">Size</label>
-                    <select name="size" id="sizeCombo" class="form-control">
-                        <?php foreach ($kit->sizeList as $size): ?>
-                            <option value="<?= $size ?>"><?= $size ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                    <?= $this->Form->select('size', $kit->sizeList, ['empty' => 'Select Size']) ?>
                 </div>
                 <div class="form-group">
                     <label for="quantity">Quantity</label>
