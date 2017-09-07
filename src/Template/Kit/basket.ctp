@@ -42,7 +42,7 @@ $this->layout('clean');
                                         'action' => 'view',
                                         'slug' => $kit->slug
                                     ]) ?></h3></th>
-                            <td data-th="Additional Info" class="text-center"><?= $additionalInfo ?></td>
+                            <td data-th="Additional Info" class="text-center"><?= h(($data['additional_info'] == '') ? '[None Provided]': $data['additional_info']) ?></td>
                             <td data-th="Size" class="text-center"><?= $size ?></td>
                             <td data-th="Price" class="text-center"><?= $kit->formattedPrice ?></td>
                             <td data-th="Quantity" class="text-center"><?= $quantity ?></td>

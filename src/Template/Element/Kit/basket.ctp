@@ -15,7 +15,7 @@
                         Size: <?= $data['size'] ?><br/>
                         Quantity: <?= $data['quantity'] ?><br/>
                         <?php if ($data['item']->additional_info): ?>
-                            Additional Info: <?= h($data['additional_info']) ?><br/>
+                            Additional Info: <?= h(($data['additional_info'] == '') ? '[None Provided]': $data['additional_info']) ?><br/>
                         <?php endif; ?>
                         Subtotal: <?= sprintf("£%.2f", $data['quantity'] * $data['item']->price) ?><br/>
                         <?= $this->Form->postLink(
