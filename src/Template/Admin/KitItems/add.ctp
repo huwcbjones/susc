@@ -49,10 +49,10 @@ $this->end();
         <div class="col-sm-10">
             <div class="btn-group" data-toggle="buttons">
                 <label class="btn btn-<?php if ($item->additional_info): ?>success active<?php else: ?>default<?php endif ?>" id="btn-additional_infoY">
-                    <input type="radio" name="status" id="additional_infoY" value="1"<?php if ($item->additional_info): ?> checked="checked"<?php endif ?> /> Yes
+                    <input type="radio" name="additional_info" id="additional_infoY" value="1"<?php if ($item->additional_info): ?> checked="checked"<?php endif ?> /> Yes
                 </label>
                 <label class="btn btn-<?php if (!$item->additional_info): ?>danger active<?php else: ?>default<?php endif ?>" id="btn-additional_infoN">
-                    <input type="radio" name="status" id="additional_infoN" value="0"<?php if (!$item->additional_info): ?> checked="checked"<?php endif ?> /> No
+                    <input type="radio" name="additional_info" id="additional_infoN" value="0"<?php if (!$item->additional_info): ?> checked="checked"<?php endif ?> /> No
                 </label>
             </div>
         </div>
