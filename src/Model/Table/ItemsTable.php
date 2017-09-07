@@ -101,6 +101,12 @@ class ItemsTable extends Table
         return $rules;
     }
 
+    public function find($type = 'all', $options = [])
+    {
+        $options['order']['title'] = 'ASC';
+        return parent::find($type, $options);
+    }
+
     public function findPublished(Query $query)
     {
         return $query->where(['status' => 1]);

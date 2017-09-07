@@ -98,4 +98,56 @@ class KitOrdersController extends AppController
         }
         return $this->redirect(['action' => 'index']);
     }
+
+    public function config()
+    {
+        $items = [];
+        foreach (TableRegistry::get('Items')->find('all')->all() as $item) {
+            $items[$item->id] = $item->title;
+        }
+
+        $config_items = [
+            'athletics-singlet-ladies',
+            'athletics-singlet-mens',
+            'compression-shorts-ladies',
+            'compression-shorts-mens',
+            'crop-top-(sports-bra)',
+            'ladies-hoodie',
+            'ladies-tracksuit-trousers',
+            'ladies-training-shirt',
+            'ladies-training-shorts',
+            'mens-hoodie',
+            'mens-tracksuit-trousers',
+            'mens-training-shirt',
+            'mens-training-shorts'
+        ];
+        $config = [];
+        foreach ($config_items as $i) {
+            $config[$i] = $this->Config->get('kit-orders.' . $i);
+        }
+
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            foreach($this->request->getData()['kit-orders'] as $k => $v){
+                if($v == '') $v = null;
+                $config[$k]->value = $v;
+            }
+            $result = $this->Config->saveMany($config);
+            if($result !== false){
+                $config = $result;
+                $this->Flash->success('Config saved!');
+            } else {
+                $this->Flash->error('Config could not be saved!');
+            }
+        }
+
+        $this->set(compact('items', 'config'));
+    }
+
+    public function process(){
+        if (!$this->request->is(['patch', 'post', 'put'])) {
+            return;
+        }
+
+
+    }
 }

@@ -12,10 +12,12 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  * @property string $title
  * @property string $slug
  * @property boolean $image
+ * @property string $imagePath
  * @property string $formatted_price
  * @property float $price
  * @property string $description
  * @property string $sizes
+ * @property string[] $sizes
  * @property boolean $status
  * @property boolean $additional_info
  * @property string $additional_info_description
