@@ -22,7 +22,7 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
  */
-class KitItem extends Entity
+class Item extends Entity
 {
 
     /**

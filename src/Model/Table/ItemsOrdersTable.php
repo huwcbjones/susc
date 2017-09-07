@@ -6,23 +6,23 @@ use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
-use SUSC\Model\Entity\KitItemsOrder;
+use SUSC\Model\Entity\ItemsOrder;
 
 /**
  * KitItemsOrders Model
  *
- * @property KitOrdersTable|BelongsTo $KitOrders
- * @property KitItemsTable|BelongsTo $KitItems
+ * @property OrdersTable|BelongsTo $KitOrders
+ * @property ItemsTable|BelongsTo $KitItems
  *
- * @method KitItemsOrder get($primaryKey, $options = [])
- * @method KitItemsOrder newEntity($data = null, array $options = [])
- * @method KitItemsOrder[] newEntities(array $data, array $options = [])
- * @method KitItemsOrder|bool save(EntityInterface $entity, $options = [])
- * @method KitItemsOrder patchEntity(EntityInterface $entity, array $data, array $options = [])
- * @method KitItemsOrder[] patchEntities($entities, array $data, array $options = [])
- * @method KitItemsOrder findOrCreate($search, callable $callback = null, $options = [])
+ * @method ItemsOrder get($primaryKey, $options = [])
+ * @method ItemsOrder newEntity($data = null, array $options = [])
+ * @method ItemsOrder[] newEntities(array $data, array $options = [])
+ * @method ItemsOrder|bool save(EntityInterface $entity, $options = [])
+ * @method ItemsOrder patchEntity(EntityInterface $entity, array $data, array $options = [])
+ * @method ItemsOrder[] patchEntities($entities, array $data, array $options = [])
+ * @method ItemsOrder findOrCreate($search, callable $callback = null, $options = [])
  */
-class KitItemsOrdersTable extends Table
+class ItemsOrdersTable extends Table
 {
 
     /**
@@ -35,17 +35,11 @@ class KitItemsOrdersTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('kit_items_orders');
+        $this->setTable('items_orders');
         $this->setPrimaryKey('id');
 
-        $this->belongsTo('KitOrders', [
-            'foreignKey' => 'order_id',
-            'joinType' => 'INNER'
-        ])->setBindingKey('id');
-        $this->belongsTo('KitItems', [
-            'foreignKey' => 'kit_id',
-            'joinType' => 'INNER'
-        ]);
+        $this->belongsTo('Orders');
+        $this->belongsTo('Items');
     }
 
     /**
@@ -94,8 +88,8 @@ class KitItemsOrdersTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['order_id'], 'KitOrders'));
-        $rules->add($rules->existsIn(['kit_id'], 'KitItems'));
+        $rules->add($rules->existsIn(['order_id'], 'Orders'));
+        $rules->add($rules->existsIn(['kit_id'], 'Items'));
 
         return $rules;
     }

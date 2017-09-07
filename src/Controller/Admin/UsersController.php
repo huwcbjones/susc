@@ -77,7 +77,7 @@ class UsersController extends AppController
         $this->set('all_acls', $all_acls);
 
         $user = $this->Users->get($id, [
-            'contain' => ['Groups', 'Acls', 'Articles', 'KitCompletedOrders', 'KitOrders']
+            'contain' => ['Groups', 'Acls', 'Articles', 'Orders']
         ]);
 
         $this->set('user', $user);

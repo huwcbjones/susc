@@ -1,8 +1,8 @@
 <?php
 
-use SUSC\Model\Entity\KitOrder;
+use SUSC\Model\Entity\Order;
 
-/** @var KitOrder[] $orders */
+/** @var Order[] $orders */
 
 $this->assign('title', 'My Orders');
 $this->layout('profile');
@@ -14,11 +14,13 @@ $this->layout('profile');
             <thead>
             <tr>
                 <th scope="col"><?= $this->Paginator->sort('id', 'Order #') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('date_ordered', 'Order Date') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('placed', 'Order Date') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('total') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('payment', 'Payment Method') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('is_paid', 'Paid For?') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('date_paid', 'Date Paid') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('status') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('is_paid', '<attr title="Paid">P?</attr>', ['escape' => false]) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('is_ordered', '<attr title="Ordered">O?</attr>', ['escape' => false]) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('is_collected', '<attr title="Collected">C?</attr>', ['escape' => false]) ?></th>
                 <th scope="col" class="actions"></th>
             </tr>
             </thead>
@@ -26,13 +28,19 @@ $this->layout('profile');
             <?php foreach ($orders as $order): ?>
                 <tr>
                     <td><?= h($order->id) ?></td>
-                    <td><?= $this->Time->format($order->date_ordered, null, null, 'Europe/London') ?></td>
+                    <td><?= $this->Time->format($order->placed, null, null, 'Europe/London') ?></td>
                     <td><?= h($order->formattedTotal) ?></td>
                     <td><?= h($order->paymentMethod) ?></td>
+                    <td><?= h($order->status) ?></td>
                     <td>
-                        <span class="text-<?= ($order->is_paid) ? 'success' : 'danger' ?> glyphicon glyphicon-<?= ($order->is_enable) ? 'ok' : 'remove' ?>-sign"></span>
+                        <span class="text-<?= ($order->is_paid) ? 'success' : 'danger' ?> glyphicon glyphicon-<?= ($order->is_paid) ? 'ok' : 'remove' ?>-sign"></span>
                     </td>
-                    <td><?= ($order->paid != null) ? $this->Time->format($order->paid_date, null, null, 'Europe/London') : 'Not Paid' ?></td>
+                    <td>
+                        <span class="text-<?= ($order->is_ordered) ? 'success' : 'danger' ?> glyphicon glyphicon-<?= ($order->is_ordered) ? 'ok' : 'remove' ?>-sign"></span>
+                    </td>
+                    <td>
+                        <span class="text-<?= ($order->is_collected) ? 'success' : 'danger' ?> glyphicon glyphicon-<?= ($order->is_collected) ? 'ok' : 'remove' ?>-sign"></span>
+                    </td>
                     <td><?= $this->Html->link('View', ['controller' => 'Kit', 'action' => 'vieworder', 'orderid' => $order->id]) ?></td>
                 </tr>
             <?php endforeach; ?>

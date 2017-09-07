@@ -13,13 +13,14 @@ use Cake\ORM\Entity;
  * @property int $quantity
  * @property string $additional_info
  * @property float $price
+ * @property string $formattedPrice
  * @property float $subtotal
- * @property \Cake\I18n\FrozenTime $collected
+ * @property string $formattedSubtotal
  *
- * @property \SUSC\Model\Entity\KitOrder $kit_order
- * @property \SUSC\Model\Entity\KitItem $kit_item
+ * @property \SUSC\Model\Entity\Order $order
+ * @property \SUSC\Model\Entity\Item $item
  */
-class KitItemsOrder extends Entity
+class ItemsOrder extends Entity
 {
 
     /**
@@ -37,4 +38,14 @@ class KitItemsOrder extends Entity
         'order_id' => false,
         'kit_id' => false
     ];
+
+    protected function _getFormattedPrice()
+    {
+        return sprintf("£%.2f", $this->price);
+    }
+
+    protected function _getFormattedSubtotal()
+    {
+        return sprintf("£%.2f", $this->subtotal);
+    }
 }

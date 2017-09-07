@@ -1,7 +1,7 @@
 <?php
 /**
  * @var \SUSC\View\AppView $this
- * @var \SUSC\Model\Entity\KitItem $item
+ * @var \SUSC\Model\Entity\Item $item
  */
 
 $this->assign('title', 'View Item: ' . $item->title);

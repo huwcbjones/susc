@@ -7,22 +7,22 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
-use SUSC\Model\Entity\KitItem;
+use SUSC\Model\Entity\Item;
 
 /**
  * KitItems Model
  *
- * @method KitItem get($primaryKey, $options = [])
- * @method KitItem newEntity($data = null, array $options = [])
- * @method KitItem[] newEntities(array $data, array $options = [])
- * @method KitItem|bool save(EntityInterface $entity, $options = [])
- * @method KitItem patchEntity(EntityInterface $entity, array $data, array $options = [])
- * @method KitItem[] patchEntities($entities, array $data, array $options = [])
- * @method KitItem findOrCreate($search, callable $callback = null, $options = [])
+ * @method Item get($primaryKey, $options = [])
+ * @method Item newEntity($data = null, array $options = [])
+ * @method Item[] newEntities(array $data, array $options = [])
+ * @method Item|bool save(EntityInterface $entity, $options = [])
+ * @method Item patchEntity(EntityInterface $entity, array $data, array $options = [])
+ * @method Item[] patchEntities($entities, array $data, array $options = [])
+ * @method Item findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class KitItemsTable extends Table
+class ItemsTable extends Table
 {
 
     /**
@@ -35,16 +35,15 @@ class KitItemsTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('kit_items');
+        $this->setTable('items');
         $this->setDisplayField('title');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsToMany('KitOrders', [
-            'through' => 'KitItemsOrders',
-            'foreign_key' => 'kit_id'
-        ])->setBindingKey('kit_id');
+        $this->belongsToMany('Orders', [
+            'through' => 'ItemsOrders'
+        ]);
     }
 
     /**

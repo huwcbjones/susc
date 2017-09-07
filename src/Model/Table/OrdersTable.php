@@ -8,23 +8,23 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
-use SUSC\Model\Entity\KitOrder;
+use SUSC\Model\Entity\Order;
 
 /**
  * KitOrders Model
  *
  * @property UsersTable|BelongsTo $Users
- * @property KitItemsOrdersTable|BelongsTo $KitItemsOrders
+ * @property ItemsOrdersTable|BelongsTo $KitItemsOrders
  *
- * @method KitOrder get($primaryKey, $options = [])
- * @method KitOrder newEntity($data = null, array $options = [])
- * @method KitOrder[] newEntities(array $data, array $options = [])
- * @method KitOrder|bool save(EntityInterface $entity, $options = [])
- * @method KitOrder patchEntity(EntityInterface $entity, array $data, array $options = [])
- * @method KitOrder[] patchEntities($entities, array $data, array $options = [])
- * @method KitOrder findOrCreate($search, callable $callback = null, $options = [])
+ * @method Order get($primaryKey, $options = [])
+ * @method Order newEntity($data = null, array $options = [])
+ * @method Order[] newEntities(array $data, array $options = [])
+ * @method Order|bool save(EntityInterface $entity, $options = [])
+ * @method Order patchEntity(EntityInterface $entity, array $data, array $options = [])
+ * @method Order[] patchEntities($entities, array $data, array $options = [])
+ * @method Order findOrCreate($search, callable $callback = null, $options = [])
  */
-class KitOrdersTable extends Table
+class OrdersTable extends Table
 {
 
     /**
@@ -37,7 +37,7 @@ class KitOrdersTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('kit_orders');
+        $this->setTable('orders');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
@@ -46,8 +46,8 @@ class KitOrdersTable extends Table
             'joinType' => 'INNER'
         ]);
 
-        $this->belongsToMany('KitItems', [
-            'through' => 'KitItemsOrders'
+        $this->belongsToMany('Items', [
+            'through' => 'ItemsOrders'
         ]);
     }
 
@@ -96,6 +96,11 @@ class KitOrdersTable extends Table
         $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;
+    }
+
+    public function find($type = 'all', $options = [])
+    {
+        return parent::find($type, $options)->contain(['Items']);
     }
 
     public function findUser(Query $query, array $options = [])

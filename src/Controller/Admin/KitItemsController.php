@@ -10,7 +10,7 @@ namespace SUSC\Controller\Admin;
 use Cake\Controller\Component\AuthComponent;
 use Cake\ORM\TableRegistry;
 use SUSC\Controller\AppController;
-use SUSC\Model\Table\KitItemsTable;
+use SUSC\Model\Table\ItemsTable;
 use Zend\Diactoros\UploadedFile;
 
 /**
@@ -18,14 +18,14 @@ use Zend\Diactoros\UploadedFile;
  * @package SUSC\Controller
  *
  * @property AuthComponent $Auth
- * @property KitItemsTable $Items
+ * @property ItemsTable $Items
  */
 class KitItemsController extends AppController
 {
     public function initialize()
     {
         parent::initialize();
-        $this->Items = TableRegistry::get('KitItems');
+        $this->Items = TableRegistry::get('Items');
     }
 
 

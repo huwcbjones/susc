@@ -2,22 +2,22 @@
 
 namespace SUSC\Controller;
 
+use Cake\Mailer\Email;
 use Cake\Network\Exception\NotFoundException;
-use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 use DateTime;
 use huwcbjones\markdown\GithubMarkdownExtended;
 use SUSC\Form\KitBagForm;
 use SUSC\Model\Entity\StaticContent;
-use SUSC\Model\Table\KitItemsTable;
-use SUSC\Model\Table\KitOrdersTable;
+use SUSC\Model\Table\ItemsTable;
+use SUSC\Model\Table\OrdersTable;
 use SUSC\Model\Table\StaticContentTable;
 
 /**
  * Kit Controller
  *
- * @property KitOrdersTable $Orders
- * @property KitItemsTable $Kit
+ * @property OrdersTable $Orders
+ * @property ItemsTable $Kit
  * @property StaticContentTable $Static
  * @property array $BasketData
  */
@@ -26,8 +26,8 @@ class KitController extends AppController
     public function initialize()
     {
         parent::initialize();
-        $this->Orders = TableRegistry::get('KitOrders');
-        $this->Kit = TableRegistry::get('KitItems');
+        $this->Orders = TableRegistry::get('Orders');
+        $this->Kit = TableRegistry::get('Items');
         $this->Static = TableRegistry::get('StaticContent');
         $this->loadKitBag();
     }
@@ -85,7 +85,7 @@ class KitController extends AppController
         if ($request->getData('isRemove') == 0) {
             $data = [
                 'id' => $id,
-                'item' => $this->Kit->find('id', ['id' => $id])->find('published')->first(),
+                'item' => $this->Kit->get($id),
                 'size' => $size,
                 'quantity' => $quantity,
                 'additional_info' => $additionalInfo
@@ -122,56 +122,46 @@ class KitController extends AppController
 
         if (!$this->request->is('post')) return;
 
-        $total = 0;
-        foreach($this->BasketData as $hash=>$d){
-            $total += $d['quantity'] * $d['item']->price;
+        if(!in_array($this->request->getData('payment'), ['bat', 'cash'])){
+            $this->Flash->error('Please select a payment method.');
+            return;
         }
 
         $data = [
             'user_id' => $this->currentUser->id,
             'payment' => $this->request->getData('payment'),
             'date_ordered' => (new DateTime())->getTimestamp(),
-            'total' => $total,
-            'kit_items_order' => []
+            'total' => 0,
+            'items' => []
         ];
 
-        $order = $this->Orders->newEntity($data);
+        foreach ($this->BasketData as $hash => $d) {
+            $item = $this->Kit->get($d['id']);
 
-        $result = $this->Orders->getConnection()->transactional(function () use ($order, $data) {
-
-
-            if (!$this->Orders->save($order)) {
-                return false;
-            }
-            $items = [];
-
-            foreach ($this->BasketData as $hash => $d) {
-                $item = $this->Kit->get($d['id']);
-
-                $item->_joinData = new Entity([
-                    'order_id' => $order->id,
-                    'kit_id' => $d['id'],
+            $item_data = [
+                'id' => $d['id'],
+                '_joinData' => [
                     'size' => $d['size'],
                     'quantity' => $d['quantity'],
                     'additional_info' => $d['additional_info'],
                     'price' => $d['item']->price,
                     'subtotal' => $d['item']->price * $d['quantity']
-                ]);
-                $order->total += $item->_joinData->subtotal;
-                $items[] = $item;
-            }
-            $this->Orders->KitItems->link($order, $items);
+                ]
+            ];
+            $data['total'] += $item_data['_joinData']['subtotal'];
+            $data['items'][] = $item_data;
+        }
+        var_dump($data);
+        $order = $this->Orders->newEntity($data);
 
+        if ($this->Orders->save($order, ['associated' => ['Items._joinData']])) {
             $this->request->session()->write('Kit.Basket.Total', 0);
             $this->request->session()->write('Kit.Basket.Data', []);
-            return true;
-        });
-
-        if ($result) {
+            $email = new Email();
+            //todo: send email
             return $this->redirect(['_name' => 'order_complete', 'order_number' => $order->id]);
         } else {
             $this->Flash->error('There was an error whilst processing your order.');
-
         }
     }
 
@@ -181,16 +171,16 @@ class KitController extends AppController
             'finder' => [
                 'user' => ['user_id' => $this->currentUser->id]
             ],
-            'order' => ['date_ordered' => 'DESC']
+            'order' => ['id' => 'DESC']
         ]);
-        //$this->Orders->find('user', ['user_id' => $this->currentUser->id]);
 
         $this->set('orders', $orders);
     }
 
     public function viewOrder($id = null)
     {
-
+        $order = $this->Orders->get($id);
+        $this->set('order', $order);
     }
 
     public function orderComplete()

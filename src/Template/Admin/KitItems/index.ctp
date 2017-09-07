@@ -1,7 +1,7 @@
 <?php
 /**
  * @var \SUSC\View\AppView $this
- * @var \SUSC\Model\Entity\KitItem[]|\Cake\Collection\CollectionInterface $items
+ * @var \SUSC\Model\Entity\Item[]|\Cake\Collection\CollectionInterface $items
  */
 $this->assign('title', 'Kit Items');
 ?>
