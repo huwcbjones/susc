@@ -59,7 +59,7 @@ class KitController extends AppController
      */
     public function index()
     {
-        $this->set('kit', $this->Kit->find('published'));
+        $this->set('kit', $this->Kit->find('published', ['order' => ['title' => 'ASC']]));
         $this->processKitBag();
         $this->loadKitBag();
     }
@@ -122,7 +122,7 @@ class KitController extends AppController
 
         if (!$this->request->is('post')) return;
 
-        if(!in_array($this->request->getData('payment'), ['bat', 'cash'])){
+        if (!in_array($this->request->getData('payment'), ['bat', 'cash'])) {
             $this->Flash->error('Please select a payment method.');
             return;
         }
