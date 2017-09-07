@@ -21,30 +21,28 @@ class KitBagForm extends Form
 
     protected function _buildValidator(Validator $validator)
     {
-        return $validator;/*
+        return $validator
             ->add(
                 'id',
-                'length',
+                'minLength',
                 [
-                    'minLength' => [
-                        'rule' => [
-                            'minLength',
-                            36
-                        ],
-                        'message' => 'Item ID format is 36 characters long'
+                    'rule' => [
+                        'minLength',
+                        36
                     ],
-                    'maxLength' => [
-                        'rule' => [
-                            'maxLength',
-                            36
-                        ],
-                        'message' => 'Item ID format is 36 characters long'
-                    ],
-                    'message' => 'An item ID is required'
+                    'message' => 'Invalid Item'
                 ]
             )
+            ->add('id', 'maxLength', [
+                'rule' => [
+                    'maxLength',
+                    36
+                ],
+                'message' => 'Invalid Item',
+            ])
+            ->naturalNumber('quantity')
             ->allowEmpty('size')
-            ->allowEmpty('isRemove');*/
+            ->allowEmpty('isRemove');
     }
 
     protected function _execute(array $data)

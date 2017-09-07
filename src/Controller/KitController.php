@@ -73,19 +73,31 @@ class KitController extends AppController
             return;
         }
 
-        if (!$kitBagForm->execute($request->getData())) {
-            $this->Flash->error('There was an error adding that item to your basket.');
-            return;
-        }
+        if ($request->getData('isRemove') != 0) {
+            unset($this->BasketData[$request->getData('hash')]);
+            $this->Flash->success('Successfully remove item from kit bag.');
+        } else {
 
-        $id = $request->getData('id');
-        $size = $request->getData('size');
-        $quantity = $request->getData('quantity');
-        $additionalInfo = $request->getData('additional_info');
-        if ($request->getData('isRemove') == 0) {
+            if (!$kitBagForm->execute($request->getData())) {
+                $this->Flash->error('There was an error adding that item to your basket.');
+                return;
+            }
+
+            $id = $request->getData('id');
+            $size = $request->getData('size');
+            $quantity = $request->getData('quantity');
+            $additionalInfo = $request->getData('additional_info');
+            $item = $this->Kit->get($id);
+
+            if ($this->request->getData('size') == '' && $item->sizeList != null) {
+                $this->Flash->error('Please select a size!');
+                return;
+            }
+
+
             $data = [
                 'id' => $id,
-                'item' => $this->Kit->get($id),
+                'item' => $item,
                 'size' => $size,
                 'quantity' => $quantity,
                 'additional_info' => $additionalInfo
@@ -93,9 +105,7 @@ class KitController extends AppController
             $hash = md5($id . $size . $quantity . $additionalInfo);
             $this->BasketData[$hash] = $data;
             $this->Flash->success('Successfully added item to basket.');
-        } else {
-            unset($this->BasketData[$request->getData('hash')]);
-            $this->Flash->success('Successfully remove item from kit bag.');
+
         }
         $total = 0;
         foreach ($this->BasketData as $hash => $data) {
