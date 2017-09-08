@@ -1,6 +1,8 @@
 <?php
+
 namespace SUSC\Model\Entity;
 
+use Cake\I18n\Time;
 use Cake\ORM\Entity;
 
 /**
@@ -16,6 +18,12 @@ use Cake\ORM\Entity;
  * @property string $formattedPrice
  * @property float $subtotal
  * @property string $formattedSubtotal
+ * @property Time $ordered
+ * @property Time $arrived
+ * @property Time $collected
+ * @property boolean $isOrdered
+ * @property boolean $isArrived
+ * @property boolean $isCollected
  *
  * @property \SUSC\Model\Entity\Order $order
  * @property \SUSC\Model\Entity\Item $item
@@ -47,5 +55,20 @@ class ItemsOrder extends Entity
     protected function _getFormattedSubtotal()
     {
         return sprintf("£%.2f", $this->subtotal);
+    }
+
+    protected function _getIsArrived()
+    {
+        return $this->arrived != null;
+    }
+
+    protected function _getIsCollected()
+    {
+        return $this->collected != null;
+    }
+
+    protected function _getIsOrdered()
+    {
+        return $this->ordered != null;
     }
 }
