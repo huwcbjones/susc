@@ -25,7 +25,12 @@ $this->assign('title', 'Kit Orders');
                 <th scope="col"><?= $this->Paginator->sort('is_paid', '<attr title="Paid">P?</attr>', ['escape' => false]) ?></th>
                 <th scope="col"><?= $this->Paginator->sort('is_ordered', '<attr title="Ordered">O?</attr>', ['escape' => false]) ?></th>
                 <th scope="col"><?= $this->Paginator->sort('is_collected', '<attr title="Collected">C?</attr>', ['escape' => false]) ?></th>
-                <th scope="col" class="actions" colspan="3"></th>
+                <?php if ($currentUser->isAuthorised('admin.kit-orders.view')): ?>
+                    <th scope="col" class="actions"></th>
+                <?php endif; ?>
+                <?php if ($currentUser->isAuthorised('admin.kit-orders.status')): ?>
+                    <th scope="col" class="actions"></th>
+                <?php endif ?>
             </tr>
             </thead>
             <tbody>
@@ -38,18 +43,20 @@ $this->assign('title', 'Kit Orders');
                     <td><?= h($order->paymentMethod) ?></td>
                     <td><?= h($order->status) ?></td>
                     <td>
-                        <span class="text-<?= ($order->is_paid) ? 'success' : 'danger' ?> glyphicon glyphicon-<?= ($order->is_paid) ? 'ok' : 'remove' ?>-sign"></span>
+                        <?= $order->getPaidStatusIcon() ?>
                     </td>
                     <td>
-                        <span class="text-<?= ($order->is_ordered) ? 'success' : 'danger' ?> glyphicon glyphicon-<?= ($order->is_ordered) ? 'ok' : 'remove' ?>-sign"></span>
+                        <?= $order->getOrderedStatusIcon() ?>
                     </td>
                     <td>
-                        <span class="text-<?= ($order->is_collected) ? 'success' : 'danger' ?> glyphicon glyphicon-<?= ($order->is_collected) ? 'ok' : 'remove' ?>-sign"></span>
+                        <?= $order->getCollectedStatusIcon() ?>
                     </td>
-                    <td><?= $this->Html->link('View', ['controller' => 'Kit', 'action' => 'view', $order->id]) ?></td>
-                    <td><?= $this->Form->postLink(__('Paid'), ['action' => 'paid', $order->id]) ?></td>
-                    <td<?php if(!$order->is_paid):?> class="text-muted"<?php endif?>><?= ($order->is_paid) ? $this->Form->postLink(__('Ordered'), ['action' => 'ordered', $order->id]) : 'Ordered' ?></td>
-                    <td<?php if(!$order->is_ordered):?> class="text-muted"<?php endif?>><?= ($order->is_ordered) ? $this->Form->postLink(__('Collected'), ['action' => 'collected', $order->id]) : 'Collected' ?></td>
+                    <?php if ($currentUser->isAuthorised('admin.kit-orders.view')): ?>
+                        <td><?= $this->Html->link('View', ['action' => 'view', $order->id]) ?></td>
+                    <?php endif; ?>
+                    <?php if ($currentUser->isAuthorised('admin.kit-orders.status')): ?>
+                        <td><?= $this->Form->postLink(__('Paid'), ['action' => 'paid', $order->id]) ?></td>
+                    <?php endif; ?>
                 </tr>
             <?php endforeach; ?>
             </tbody>

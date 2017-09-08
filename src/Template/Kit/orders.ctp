@@ -20,6 +20,7 @@ $this->layout('profile');
                 <th scope="col"><?= $this->Paginator->sort('status') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('is_paid', '<attr title="Paid">P?</attr>', ['escape' => false]) ?></th>
                 <th scope="col"><?= $this->Paginator->sort('is_ordered', '<attr title="Ordered">O?</attr>', ['escape' => false]) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('is_arrived', '<attr title="Arrived">A?</attr>', ['escape' => false]) ?></th>
                 <th scope="col"><?= $this->Paginator->sort('is_collected', '<attr title="Collected">C?</attr>', ['escape' => false]) ?></th>
                 <th scope="col" class="actions"></th>
             </tr>
@@ -33,13 +34,16 @@ $this->layout('profile');
                     <td><?= h($order->paymentMethod) ?></td>
                     <td><?= h($order->status) ?></td>
                     <td>
-                        <span class="text-<?= ($order->is_paid) ? 'success' : 'danger' ?> glyphicon glyphicon-<?= ($order->is_paid) ? 'ok' : 'remove' ?>-sign"></span>
+                        <?= $order->getPaidStatusIcon() ?>
                     </td>
                     <td>
-                        <span class="text-<?= ($order->is_ordered) ? 'success' : 'danger' ?> glyphicon glyphicon-<?= ($order->is_ordered) ? 'ok' : 'remove' ?>-sign"></span>
+                        <?= $order->getOrderedStatusIcon() ?>
                     </td>
                     <td>
-                        <span class="text-<?= ($order->is_collected) ? 'success' : 'danger' ?> glyphicon glyphicon-<?= ($order->is_collected) ? 'ok' : 'remove' ?>-sign"></span>
+                        <?= $order->getArrivedStatusIcon() ?>
+                    </td>
+                    <td>
+                        <?= $order->getCollectedStatusIcon() ?>
                     </td>
                     <td><?= $this->Html->link('View', ['controller' => 'Kit', 'action' => 'vieworder', 'orderid' => $order->id]) ?></td>
                 </tr>

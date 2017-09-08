@@ -3,6 +3,7 @@ namespace SUSC\Model\Table;
 
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Association\BelongsTo;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -52,7 +53,7 @@ class ItemsOrdersTable extends Table
     {
         $validator
             ->requirePresence('size', 'create')
-            ->notEmpty('size');
+            ->allowEmpty('size');
 
         $validator
             ->integer('quantity')
@@ -92,5 +93,17 @@ class ItemsOrdersTable extends Table
         $rules->add($rules->existsIn(['kit_id'], 'Items'));
 
         return $rules;
+    }
+
+    public function findItemId(Query $query, $options = []){
+        return $query
+            ->contain(['Items'])
+            ->where(['Items.id' => $options['id']]);
+    }
+
+    public function findUnprocessed(Query $query, $options = []){
+        return $query
+            ->contain(['Orders', 'Orders.Users', 'Items'])
+            ->where(['Orders.paid IS NOT NULL', 'ordered IS NULL']);
     }
 }

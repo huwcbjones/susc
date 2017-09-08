@@ -42,7 +42,13 @@ $this->layout('clean');
                                         'action' => 'view',
                                         'slug' => $kit->slug
                                     ]) ?></h3></th>
-                            <td data-th="Additional Info" class="text-center"><?= h(($data['additional_info'] == '') ? '[None Provided]': $data['additional_info']) ?></td>
+                            <td data-th="Additional Info" class="text-center"><?php if (!$data['item']->additional_info) {
+                                    echo '[None Required]';
+                                } elseif ($data['additional_info'] == '') {
+                                    echo '[None Provided]';
+                                } else {
+                                    echo $data['additional_info'];
+                                } ?></td>
                             <td data-th="Size" class="text-center"><?= $size ?></td>
                             <td data-th="Price" class="text-center"><?= $kit->formattedPrice ?></td>
                             <td data-th="Quantity" class="text-center"><?= $quantity ?></td>
@@ -78,7 +84,7 @@ $this->layout('clean');
                 <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-0 col-lg-4">
                     <?= $this->Html->link('<span class="glyphicon glyphicon-chevron-left"></span> Continue Shopping', ['_name' => 'kit'], ['class' => ['btn', 'btn-warning', 'btn-lg', 'btn-block'], 'escape' => false]) ?>
                 </div>
-                <div class="col-xs-12 visible-xs-block"><br /></div>
+                <div class="col-xs-12 visible-xs-block"><br/></div>
                 <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-2 col-lg-4 col-lg-offset-4">
                     <?= $this->Html->link('Select Payment <span class="glyphicon glyphicon-shopping-cart"></span>', ['_name' => 'pay'], ['class' => ['btn', 'btn-success', 'btn-lg', 'btn-block'], 'escape' => false]) ?>
                 </div>

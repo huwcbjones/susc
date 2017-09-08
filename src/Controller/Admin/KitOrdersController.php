@@ -7,17 +7,22 @@
 namespace SUSC\Controller\Admin;
 
 
+use Aura\Intl\Exception;
 use Cake\ORM\TableRegistry;
 use DateTime;
 use SUSC\Controller\AppController;
+use SUSC\Controller\Component\KitProcessComponent;
 use SUSC\Model\Entity\Order;
+use SUSC\Model\Table\ItemsOrdersTable;
 use SUSC\Model\Table\OrdersTable;
 
 /**
  * Class KitOrdersController
  * @package SUSC\Controller\Admin
  *
+ * @property KitProcessComponent $KitProcess
  * @property OrdersTable $Orders
+ * @property ItemsOrdersTable $ItemsOrders
  */
 class KitOrdersController extends AppController
 {
@@ -26,13 +31,14 @@ class KitOrdersController extends AppController
     {
         parent::initialize();
         $this->Orders = TableRegistry::get('Orders');
+        $this->ItemsOrders = TableRegistry::get('ItemsOrders');
     }
 
 
     public function getACL()
     {
         if ($this->request->getParam('action') == 'index') return 'admin.kit-orders.*';
-        if (in_array($this->request->getParam('action'), ['paid', 'ordered', 'collected'])) {
+        if (in_array($this->request->getParam('action'), ['paid', 'ordered', 'arrived', 'collected'])) {
             return 'admin.kit-orders.status';
         }
         return parent::getACL();
@@ -43,6 +49,13 @@ class KitOrdersController extends AppController
         $orders = $this->paginate($this->Orders, ['order' => ['id' => 'DESC'], 'contain' => ['Users']]);
 
         $this->set('orders', $orders);
+    }
+
+    public function view($id = null)
+    {
+        $order = $this->Orders->get($id);
+
+        $this->set(compact('order'));
     }
 
     public function paid($id = null)
@@ -66,37 +79,55 @@ class KitOrdersController extends AppController
     public function ordered($id = null)
     {
         if ($this->request->getMethod() != 'POST') {
-            return $this->redirect(['action' => 'index']);
+            return $this->redirect($this->referer());
         }
 
         /** @var Order $order */
-        $order = $this->Orders->get($id);
-        $order->ordered = ($order->ordered == null) ? new DateTime() : null;
+        $item = $this->ItemsOrders->get($id);
+        $item->ordered = ($item->ordered == null) ? new DateTime() : null;
 
-        if ($this->Orders->save($order)) {
-            $this->Flash->success('Order status toggled.');
+        if ($this->ItemsOrders->save($item)) {
+            $this->Flash->success('Item status toggled.');
         } else {
-            $this->Flash->error('Failed to toggle order status.');
+            $this->Flash->error('Failed to toggle item status.');
         }
-        return $this->redirect(['action' => 'index']);
+        return $this->redirect($this->referer());
+    }
+
+    public function arrived($id = null)
+    {
+        if ($this->request->getMethod() != 'POST') {
+            return $this->redirect($this->referer());
+        }
+
+        /** @var Order $order */
+        $item = $this->ItemsOrders->get($id);
+        $item->arrived = ($item->arrived == null) ? new DateTime() : null;
+
+        if ($this->ItemsOrders->save($item)) {
+            $this->Flash->success('Item arrived status toggled.');
+        } else {
+            $this->Flash->error('Failed to toggle item arrived status.');
+        }
+        return $this->redirect($this->referer());
     }
 
     public function collected($id = null)
     {
         if ($this->request->getMethod() != 'POST') {
-            return $this->redirect(['action' => 'index']);
+            return $this->redirect($this->referer());
         }
 
         /** @var Order $order */
-        $order = $this->Orders->get($id);
-        $order->collected = ($order->collected == null) ? new DateTime() : null;
+        $item = $this->ItemsOrders->get($id);
+        $item->collected = ($item->collected == null) ? new DateTime() : null;
 
-        if ($this->Orders->save($order)) {
-            $this->Flash->success('Order collection status toggled.');
+        if ($this->ItemsOrders->save($item)) {
+            $this->Flash->success('Item collection status toggled.');
         } else {
-            $this->Flash->error('Failed to toggle order collection status.');
+            $this->Flash->error('Failed to toggle item collection status.');
         }
-        return $this->redirect(['action' => 'index']);
+        return $this->redirect($this->referer());
     }
 
     public function config()
@@ -148,6 +179,13 @@ class KitOrdersController extends AppController
             return;
         }
 
+        $this->loadComponent('KitProcess');
 
+        try {
+            $this->KitProcess->process();
+            return $this->redirect(['action' => 'download']);
+        } catch (Exception $ex){
+
+        }
     }
 }

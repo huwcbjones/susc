@@ -121,4 +121,14 @@ class ItemsTable extends Table
     {
         return $query->where(['id' => $options['id']]);
     }
+
+    public function findUnprocessed(Query $query, $options = [])
+    {
+        return $query
+            ->matching('Orders', function (Query $q) {
+                return $q
+                    ->where(['ItemsOrders.ordered IS NULL'])
+                    ->where(['Orders.paid IS NOT NULL']);
+            });
+    }
 }
