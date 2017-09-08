@@ -17,7 +17,8 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  * @property float $price
  * @property string $description
  * @property string $sizes
- * @property string[] $sizes
+ * @property string[] $sizeList
+ * @property ItemsOrder[] $_joinData;
  * @property boolean $status
  * @property boolean $additional_info
  * @property string $additional_info_description
@@ -80,5 +81,16 @@ class Item extends Entity
     protected function _getFormattedPrice()
     {
         return sprintf("£%.2f", $this->price);
+    }
+
+    public function displayAdditionalInformation($additionalInfo)
+    {
+        if (!$this->additional_info) {
+            return '[None Required]';
+        } elseif ($additionalInfo == '') {
+            return '[None Provided]';
+        } else {
+            return $additionalInfo;
+        }
     }
 }
