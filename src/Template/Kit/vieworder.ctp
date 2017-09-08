@@ -30,6 +30,9 @@ $this->layout('profile');
                         <th class="text-center">Price</th>
                         <th class="text-center">Quantity</th>
                         <th class="text-center">Subtotal</th>
+                        <th scope="col"><attr title="Ordered">O?</attr></th>
+                        <th scope="col"><attr title="Arrived">A?</attr></th>
+                        <th scope="col"><attr title="Collected">C?</attr></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -40,11 +43,14 @@ $this->layout('profile');
                                     'action' => 'view',
                                     'slug' => $item->slug
                                 ]) ?></th>
-                            <td data-th="Additional Info" class="text-center"><?= h($item->_joinData->additional_info) ?></td>
+                            <td data-th="Additional Info" class="text-center"><?= h($item->displayAdditionalInformation($item->_joinData->additional_info)) ?></td>
                             <td data-th="Size" class="text-center"><?= $item->_joinData->size ?></td>
                             <td data-th="Price" class="text-center"><?= $item->_joinData->formattedPrice ?></td>
                             <td data-th="Quantity" class="text-center"><?= $item->_joinData->quantity ?></td>
                             <td data-th="Quantity" class="text-center"><?= $item->_joinData->formattedSubtotal ?></td>
+                            <td><span class="text-<?= ($item->_joinData->ordered ? 'success' : 'danger') ?> glyphicon glyphicon-<?= ($item->_joinData->ordered ? 'ok' : 'remove') ?>-sign"></span></td>
+                            <td><span class="text-<?= ($item->_joinData->arrived ? 'success' : 'danger') ?> glyphicon glyphicon-<?= ($item->_joinData->arrived ? 'ok' : 'remove') ?>-sign"></span></td>
+                            <td><span class="text-<?= ($item->_joinData->collected ? 'success' : 'danger') ?> glyphicon glyphicon-<?= ($item->_joinData->collected ? 'ok' : 'remove') ?>-sign"></span></td>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
@@ -53,6 +59,7 @@ $this->layout('profile');
                         <td colspan="4"></td>
                         <td class="text-center"><h3 class="h4">Total:</h3></td>
                         <td class="text-center" style="vertical-align: middle"><?= $order->formattedTotal ?> </td>
+                        <td colspan="3"></td>
                     </tr>
                     </tfoot>
                 </table>
