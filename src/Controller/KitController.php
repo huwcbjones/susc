@@ -161,7 +161,6 @@ class KitController extends AppController
             $data['total'] += $item_data['_joinData']['subtotal'];
             $data['items'][] = $item_data;
         }
-        var_dump($data);
         $order = $this->Orders->newEntity($data);
 
         if ($this->Orders->save($order, ['associated' => ['Items._joinData']])) {
