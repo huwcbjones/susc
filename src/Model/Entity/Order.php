@@ -24,8 +24,8 @@ use Cake\ORM\Entity;
  * @property bool $is_ordered
  * @property bool $is_collected
  *
- * @property \SUSC\Model\Entity\User $user
- * @property \SUSC\Model\Entity\ItemsOrder[] $items_order
+ * @property User $user
+ * @property Item[] $items
  */
 class Order extends Entity
 {
@@ -59,25 +59,109 @@ class Order extends Entity
         }
     }
 
-    protected function _getIsPaid(){
+    protected function _getIsPaid()
+    {
         return $this->paid != null;
     }
-    protected function _getIsOrdered(){
-        return $this->ordered != null;
+
+    protected function _getOrderedLeft()
+    {
+        $count = 0;
+        foreach ($this->items as $item) {
+            if ($item->_joinData->ordered == null) $count++;
+        }
+        return $count;
     }
-    protected function _getIsCollected(){
-        return $this->collected != null;
+
+    protected function _getIsAllOrdered()
+    {
+        foreach ($this->items as $item) {
+            if ($item->_joinData->ordered == null) return false;
+        }
+        return true;
+    }
+
+    protected function _getArrivedLeft()
+    {
+        $count = 0;
+        foreach ($this->items as $item) {
+            if ($item->_joinData->arrived == null) $count++;
+        }
+        return $count;
+    }
+
+    protected function _getIsAllArrived()
+    {
+        foreach ($this->items as $item) {
+            if ($item->_joinData->arrived == null) return false;
+        }
+        return true;
+    }
+
+    protected function _getCollectedLeft()
+    {
+        $count = 0;
+        foreach ($this->items as $item) {
+            if ($item->_joinData->collected == null) $count++;
+        }
+        return $count;
+    }
+
+    protected function _getIsAllCollected()
+    {
+        foreach ($this->items as $item) {
+            if ($item->_joinData->collected == null) return false;
+        }
+        return true;
+    }
+
+    public function getPaidStatusIcon()
+    {
+        return '<span class="text-' . ($this->is_paid ? 'success' : 'danger') . ' glyphicon glyphicon-' . ($this->is_paid ? 'ok' : 'remove') . '-sign"></span>';
+    }
+
+    public function getOrderedStatusIcon()
+    {
+        if($this->is_all_ordered){
+            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
+        }
+        if($this->ordered_left == count($this->items)){
+            return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
+        }
+        return '<span class="text-warning glyphicon glyphicon-hourglass"></span>';
+    }
+
+    public function getArrivedStatusIcon()
+    {
+        if($this->is_all_arrived){
+            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
+        }
+        if($this->arrived_left == count($this->items)){
+            return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
+        }
+        return '<span class="text-warning glyphicon glyphicon-hourglass"></span>';
+    }
+
+    public function getCollectedStatusIcon()
+    {
+        if($this->is_all_collected){
+            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
+        }
+        if($this->collected_left == count($this->items)){
+            return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
+        }
+        return '<span class="text-warning glyphicon glyphicon-hourglass"></span>';
     }
 
     protected function _getStatus()
     {
-        if($this->is_collected){
+        if ($this->is_all_collected) {
             return 'Collected';
         }
-        if($this->is_ordered){
+        if ($this->is_all_ordered) {
             return 'Ordered';
         }
-        if($this->is_paid) {
+        if ($this->is_paid) {
             return 'Waiting for order';
         }
         return 'Waiting for payment';
