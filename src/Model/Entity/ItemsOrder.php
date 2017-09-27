@@ -2,28 +2,28 @@
 
 namespace SUSC\Model\Entity;
 
-use Cake\I18n\Time;
 use Cake\ORM\Entity;
 
 /**
- * KitItemsOrder Entity
+ * ItemsOrder Entity
  *
  * @property string $id
  * @property int $order_id
- * @property string $kit_id
+ * @property string $item_id
  * @property string $size
  * @property int $quantity
  * @property string $additional_info
  * @property float $price
- * @property string $formattedPrice
  * @property float $subtotal
+ * @property string $formattedPrice
  * @property string $formattedSubtotal
- * @property Time $ordered
- * @property Time $arrived
- * @property Time $collected
- * @property boolean $isOrdered
- * @property boolean $isArrived
- * @property boolean $isCollected
+ * @property boolean $is_ordered
+ * @property boolean $is_arrived
+ * @property boolean $is_collected
+ * @property int $processed_order_id
+ * @property ProcessedOrder $processed_order
+ * @property \Cake\I18n\FrozenTime $arrived
+ * @property \Cake\I18n\FrozenTime $collected
  *
  * @property \SUSC\Model\Entity\Order $order
  * @property \SUSC\Model\Entity\Item $item
@@ -42,10 +42,35 @@ class ItemsOrder extends Entity
      */
     protected $_accessible = [
         '*' => true,
-        'id' => false,
-        'order_id' => false,
-        'kit_id' => false
+        'id' => false
     ];
+
+    public function getOrderedStatusIcon()
+    {
+        if ($this->is_ordered) {
+            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
+        } else {
+            return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
+        }
+    }
+
+    public function getArrivedStatusIcon()
+    {
+        if ($this->is_arrived) {
+            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
+        } else {
+            return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
+        }
+    }
+
+    public function getCollectedStatusIcon()
+    {
+        if ($this->is_collected) {
+            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
+        } else {
+            return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
+        }
+    }
 
     protected function _getFormattedPrice()
     {
@@ -59,7 +84,8 @@ class ItemsOrder extends Entity
 
     protected function _getIsArrived()
     {
-        return $this->arrived != null;
+        if ($this->processed_order === null) return null;
+        return $this->processed_order->is_arrived;
     }
 
     protected function _getIsCollected()
@@ -69,6 +95,7 @@ class ItemsOrder extends Entity
 
     protected function _getIsOrdered()
     {
-        return $this->ordered != null;
+        if ($this->processed_order === null) return null;
+        return $this->processed_order->is_ordered;
     }
 }

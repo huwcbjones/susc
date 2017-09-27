@@ -18,14 +18,17 @@ use Cake\ORM\Entity;
  * @property string $status
  * @property FrozenTime $placed
  * @property Time $paid
- * @property Time $ordered
- * @property Time $collected
+ * @property int $ordered_left
+ * @property int $arrived_left
+ * @property int $collected_left
  * @property bool $is_paid
- * @property bool $is_ordered
- * @property bool $is_collected
+ * @property bool $is_all_ordered
+ * @property bool $is_all_arrived
+ * @property bool $is_all_collected
  *
  * @property User $user
- * @property Item[] $items
+ * @property ItemsOrder[] $items_orders
+ * @property ItemsOrder[] $items
  */
 class Order extends Entity
 {
@@ -43,6 +46,53 @@ class Order extends Entity
         '*' => true,
         'id' => false
     ];
+
+    protected $orderedCount = null;
+    protected $arrivedCount = null;
+    protected $collectedCount = null;
+
+    public function getPaidStatusIcon()
+    {
+        return '<span class="text-' . ($this->is_paid ? 'success' : 'danger') . ' glyphicon glyphicon-' . ($this->is_paid ? 'ok' : 'remove') . '-sign"></span>';
+    }
+
+    public function getOrderedStatusIcon()
+    {
+        if ($this->is_all_ordered) {
+            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
+        }
+        if ($this->ordered_left == count($this->items)) {
+            return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
+        }
+        return '<span class="text-warning glyphicon glyphicon-hourglass"></span>';
+    }
+
+    public function getArrivedStatusIcon()
+    {
+        if ($this->is_all_arrived) {
+            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
+        }
+        if ($this->arrived_left == count($this->items)) {
+            return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
+        }
+        return '<span class="text-warning glyphicon glyphicon-hourglass"></span>';
+    }
+
+    public function getCollectedStatusIcon()
+    {
+        if ($this->is_all_collected) {
+            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
+        }
+        if ($this->collected_left == count($this->items)) {
+            return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
+        }
+        return '<span class="text-warning glyphicon glyphicon-hourglass"></span>';
+    }
+
+    protected function _getItems()
+    {
+        return $this->items_orders;
+    }
 
     protected function _getFormattedTotal()
     {
@@ -66,97 +116,58 @@ class Order extends Entity
 
     protected function _getOrderedLeft()
     {
-        $count = 0;
+        if ($this->orderedCount == null) $this->_countStats();
+        return count($this->items) - $this->orderedCount;
+    }
+
+    protected function _countStats()
+    {
+        $ordered = $arrived = $collected = 0;
+
         foreach ($this->items as $item) {
-            if ($item->_joinData->ordered == null) $count++;
+            if ($item->is_ordered) $ordered++;
+            if ($item->is_arrived) $arrived++;
+            if ($item->is_collected) $collected++;
         }
-        return $count;
+        $this->orderedCount = $ordered;
+        $this->arrivedCount = $arrived;
+        $this->collectedCount = $collected;
     }
 
     protected function _getIsAllOrdered()
     {
-        foreach ($this->items as $item) {
-            if ($item->_joinData->ordered == null) return false;
-        }
-        return true;
+        return $this->ordered_left == 0;
     }
 
     protected function _getArrivedLeft()
     {
-        $count = 0;
-        foreach ($this->items as $item) {
-            if ($item->_joinData->arrived == null) $count++;
-        }
-        return $count;
+        if ($this->arrivedCount == null) $this->_countStats();
+        return count($this->items) - $this->arrivedCount;
     }
 
     protected function _getIsAllArrived()
     {
-        foreach ($this->items as $item) {
-            if ($item->_joinData->arrived == null) return false;
-        }
-        return true;
+        return $this->arrived_left == 0;
     }
 
     protected function _getCollectedLeft()
     {
-        $count = 0;
-        foreach ($this->items as $item) {
-            if ($item->_joinData->collected == null) $count++;
-        }
-        return $count;
+        if ($this->collectedCount == null) $this->_countStats();
+        return count($this->items) - $this->collectedCount;
     }
 
     protected function _getIsAllCollected()
     {
-        foreach ($this->items as $item) {
-            if ($item->_joinData->collected == null) return false;
-        }
-        return true;
-    }
-
-    public function getPaidStatusIcon()
-    {
-        return '<span class="text-' . ($this->is_paid ? 'success' : 'danger') . ' glyphicon glyphicon-' . ($this->is_paid ? 'ok' : 'remove') . '-sign"></span>';
-    }
-
-    public function getOrderedStatusIcon()
-    {
-        if($this->is_all_ordered){
-            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
-        }
-        if($this->ordered_left == count($this->items)){
-            return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
-        }
-        return '<span class="text-warning glyphicon glyphicon-hourglass"></span>';
-    }
-
-    public function getArrivedStatusIcon()
-    {
-        if($this->is_all_arrived){
-            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
-        }
-        if($this->arrived_left == count($this->items)){
-            return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
-        }
-        return '<span class="text-warning glyphicon glyphicon-hourglass"></span>';
-    }
-
-    public function getCollectedStatusIcon()
-    {
-        if($this->is_all_collected){
-            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
-        }
-        if($this->collected_left == count($this->items)){
-            return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
-        }
-        return '<span class="text-warning glyphicon glyphicon-hourglass"></span>';
+        return $this->collected_left == 0;
     }
 
     protected function _getStatus()
     {
         if ($this->is_all_collected) {
             return 'Collected';
+        }
+        if($this->is_all_arrived){
+            return 'Waiting for collection';
         }
         if ($this->is_all_ordered) {
             return 'Ordered';

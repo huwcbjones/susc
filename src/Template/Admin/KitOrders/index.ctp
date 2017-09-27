@@ -24,6 +24,7 @@ $this->assign('title', 'Kit Orders');
                 <th scope="col"><?= $this->Paginator->sort('status') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('is_paid', '<attr title="Paid">P?</attr>', ['escape' => false]) ?></th>
                 <th scope="col"><?= $this->Paginator->sort('is_ordered', '<attr title="Ordered">O?</attr>', ['escape' => false]) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('is_arrived', '<attr title="Arrived">A?</attr>', ['escape' => false]) ?></th>
                 <th scope="col"><?= $this->Paginator->sort('is_collected', '<attr title="Collected">C?</attr>', ['escape' => false]) ?></th>
                 <?php if ($currentUser->isAuthorised('admin.kit-orders.view')): ?>
                     <th scope="col" class="actions"></th>
@@ -42,20 +43,19 @@ $this->assign('title', 'Kit Orders');
                     <td><?= h($order->formattedTotal) ?></td>
                     <td><?= h($order->paymentMethod) ?></td>
                     <td><?= h($order->status) ?></td>
-                    <td>
-                        <?= $order->getPaidStatusIcon() ?>
-                    </td>
-                    <td>
-                        <?= $order->getOrderedStatusIcon() ?>
-                    </td>
-                    <td>
-                        <?= $order->getCollectedStatusIcon() ?>
-                    </td>
+                    <td><?= $order->getPaidStatusIcon() ?></td>
+                    <td><?= $order->getOrderedStatusIcon() ?></td>
+                    <td><?= $order->getArrivedStatusIcon() ?></td>
+                    <td><?= $order->getCollectedStatusIcon() ?></td>
                     <?php if ($currentUser->isAuthorised('admin.kit-orders.view')): ?>
                         <td><?= $this->Html->link('View', ['action' => 'view', $order->id]) ?></td>
                     <?php endif; ?>
                     <?php if ($currentUser->isAuthorised('admin.kit-orders.status')): ?>
-                        <td><?= $this->Form->postLink(__('Paid'), ['action' => 'paid', $order->id]) ?></td>
+                        <td>
+                        <?php if ($order->ordered_left == count($order->items)): ?>
+                            <?= $this->Form->postLink(__('Paid'), ['action' => 'paid', $order->id]) ?></td>
+                        <?php endif; ?>
+                        </td>
                     <?php endif; ?>
                 </tr>
             <?php endforeach; ?>

@@ -46,8 +46,9 @@ class OrdersTable extends Table
             'joinType' => 'INNER'
         ]);
 
-        $this->belongsToMany('Items', [
-            'through' => 'ItemsOrders'
+        $this->hasMany('ItemsOrders', [
+            'foreignKey' => 'order_id',
+            'joinType' => 'INNER'
         ]);
     }
 
@@ -100,7 +101,7 @@ class OrdersTable extends Table
 
     public function find($type = 'all', $options = [])
     {
-        return parent::find($type, $options)->contain(['Items']);
+        return parent::find($type, $options)->contain(['Users', 'ItemsOrders' => ['ProcessedOrders', 'Items']]);
     }
 
     public function findUser(Query $query, array $options = [])

@@ -15,12 +15,11 @@ $this->assign('title', 'Process Orders');
 ?>
 
 <h3>About Order Processing</h3>
-<p>To process orders, click the process orders button below.</p>
+<p>To process orders, click the process orders button below. The website will then create an order batch based on the options below.</p>
 <ul>
     <li>Orders that have <strong>not</strong> been paid for will <strong>not</strong> be included</li>
     <li>Orders that have previously been processed will <strong>not</strong> be included</li>
-    <li>The orders will then be converted into a format that can be imported into <code>Core-Order-Form.xlsm</code> and <code>Athletics-Order-Form.xlsm</code></li>
-    <li>After conversion, you can download the orders.</li>
+    <li>After processing, you can download the orders.</li>
 </ul>
 
 
@@ -28,6 +27,7 @@ $this->assign('title', 'Process Orders');
 
 <?= $this->Form->create() ?>
 <h4>Options</h4>
+<p>TODO: Add ability to select what items to process. If you're lucky you can have some templates so you can just select "Masuri Kit" and have the Masuri kit processed! :)</p>
 
 <?= $this->Form->submit('Process Order', ['class' => ['btn-primary']]) ?>
 <?= $this->Form->end() ?>

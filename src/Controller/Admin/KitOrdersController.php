@@ -13,8 +13,10 @@ use DateTime;
 use SUSC\Controller\AppController;
 use SUSC\Controller\Component\KitProcessComponent;
 use SUSC\Model\Entity\Order;
+use SUSC\Model\Entity\ProcessedOrder;
 use SUSC\Model\Table\ItemsOrdersTable;
 use SUSC\Model\Table\OrdersTable;
+use SUSC\Model\Table\ProcessedOrdersTable;
 
 /**
  * Class KitOrdersController
@@ -23,6 +25,7 @@ use SUSC\Model\Table\OrdersTable;
  * @property KitProcessComponent $KitProcess
  * @property OrdersTable $Orders
  * @property ItemsOrdersTable $ItemsOrders
+ * @property ProcessedOrdersTable $ProcessedOrders
  */
 class KitOrdersController extends AppController
 {
@@ -32,6 +35,7 @@ class KitOrdersController extends AppController
         parent::initialize();
         $this->Orders = TableRegistry::get('Orders');
         $this->ItemsOrders = TableRegistry::get('ItemsOrders');
+        $this->ProcessedOrders = TableRegistry::get('ProcessedOrders');
     }
 
 
@@ -40,6 +44,9 @@ class KitOrdersController extends AppController
         if ($this->request->getParam('action') == 'index') return 'admin.kit-orders.*';
         if (in_array($this->request->getParam('action'), ['paid', 'ordered', 'arrived', 'collected'])) {
             return 'admin.kit-orders.status';
+        }
+        if (in_array($this->request->getParam('action'), ['processedOrders'])) {
+            return 'admin.kit-orders.process';
         }
         return parent::getACL();
     }
@@ -66,12 +73,19 @@ class KitOrdersController extends AppController
 
         /** @var Order $order */
         $order = $this->Orders->get($id);
-        $order->paid = ($order->paid == null) ? new DateTime() : null;
+        if($order->is_paid) {
+            $this->Flash->success('Order has already been marked as paid.');
+            return $this->redirect(['action' => 'index']);
+        }
+
+        $order->paid = new DateTime();
 
         if ($this->Orders->save($order)) {
-            $this->Flash->success('Order paid status toggled.');
+            // TODO: Email user to confirm payment
+
+            $this->Flash->success('Order has been marked as paid.');
         } else {
-            $this->Flash->error('Failed to toggle order paid status.');
+            $this->Flash->error('Failed to mark order as paid!');
         }
         return $this->redirect(['action' => 'index']);
     }
@@ -82,14 +96,18 @@ class KitOrdersController extends AppController
             return $this->redirect($this->referer());
         }
 
-        /** @var Order $order */
-        $item = $this->ItemsOrders->get($id);
-        $item->ordered = ($item->ordered == null) ? new DateTime() : null;
+        /** @var ProcessedOrder $order */
+        $order = $this->ProcessedOrders->get($id);
+        $order->ordered = ($order->ordered == null) ? new DateTime() : null;
 
-        if ($this->ItemsOrders->save($item)) {
-            $this->Flash->success('Item status toggled.');
+        if ($this->ProcessedOrders->save($order)) {
+            if($order->is_ordered) {
+                $this->Flash->success('Marked batch as ordered.');
+            } else {
+                $this->Flash->success('Marked batch as <strong>not</strong> ordered.');
+            }
         } else {
-            $this->Flash->error('Failed to toggle item status.');
+            $this->Flash->error('Failed to set batch order status.');
         }
         return $this->redirect($this->referer());
     }
@@ -100,14 +118,17 @@ class KitOrdersController extends AppController
             return $this->redirect($this->referer());
         }
 
-        /** @var Order $order */
-        $item = $this->ItemsOrders->get($id);
-        $item->arrived = ($item->arrived == null) ? new DateTime() : null;
+        /** @var ProcessedOrder $order */
+        if($id === null) $id = $this->request->getData('id');
+        $order = $this->ProcessedOrders->get($id);
+        $order->arrived = ($order->arrived == null) ? new DateTime() : null;
 
-        if ($this->ItemsOrders->save($item)) {
-            $this->Flash->success('Item arrived status toggled.');
+        if ($this->ProcessedOrders->save($order)) {
+            // TODO: Send email to users to say item is ready for collection
+
+            $this->Flash->success('Batch marked as arrived. Users have been emailed to collect their items.');
         } else {
-            $this->Flash->error('Failed to toggle item arrived status.');
+        $this->Flash->error('Failed to mark the batch as arrived!');
         }
         return $this->redirect($this->referer());
     }
@@ -120,14 +141,24 @@ class KitOrdersController extends AppController
 
         /** @var Order $order */
         $item = $this->ItemsOrders->get($id);
-        $item->collected = ($item->collected == null) ? new DateTime() : null;
+        if($item->is_collected) return $this->redirect($this->referer());
+
+        $item->collected = new DateTime();
 
         if ($this->ItemsOrders->save($item)) {
-            $this->Flash->success('Item collection status toggled.');
+            // TODO: Email user to confirm collection
+
+            $this->Flash->success('Item marked as collected.');
         } else {
-            $this->Flash->error('Failed to toggle item collection status.');
+            $this->Flash->error('Failed mark item as collected!');
         }
         return $this->redirect($this->referer());
+    }
+
+    public function processedOrders() {
+        $orders = $this->paginate($this->ProcessedOrders, ['order' => ['created' => 'DESC'], 'contain' => ['Users', 'ItemsOrders' => ['Orders', 'Items']]]);
+
+        $this->set('orders', $orders);
     }
 
     public function config()
@@ -183,7 +214,7 @@ class KitOrdersController extends AppController
 
         try {
             $this->KitProcess->process();
-            return $this->redirect(['action' => 'download']);
+            return $this->redirect(['action' => 'processed-orders']);
         } catch (Exception $ex){
 
         }

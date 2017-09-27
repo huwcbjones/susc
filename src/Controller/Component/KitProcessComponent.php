@@ -9,12 +9,14 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\I18n\Time;
 use Cake\ORM\ResultSet;
 use Cake\ORM\TableRegistry;
+use SUSC\Controller\AppController;
 use SUSC\Model\Entity\Config;
 use SUSC\Model\Entity\ItemsOrder;
 use SUSC\Model\Table\ConfigTable;
 use SUSC\Model\Table\ItemsOrdersTable;
 use SUSC\Model\Table\ItemsTable;
 use SUSC\Model\Table\OrdersTable;
+use SUSC\Model\Table\ProcessedOrdersTable;
 
 /**
  * SUSC Website
@@ -28,6 +30,8 @@ use SUSC\Model\Table\OrdersTable;
  * @property OrdersTable $Orders
  * @property ConfigTable $Config
  * @property ItemsTable $Items
+ * @property ProcessedOrdersTable $ProcessedOrders
+ * @property AppController $Controller
  */
 class KitProcessComponent extends Component
 {
@@ -41,17 +45,18 @@ class KitProcessComponent extends Component
     public function initialize(array $config)
     {
         parent::initialize($config);
+        $this->Controller = $this->getController();
         $this->ItemsOrders = TableRegistry::get('ItemsOrders');
-        $this->Orders = TableRegistry::get('Orders');
+        $this->ProcessedOrders = TableRegistry::get('ProcessedOrders');
         $this->Config = TableRegistry::get('Config');
-        $this->Items = TableRegistry::get('Items');
     }
 
-    public function process()
+
+    public function createDownload()
     {
         $this->_tempDir = $this->_tempdir();
         $this->_loadItems();
-        if(count($this->_items)){
+        if (count($this->_items)) {
             $this->Flash->error('Could no process orders. No orders to process (you are up to date!)');
         }
         $this->_processItems();
@@ -205,6 +210,37 @@ class KitProcessComponent extends Component
             }
             rmdir($dir);
         }
+    }
+
+    public function process()
+    {
+        /** @var ItemsOrder[] $items */
+        $items = $this->ItemsOrders->find('unprocessed')->toArray();
+        if (count($items) === 0) {
+            $this->Flash->success('No orders to process (you are up to date!)');
+            return;
+        }
+
+        $now = new Time();
+        $order = $this->ProcessedOrders->newEntity([
+            'user_id' => $this->Controller->currentUser->id,
+            'ordered' => NULL,
+            'created' => $now
+        ]);
+
+        $this->ProcessedOrders->saveOrFail($order);
+
+        foreach ($items as &$item) {
+            $item->processed_order_id = $order->id;
+        }
+
+        $save = $this->ItemsOrders->saveMany($items);
+        if ($save !== false) {
+            $this->Flash->success('Batch processed!');
+        } else {
+            $this->Flash->error('Failed to save batch!)');
+        }
+
     }
 
     /**

@@ -24,6 +24,7 @@ $links['kit-items_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'con
 $links['kit-orders'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index'])) !== false;
 $links['kit-orders_config'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'config']);
 $links['kit-orders_process'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'process']);
+$links['kit-orders_processed'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'processedOrders']);
 ?>
 
 <?= $this->element('header', ['fixedTop' => true]) ?>
@@ -103,6 +104,9 @@ $links['kit-orders_process'] = $currentUrl === Router::url(['prefix' => 'admin',
                 <ul class="nav nav-sidebar">
                     <li<?= $links['kit-orders'] ? ' class="active"' : '' ?>><?= $this->Html->link('Kit Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index']) ?></li>
                     <?php if ($links['kit-orders']) : ?>
+                        <?php if ($currentUser->isAuthorised('admin.kit-orders.process')): ?>
+                            <li<?= $links['kit-orders_processed'] ? ' class="active"' : '' ?>><?= $this->Html->link('Processed Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'processedOrders']) ?></li>
+                        <?php endif; ?>
                         <?php if ($currentUser->isAuthorised('admin.kit-orders.process')): ?>
                             <li<?= $links['kit-orders_process'] ? ' class="active"' : '' ?>><?= $this->Html->link('Process Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'process']) ?></li>
                         <?php endif; ?>

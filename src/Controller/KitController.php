@@ -142,28 +142,24 @@ class KitController extends AppController
             'payment' => $this->request->getData('payment'),
             'date_ordered' => (new DateTime())->getTimestamp(),
             'total' => 0,
-            'items' => []
+            'items_orders' => []
         ];
 
         foreach ($this->BasketData as $hash => $d) {
-            $item = $this->Kit->get($d['id']);
-
             $item_data = [
-                'id' => $d['id'],
-                '_joinData' => [
-                    'size' => $d['size'],
-                    'quantity' => $d['quantity'],
-                    'additional_info' => $d['additional_info'],
-                    'price' => $d['item']->price,
-                    'subtotal' => $d['item']->price * $d['quantity']
-                ]
+                'item_id' => $d['id'],
+                'size' => $d['size'],
+                'quantity' => $d['quantity'],
+                'additional_info' => $d['additional_info'],
+                'price' => $d['item']->price,
+                'subtotal' => $d['item']->price * $d['quantity']
             ];
-            $data['total'] += $item_data['_joinData']['subtotal'];
-            $data['items'][] = $item_data;
+            $data['total'] += $item_data['subtotal'];
+            $data['items_orders'][] = $item_data;
         }
         $order = $this->Orders->newEntity($data);
 
-        if ($this->Orders->save($order, ['associated' => ['Items._joinData']])) {
+        if ($this->Orders->save($order, ['associated' => ['ItemsOrders']])) {
             $this->request->session()->write('Kit.Basket.Total', 0);
             $this->request->session()->write('Kit.Basket.Data', []);
             $email = new Email();
@@ -183,7 +179,7 @@ class KitController extends AppController
             'order' => ['id' => 'DESC']
         ]);
 
-        $this->set('orders', $orders);
+        $this->set(compact('items', 'orders'));
     }
 
     public function viewOrder($id = null)

@@ -1,7 +1,7 @@
 <?php
+
 namespace SUSC\Model\Table;
 
-use Cake\Datasource\EntityInterface;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -10,16 +10,17 @@ use Cake\Validation\Validator;
 use SUSC\Model\Entity\ItemsOrder;
 
 /**
- * KitItemsOrders Model
+ * ItemsOrders Model
  *
- * @property OrdersTable|BelongsTo $KitOrders
- * @property ItemsTable|BelongsTo $KitItems
+ * @property OrdersTable|BelongsTo $Orders
+ * @property ItemsTable|BelongsTo $Items
+ * @property |\Cake\ORM\Association\BelongsToMany $ProcessedOrders
  *
  * @method ItemsOrder get($primaryKey, $options = [])
  * @method ItemsOrder newEntity($data = null, array $options = [])
  * @method ItemsOrder[] newEntities(array $data, array $options = [])
- * @method ItemsOrder|bool save(EntityInterface $entity, $options = [])
- * @method ItemsOrder patchEntity(EntityInterface $entity, array $data, array $options = [])
+ * @method ItemsOrder|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method ItemsOrder patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method ItemsOrder[] patchEntities($entities, array $data, array $options = [])
  * @method ItemsOrder findOrCreate($search, callable $callback = null, $options = [])
  */
@@ -37,10 +38,21 @@ class ItemsOrdersTable extends Table
         parent::initialize($config);
 
         $this->setTable('items_orders');
+        $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
-        $this->belongsTo('Orders');
-        $this->belongsTo('Items');
+        $this->belongsTo('Orders', [
+            'foreignKey' => 'order_id',
+            'joinType' => 'INNER'
+        ]);
+        $this->belongsTo('Items', [
+            'foreignKey' => 'item_id',
+            'joinType' => 'INNER'
+        ]);
+        $this->belongsTo('ProcessedOrders', [
+            'foreignKey' => 'processed_order_id',
+            'joinType' => 'LEFT'
+        ]);
     }
 
     /**
@@ -51,6 +63,10 @@ class ItemsOrdersTable extends Table
      */
     public function validationDefault(Validator $validator)
     {
+        $validator
+            ->uuid('id')
+            ->allowEmpty('id', 'create');
+
         $validator
             ->requirePresence('size', 'create')
             ->allowEmpty('size');
@@ -90,20 +106,27 @@ class ItemsOrdersTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['order_id'], 'Orders'));
-        $rules->add($rules->existsIn(['kit_id'], 'Items'));
+        $rules->add($rules->existsIn(['item_id'], 'Items'));
 
         return $rules;
     }
 
-    public function findItemId(Query $query, $options = []){
+    public function find($type = 'all', $options = [])
+    {
+        return parent::find($type, $options)->contain(['ProcessedOrders']);
+    }
+
+    public function findItemId(Query $query, $options = [])
+    {
         return $query
             ->contain(['Items'])
             ->where(['Items.id' => $options['id']]);
     }
 
-    public function findUnprocessed(Query $query, $options = []){
+    public function findUnprocessed(Query $query, $options = [])
+    {
         return $query
-            ->contain(['Orders', 'Orders.Users', 'Items'])
-            ->where(['Orders.paid IS NOT NULL', 'ordered IS NULL']);
+            ->contain(['Orders'])
+            ->where(['Orders.paid IS NOT NULL', 'processed_order_id IS NULL']);
     }
 }

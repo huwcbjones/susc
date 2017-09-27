@@ -126,6 +126,7 @@ namespace SUSC\Controller {
          */
         public function getACL()
         {
+            $this->log('Action: ' . $this->request->getParam('action'), LogLevel::DEBUG);
             // Create Acl id ($prefix).$controller.$action
             $acl = $this->_convertControllerString($this->request->getParam('controller'));
             if ($this->request->getParam('prefix') != '') $acl = strtolower($this->request->getParam('prefix')) . '.' . $acl;

@@ -2,6 +2,7 @@
 
 namespace SUSC\Model\Entity;
 
+use Cake\Collection\CollectionInterface;
 use Cake\ORM\Entity;
 use huwcbjones\markdown\GithubMarkdownExtended;
 
@@ -18,7 +19,8 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  * @property string $description
  * @property string $sizes
  * @property string[] $sizeList
- * @property ItemsOrder[] $_joinData;
+ * @property ItemsOrder $_joinData;
+ * @property ItemsOrder[]|CollectionInterface $items_orders
  * @property boolean $status
  * @property boolean $additional_info
  * @property string $additional_info_description

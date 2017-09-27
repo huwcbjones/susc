@@ -1,8 +1,11 @@
 <?php
 
 use SUSC\Model\Entity\Order;
+use SUSC\View\AppView;
 
-/** @var Order $order */
+/** @var Order $order
+ * @var AppView $this
+ */
 
 $this->assign('title', 'Order #' . $order->id);
 $this->layout('profile');
@@ -38,19 +41,19 @@ $this->layout('profile');
                     <tbody>
                     <?php foreach ($order->items as $item): ?>
                         <tr>
-                            <th data-th="Item"><?= $this->Html->link(h($item->title), [
+                            <th data-th="Item"><?= $this->Html->link(h($item->item->title), [
                                     'controller' => 'kit',
                                     'action' => 'view',
-                                    'slug' => $item->slug
+                                    'slug' => $item->item->slug
                                 ]) ?></th>
-                            <td data-th="Additional Info" class="text-center"><?= h($item->displayAdditionalInformation($item->_joinData->additional_info)) ?></td>
-                            <td data-th="Size" class="text-center"><?= $item->_joinData->size ?></td>
-                            <td data-th="Price" class="text-center"><?= $item->_joinData->formattedPrice ?></td>
-                            <td data-th="Quantity" class="text-center"><?= $item->_joinData->quantity ?></td>
-                            <td data-th="Quantity" class="text-center"><?= $item->_joinData->formattedSubtotal ?></td>
-                            <td><span class="text-<?= ($item->_joinData->ordered ? 'success' : 'danger') ?> glyphicon glyphicon-<?= ($item->_joinData->ordered ? 'ok' : 'remove') ?>-sign"></span></td>
-                            <td><span class="text-<?= ($item->_joinData->arrived ? 'success' : 'danger') ?> glyphicon glyphicon-<?= ($item->_joinData->arrived ? 'ok' : 'remove') ?>-sign"></span></td>
-                            <td><span class="text-<?= ($item->_joinData->collected ? 'success' : 'danger') ?> glyphicon glyphicon-<?= ($item->_joinData->collected ? 'ok' : 'remove') ?>-sign"></span></td>
+                            <td data-th="Additional Info" class="text-center"><?= h($item->item->displayAdditionalInformation($item->additional_info)) ?></td>
+                            <td data-th="Size" class="text-center"><?= $item->size ?></td>
+                            <td data-th="Price" class="text-center"><?= $item->formattedPrice ?></td>
+                            <td data-th="Quantity" class="text-center"><?= $item->quantity ?></td>
+                            <td data-th="Quantity" class="text-center"><?= $item->formattedSubtotal ?></td>
+                            <td><span class="text-<?= ($item->is_ordered ? 'success' : 'danger') ?> glyphicon glyphicon-<?= ($item->is_ordered ? 'ok' : 'remove') ?>-sign"></span></td>
+                            <td><span class="text-<?= ($item->is_arrived ? 'success' : 'danger') ?> glyphicon glyphicon-<?= ($item->is_arrived ? 'ok' : 'remove') ?>-sign"></span></td>
+                            <td><span class="text-<?= ($item->is_collected ? 'success' : 'danger') ?> glyphicon glyphicon-<?= ($item->is_collected ? 'ok' : 'remove') ?>-sign"></span></td>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
