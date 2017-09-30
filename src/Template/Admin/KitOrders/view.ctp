@@ -25,7 +25,16 @@ $this->assign('title', 'View Order #' . $order->id);
 <div class="row">
     <div class="col-xs-12">
         <div class="panel panel-default">
-            <div class="panel-heading"> Order #<?= $order->id ?></div>
+            <div class="panel-heading">
+                <div>
+                    <h3 style="display:inline">Order #<?= $order->id ?></h3>
+                    <?php if ($order->ordered_left == count($order->items)): ?>
+                        <div style="display:inline" class="pull-right">
+                            <?= $this->Form->postLink('Cancel Order', ['action' => 'cancel', $order->id], ['confirm' => 'Are you sure you want to cancel this order?', 'class' => ['btn', 'btn-danger', 'btn-sm']]) ?>
+                        </div>
+                    <?php endif ?>
+                </div>
+            </div>
             <div class="panel-body">
                 <p><strong>Name:</strong> <?= $order->user->full_name ?></p>
                 <p><strong>Ordered:</strong> <?= $this->Time->i18nFormat($order->placed, null, null, 'Europe/London') ?></p>
@@ -60,7 +69,7 @@ $this->assign('title', 'View Order #' . $order->id);
                     <?php foreach ($order->items as $item): ?>
                         <tr>
                             <th data-th="Item"><?= $this->Html->link(h($item->item->title), [
-                                    'controller' => 'kit',
+                                    '_name' => 'kit_item',
                                     'action' => 'view',
                                     'slug' => $item->item->slug
                                 ]) ?></th>
