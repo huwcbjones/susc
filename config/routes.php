@@ -205,6 +205,7 @@ Router::scope('/', function (RouteBuilder $routes) {
         $routes->connect('/', ['action' => 'index'], ['_name' => 'kit']);
         $routes->connect('/basket', ['action' => 'basket'], ['_name' => 'basket']);
         $routes->connect('/pay', ['action' => 'pay'], ['_name' => 'pay']);
+        $routes->connect('/faq', ['action' => 'faq'], ['_name' => 'faq']);
         $routes->connect('/order', ['action' => 'orders'], ['_name' => 'order']);
         $routes->connect('/order/success', ['action' => 'order_complete'], ['_name' => 'order_complete']);
         $routes->connect('/order/:orderid',
