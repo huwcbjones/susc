@@ -71,16 +71,12 @@ class OrdersTable extends Table
             ->allowEmpty('total');
 
         $validator
-            ->requirePresence('date_ordered', 'create')
-            ->notEmpty('date_ordered');
+            ->requirePresence('placed', 'create')
+            ->notEmpty('placed');
 
         $validator
             ->dateTime('paid_date')
             ->allowEmpty('paid_date');
-
-        $validator
-            ->boolean('is_paid')
-            ->allowEmpty('is_paid');
 
         return $validator;
     }

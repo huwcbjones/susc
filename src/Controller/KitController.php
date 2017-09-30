@@ -145,7 +145,7 @@ class KitController extends AppController
         $data = [
             'user_id' => $this->currentUser->id,
             'payment' => $this->request->getData('payment'),
-            'date_ordered' => (new DateTime())->getTimestamp(),
+            'placed' => (new DateTime())->getTimestamp(),
             'total' => 0,
             'items_orders' => []
         ];
