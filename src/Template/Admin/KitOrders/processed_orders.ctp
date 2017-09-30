@@ -31,8 +31,8 @@ $this->assign('title', 'Processed Orders');
             <tr>
                 <th scope="col"><?= $this->Paginator->sort('id', 'Batch #') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('created', 'Order Date') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('item_count', 'Item Count') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('total', 'Total Amount') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('item_count', 'Items') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('total', 'Total') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('is_ordered', '<attr title="Ordered">O?</attr>', ['escape' => false]) ?></th>
                 <th scope="col"><?= $this->Paginator->sort('is_arrived', '<attr title="Arrived">A?</attr>', ['escape' => false]) ?></th>
                 <?php if ($currentUser->isAuthorised('admin.kit-orders.process')): ?>
@@ -42,15 +42,15 @@ $this->assign('title', 'Processed Orders');
                     <th scope="col" class="actions"></th>
                 <?php endif ?>
                 <?php if ($currentUser->isAuthorised('admin.kit-orders.view')): ?>
-                    <th scope="col" class="actions"></th>
+                    <th scope="col" class="actions" colspan="2"></th>
                 <?php endif ?>
             </tr>
             </thead>
             <tbody>
             <?php foreach ($orders as $order): ?>
                 <tr>
-                    <td><?= h($order->id) ?></td>
-                    <td><?= $this->Time->format($order->created, null, null, 'Europe/London') ?></td>
+                    <th><?= h($order->id) ?></th>
+                    <td><?= $order->order_date ?></td>
                     <td><?= h($order->item_count) ?></td>
                     <td><?= h($order->formattedTotal) ?></td>
                     <td>
@@ -68,11 +68,19 @@ $this->assign('title', 'Processed Orders');
                     <?php endif; ?>
                     <?php if ($currentUser->isAuthorised('admin.kit-orders.process')): ?>
                         <td>
-                        <?php if (!$order->is_arrived): ?>
-                            <td><a href="#" onclick="$('#arrivedID').val(<?= $order->id ?>); $('#arriveConfirmation').modal()">Arrived</a></td>
-                        <?php endif; ?>
+                            <?php if (!$order->is_arrived): ?>
+                                <?php if ($order->is_ordered) : ?>
+                                    <a href="#" onclick="$('#arrivedID').val(<?= $order->id ?>); $('#arriveConfirmation').modal()">Arrived</a>
+                                <?php else: ?>
+                                    <span class="text-muted">Arrived</span>
+                                <?php endif; ?>
+                            <?php endif; ?>
                         </td>
                     <?php endif; ?>
+                    <?php if ($currentUser->isAuthorised('admin.kit-orders.view')): ?>
+                        <td><?= $this->Html->link('View', ['action' => 'processed-orders', $order->id]) ?></td>
+                        <td><?= $this->Html->link('Download', ['action' => 'download', $order->id]) ?></td>
+                    <?php endif ?>
                 </tr>
             <?php endforeach; ?>
             </tbody>
