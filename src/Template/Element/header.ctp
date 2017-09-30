@@ -27,7 +27,8 @@ $links['admin_users'] = $currentUrl === Router::url(['prefix' => 'admin', 'contr
 $links['admin_groups'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index']);
 $links['admin_socials'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Socials', 'action' => 'index']);
 $links['admin_news'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'News', 'action' => 'index']);
-$links['admin_kit'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index']);
+$links['admin_kit-items'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index']);
+$links['admin_kit-orders'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index']);
 $links['kit'] = strpos($currentUrl, Router::url(['_name' => 'kit'])) !== false &&$currentUrl !== Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index']);
 $links['admin_fixtures'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'index']);
 $links['admin_training'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Training', 'action' => 'index']);
@@ -110,6 +111,12 @@ $links['admin_committee'] = $currentUrl === Router::url(['prefix' => 'admin', 'c
                             <?php endif; ?>
                             <?php if ($currentUser->isAuthorised('admin.groups.*')): ?>
                                 <li<?= $links['admin_groups'] ? ' class="active"' : '' ?>><?= $this->Html->link('Groups', ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index']) ?></li>
+                            <?php endif; ?>
+                            <?php if ($currentUser->isAuthorised('admin.kit-items.*')): ?>
+                                <li<?= $links['admin_kit-items'] ? ' class="active"' : '' ?>><?= $this->Html->link('Kit Items', ['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index']) ?></li>
+                            <?php endif; ?>
+                            <?php if ($currentUser->isAuthorised('admin.kit-orders.*')): ?>
+                                <li<?= $links['admin_kit-orders'] ? ' class="active"' : '' ?>><?= $this->Html->link('Kit Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index']) ?></li>
                             <?php endif; ?>
                             <?php if ($currentUser->isAuthorised('admin.news.*')): ?>
                                 <li<?= $links['admin_news'] ? ' class="active"' : '' ?>><?= $this->Html->link('News', ['prefix' => 'admin', 'controller' => 'News', 'action' => 'index']) ?></li>
