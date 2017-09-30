@@ -22,6 +22,7 @@ $links['groups_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'contro
 $links['kit-items'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index'])) !== false;
 $links['kit-items_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'add']);
 $links['kit-orders'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index'])) !== false;
+$links['kit-orders_view'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index']);
 $links['kit-orders_config'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'config']);
 $links['kit-orders_process'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'process']);
 $links['kit-orders_processed'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'processedOrders']);
@@ -104,6 +105,9 @@ $links['kit-orders_processed'] = $currentUrl === Router::url(['prefix' => 'admin
                 <ul class="nav nav-sidebar">
                     <li<?= $links['kit-orders'] ? ' class="active"' : '' ?>><?= $this->Html->link('Kit Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index']) ?></li>
                     <?php if ($links['kit-orders']) : ?>
+                        <?php if ($currentUser->isAuthorised('admin.kit-orders.view')): ?>
+                            <li<?= $links['kit-orders_view'] ? ' class="active"' : '' ?>><?= $this->Html->link('View Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index']) ?></li>
+                        <?php endif; ?>
                         <?php if ($currentUser->isAuthorised('admin.kit-orders.process')): ?>
                             <li<?= $links['kit-orders_processed'] ? ' class="active"' : '' ?>><?= $this->Html->link('Processed Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'processedOrders']) ?></li>
                         <?php endif; ?>

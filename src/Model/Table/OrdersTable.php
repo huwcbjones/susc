@@ -101,11 +101,15 @@ class OrdersTable extends Table
 
     public function find($type = 'all', $options = [])
     {
-        return parent::find($type, $options)->contain(['Users', 'ItemsOrders' => ['ProcessedOrders', 'Items']]);
+        return parent::find($type, $options);
     }
 
     public function findUser(Query $query, array $options = [])
     {
-        return $query->where(['user_id' => $options['user_id']]);
+        return $query->where(['user_id' => $options['user_id']])->contain(['ItemsOrders' => ['ProcessedOrders', 'Items'], 'Users']);
+    }
+
+    public function findID(Query $query, array $options = []){
+        return $query->where(['Orders.id' => $options['id']])->contain(['ItemsOrders' => ['ProcessedOrders', 'Items'], 'Users']);
     }
 }

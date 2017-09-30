@@ -4,11 +4,12 @@ namespace SUSC\Controller\Component;
 
 use Cake\Controller\Component;
 use Cake\Controller\Component\FlashComponent;
+use Cake\Controller\ComponentRegistry;
 use Cake\Core\Exception\Exception;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\I18n\Time;
-use Cake\ORM\ResultSet;
 use Cake\ORM\TableRegistry;
+use Psr\Log\LogLevel;
 use SUSC\Controller\AppController;
 use SUSC\Model\Entity\Config;
 use SUSC\Model\Entity\ItemsOrder;
@@ -17,6 +18,7 @@ use SUSC\Model\Table\ItemsOrdersTable;
 use SUSC\Model\Table\ItemsTable;
 use SUSC\Model\Table\OrdersTable;
 use SUSC\Model\Table\ProcessedOrdersTable;
+use ZipArchive;
 
 /**
  * SUSC Website
@@ -38,8 +40,17 @@ class KitProcessComponent extends Component
 
     public $components = ['Flash'];
 
+    protected $_batchID;
     protected $_tempDir;
     protected $_items;
+    protected $_configMap;
+    protected $_saveDir;
+
+    public function __construct(ComponentRegistry $registry, array $config = [])
+    {
+        $this->_saveDir = WWW_ROOT . 'docs' . DS . 'kit-orders' . DS;
+        parent::__construct($registry, $config);
+    }
 
 
     public function initialize(array $config)
@@ -52,17 +63,19 @@ class KitProcessComponent extends Component
     }
 
 
-    public function createDownload()
+    /**
+     * Creates the download zip from the batch ID
+     * @param $batchID integer Batch to process
+     */
+    public function createDownload($batchID)
     {
+        $this->_batchID = $batchID;
         $this->_tempDir = $this->_tempdir();
+        $this->_loadConfig();
         $this->_loadItems();
-        if (count($this->_items)) {
-            $this->Flash->error('Could no process orders. No orders to process (you are up to date!)');
-        }
         $this->_processItems();
 
         $this->_compressData();
-        $this->_saveItems();
         $this->_cleanUp();
     }
 
@@ -81,23 +94,34 @@ class KitProcessComponent extends Component
         }
         mkdir($tempfile);
         if (is_dir($tempfile)) {
+            $this->log("tempdir: " . $tempfile, LogLevel::DEBUG);
             return $tempfile;
         }
         return false;
     }
 
+    protected function _loadConfig()
+    {
+        $config = $this->Config->find()->where(["`key` LIKE 'kit-orders.%'"])->toArray();
+
+        /** @var Config $conf */
+        foreach ($config as $conf) {
+            if ($conf->value === null) continue;
+            $this->_configMap[$conf->value] = str_replace('kit-orders.', '', $conf->key);
+        }
+    }
+
     protected function _loadItems()
     {
-        $all_items = $this->Items->find('unprocessed')->all();
+        $batch = $this->ProcessedOrders->get($this->_batchID);
         $items = [];
-        foreach ($all_items as $item) {
+        foreach ($batch->items_orders as $item) {
             try {
                 /** * @var Config $configItem */
-                $configItem = $this->Config->find('value', ['value' => $item->id])->firstOrFail();
-                $itemsOrders = $this->ItemsOrders
-                    ->find('itemId', ['id' => $item->id])
-                    ->find('unprocessed')->all();
-                $items[str_replace('kit-orders.', '', $configItem->key)] = $itemsOrders;
+                if (!array_key_exists($item->item_id, $this->_configMap)){
+                    $this->_configMap[$item->item_id] =$item->item->slug;
+                };
+                $items[$this->_configMap[$item->item_id]][] = $item;
             } catch (RecordNotFoundException $ex) {
 
             }
@@ -113,10 +137,12 @@ class KitProcessComponent extends Component
         }
     }
 
-    protected function _processItem($fileName, ResultSet $items)
+    /**
+     * @param $fileName string
+     * @param ItemsOrder[] $items
+     */
+    protected function _processItem($fileName, array $items)
     {
-        $items = $items->toArray();
-        /** @var ItemsOrder[] $items */
         $fileName = $this->_tempDir . DS . $fileName . '.csv';
         $file = fopen($fileName, 'w');
         $header = [
@@ -125,7 +151,7 @@ class KitProcessComponent extends Component
             'Size',
             'Quantity'
         ];
-        if ($items[0]->item->additional_info) {
+        if ($items[0]->additional_info) {
             array_splice($header, 2, 0, 'Initials');
         }
         fwrite($file, $this->csvgetstr($header) . "\r\n");
@@ -166,50 +192,39 @@ class KitProcessComponent extends Component
 
     protected function _compressData()
     {
-        $zipFile = WWW_ROOT . 'docs' . DS . 'kit-orders' . DS . 'susc-kit-order-' . date('Ymd-Hi') . '.zip';
-        $zipArchive = new \ZipArchive();
+        $zipFile = $this->getZipFilePath();
+        $zipArchive = new ZipArchive();
 
-        $result = $zipArchive->open($zipFile, \ZipArchive::CREATE);
+        $result = $zipArchive->open($zipFile, ZipArchive::CREATE);
         if ($result !== true) throw new Exception('Failed to create file. Code: ' . $result);
         $zipArchive->addGlob($this->_tempDir . DS . '*.{csv}', GLOB_BRACE, ['remove_all_path' => true]);
 
-        if (!$zipArchive->status == \ZipArchive::ER_OK) throw new Exception('Failed to create file.');
+        if (!$zipArchive->status == ZipArchive::ER_OK) throw new Exception('Failed to create file.');
 
         $zipArchive->close();
     }
 
-    protected function _saveItems()
+    public function getZipFileName($batchID = null)
     {
-        $now = new Time();
-        $this->ItemsOrders->getConnection()->transactional(function () use ($now) {
-            foreach ($this->_items as $item) {
-                foreach ($item as $items) {
-                    $items->ordered = $now;
-                    $this->ItemsOrders->saveOrFail($items);
-                }
-            }
-        });
+        if($batchID == null) $batchID = $this->_batchID;
+        return 'susc-kit-order-' . $batchID . '.zip';
     }
 
-    protected function _cleanUp()
-    {
-        $this->rrmdir($this->_tempdir());
+    public function getZipFilePath($batchID = null){
+        if($batchID == null) $batchID = $this->_batchID;
+        return $this->_saveDir . $this->getZipFileName($batchID);
     }
 
-    function rrmdir($dir)
+    public function isDownloadExist($batchID = null)
     {
-        if (is_dir($dir)) {
-            $objects = scandir($dir);
-            foreach ($objects as $object) {
-                if ($object != "." && $object != "..") {
-                    if (is_dir($dir . "/" . $object))
-                        $this->rrmdir($dir . "/" . $object);
-                    else
-                        unlink($dir . "/" . $object);
-                }
-            }
-            rmdir($dir);
-        }
+
+        if ($batchID == null) {
+            $batchID = $this->_batchID;
+        } elseif ($this->_batchID == null) {
+            $this->_batchID = $batchID;
+        };
+        $file = $this->getZipFilePath($batchID);
+        return file_exists($file);
     }
 
     public function process()
@@ -263,6 +278,27 @@ class KitProcessComponent extends Component
             });
         }
         return array_values($csv);
+    }
+
+    protected function _cleanUp()
+    {
+        $this->rrmdir($this->_tempDir);
+    }
+
+    function rrmdir($dir)
+    {
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object != "." && $object != "..") {
+                    if (is_dir($dir . "/" . $object))
+                        $this->rrmdir($dir . "/" . $object);
+                    else
+                        unlink($dir . "/" . $object);
+                }
+            }
+            rmdir($dir);
+        }
     }
 
 }

@@ -53,16 +53,30 @@ class KitOrdersController extends AppController
 
     public function index()
     {
-        $orders = $this->paginate($this->Orders, ['order' => ['id' => 'DESC'], 'contain' => ['Users']]);
+        $orders = $this->paginate($this->Orders, ['order' => ['id' => 'DESC'], 'contain' => ['Users', 'ItemsOrders' => 'ProcessedOrders']]);
 
         $this->set('orders', $orders);
     }
 
     public function view($id = null)
     {
-        $order = $this->Orders->get($id);
+        $order = $this->Orders->find('id', ['id' => $id])->firstOrFail();
 
         $this->set(compact('order'));
+    }
+
+    public function cancel($id = null){
+        /** @var Order $order */
+        $order = $this->Orders->find('id', ['id' => $id])->firstOrFail();
+
+        if($order->ordered_left != count($order->items)){
+            $this->Flash->error('Cannot cancel order - some items have already been ordered!');
+            return $this->redirect($this->referer());
+        }
+
+        $this->Orders->delete($order);
+        // TODO: Send cancellation email
+        return $this->redirect(['action' => 'index']);
     }
 
     public function paid($id = null)
@@ -73,7 +87,7 @@ class KitOrdersController extends AppController
 
         /** @var Order $order */
         $order = $this->Orders->get($id);
-        if($order->is_paid) {
+        if ($order->is_paid) {
             $this->Flash->success('Order has already been marked as paid.');
             return $this->redirect(['action' => 'index']);
         }
@@ -101,10 +115,10 @@ class KitOrdersController extends AppController
         $order->ordered = ($order->ordered == null) ? new DateTime() : null;
 
         if ($this->ProcessedOrders->save($order)) {
-            if($order->is_ordered) {
+            if ($order->is_ordered) {
                 $this->Flash->success('Marked batch as ordered.');
             } else {
-                $this->Flash->success('Marked batch as <strong>not</strong> ordered.');
+                $this->Flash->success('Marked batch as <strong>not</strong> ordered.', ['escape' => false]);
             }
         } else {
             $this->Flash->error('Failed to set batch order status.');
@@ -119,7 +133,7 @@ class KitOrdersController extends AppController
         }
 
         /** @var ProcessedOrder $order */
-        if($id === null) $id = $this->request->getData('id');
+        if ($id === null) $id = $this->request->getData('id');
         $order = $this->ProcessedOrders->get($id);
         $order->arrived = ($order->arrived == null) ? new DateTime() : null;
 
@@ -128,7 +142,7 @@ class KitOrdersController extends AppController
 
             $this->Flash->success('Batch marked as arrived. Users have been emailed to collect their items.');
         } else {
-        $this->Flash->error('Failed to mark the batch as arrived!');
+            $this->Flash->error('Failed to mark the batch as arrived!');
         }
         return $this->redirect($this->referer());
     }
@@ -141,7 +155,7 @@ class KitOrdersController extends AppController
 
         /** @var Order $order */
         $item = $this->ItemsOrders->get($id);
-        if($item->is_collected) return $this->redirect($this->referer());
+        if ($item->is_collected) return $this->redirect($this->referer());
 
         $item->collected = new DateTime();
 
@@ -155,10 +169,18 @@ class KitOrdersController extends AppController
         return $this->redirect($this->referer());
     }
 
-    public function processedOrders() {
-        $orders = $this->paginate($this->ProcessedOrders, ['order' => ['created' => 'DESC'], 'contain' => ['Users', 'ItemsOrders' => ['Orders', 'Items']]]);
+    public function processedOrders($id = null)
+    {
+        if ($id == null) {
+            $orders = $this->paginate($this->ProcessedOrders, ['order' => ['created' => 'DESC'], 'contain' => ['Users', 'ItemsOrders' => ['Orders', 'Items']]]);
 
-        $this->set('orders', $orders);
+            $this->set('orders', $orders);
+            return;
+        }
+
+        $order = $this->ProcessedOrders->get($id);
+        $this->set('order', $order);
+        $this->viewBuilder()->setTemplate('view_processed_orders');
     }
 
     public function config()
@@ -189,12 +211,12 @@ class KitOrdersController extends AppController
         }
 
         if ($this->request->is(['patch', 'post', 'put'])) {
-            foreach($this->request->getData()['kit-orders'] as $k => $v){
-                if($v == '') $v = null;
+            foreach ($this->request->getData()['kit-orders'] as $k => $v) {
+                if ($v == '') $v = null;
                 $config[$k]->value = $v;
             }
             $result = $this->Config->saveMany($config);
-            if($result !== false){
+            if ($result !== false) {
                 $config = $result;
                 $this->Flash->success('Config saved!');
             } else {
@@ -205,7 +227,8 @@ class KitOrdersController extends AppController
         $this->set(compact('items', 'config'));
     }
 
-    public function process(){
+    public function process()
+    {
         if (!$this->request->is(['patch', 'post', 'put'])) {
             return;
         }
@@ -215,8 +238,22 @@ class KitOrdersController extends AppController
         try {
             $this->KitProcess->process();
             return $this->redirect(['action' => 'processed-orders']);
-        } catch (Exception $ex){
+        } catch (Exception $ex) {
 
         }
+    }
+
+    public function download($id = null)
+    {
+        $this->loadComponent('KitProcess');
+
+        if (!$this->KitProcess->isDownloadExist($id)) {
+            $this->KitProcess->createDownload($id);
+        }
+        $response = $this->response
+            ->withType('application/zip')
+            ->withDownload($this->KitProcess->getZipFileName())
+            ->withFile($this->KitProcess->getZipFilePath());
+        return $response;
     }
 }

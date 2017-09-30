@@ -131,6 +131,11 @@ class KitController extends AppController
         $this->set('terms', $terms);
 
         if (!$this->request->is('post')) return;
+        if ($this->request->session()->read('Kit.Basket.Pay') === true) {
+            $this->Flash->set('Order is already being processed...', ['element' => 'warn']);
+            return;
+        }
+
 
         if (!in_array($this->request->getData('payment'), ['bat', 'cash'])) {
             $this->Flash->error('Please select a payment method.');
@@ -157,15 +162,29 @@ class KitController extends AppController
             $data['total'] += $item_data['subtotal'];
             $data['items_orders'][] = $item_data;
         }
+        if(count($data['items_orders']) == 0){
+            return $this->redirect(['_name' => 'order']);
+        }
         $order = $this->Orders->newEntity($data);
 
+        $this->request->session()->write('Kit.Basket.Pay', true);
+        ignore_user_abort(true);
+        set_time_limit(0);
         if ($this->Orders->save($order, ['associated' => ['ItemsOrders']])) {
+            $this->Orders->loadInto($order, ['ItemsOrders' => 'Items']);
             $this->request->session()->write('Kit.Basket.Total', 0);
             $this->request->session()->write('Kit.Basket.Data', []);
             $email = new Email();
-            //todo: send email
+            $email
+                ->setTo($this->currentUser->email_address, $this->currentUser->full_name)
+                ->setSubject('Kit Order #' . $order->id)
+                ->setTemplate('confirm_order')
+                ->setViewVars(['order' => $order, 'user' => $this->currentUser])
+                ->send();
+            $this->request->session()->delete('Kit.Basket.Pay');
             return $this->redirect(['_name' => 'order_complete', 'order_number' => $order->id]);
         } else {
+            $this->request->session()->delete('Kit.Basket.Pay');
             $this->Flash->error('There was an error whilst processing your order.');
         }
     }
@@ -184,7 +203,7 @@ class KitController extends AppController
 
     public function viewOrder($id = null)
     {
-        $order = $this->Orders->get($id);
+        $order = $this->Orders->find('ID', ['id' => $id])->firstOrFail();
         $this->set('order', $order);
     }
 

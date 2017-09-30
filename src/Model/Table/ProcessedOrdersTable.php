@@ -80,4 +80,11 @@ class ProcessedOrdersTable extends Table
 
         return $rules;
     }
+
+    public function find($type = 'all', $options = [])
+    {
+        return parent::find($type, $options)->contain(['ItemsOrders' => ['Orders' => 'Users', 'Items']]);
+    }
+
+
 }
