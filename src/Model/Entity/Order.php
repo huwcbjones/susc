@@ -3,7 +3,6 @@
 namespace SUSC\Model\Entity;
 
 use Cake\I18n\FrozenTime;
-use Cake\I18n\Time;
 use Cake\ORM\Entity;
 
 /**
@@ -18,7 +17,8 @@ use Cake\ORM\Entity;
  * @property string $status
  * @property string $order_date
  * @property FrozenTime $placed
- * @property Time $paid
+ * @property FrozenTime $paid
+ * @property string $paid_date
  * @property int $ordered_left
  * @property int $arrived_left
  * @property int $collected_left
@@ -53,9 +53,14 @@ class Order extends Entity
     protected $arrivedCount = null;
     protected $collectedCount = null;
 
-    protected function _getOrderDate(){
+    protected function _getPlacedDate(){
         if($this->placed === null) return "-";
         return $this->placed->i18nFormat( null,  'Europe/London', 'en-GB');
+    }
+
+    protected function _getPaidDate(){
+        if($this->paid === null) return "Outstanding";
+        return $this->paid->i18nFormat( null,  'Europe/London', 'en-GB');
     }
 
     public function getPaidStatusIcon()

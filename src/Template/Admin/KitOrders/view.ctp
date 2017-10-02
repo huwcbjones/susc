@@ -28,19 +28,19 @@ $this->assign('title', 'View Order #' . $order->id);
             <div class="panel-heading">
                 <div>
                     <h3 style="display:inline">Order #<?= $order->id ?></h3>
-                    <?php if ($order->ordered_left == count($order->items)): ?>
+                    <?php if ($order->ordered_left == count($order->items) && !$order->is_cancelled): ?>
                         <div style="display:inline" class="pull-right">
-                            <?= $this->Form->postLink('Cancel Order', ['action' => 'cancel', $order->id], ['confirm' => 'Are you sure you want to cancel this order?', 'class' => ['btn', 'btn-danger', 'btn-sm']]) ?>
+                            <a href="#" onclick="$('#cancelConfirmation').modal()" class="btn btn-danger btn-sm">Cancel Order</a>
                         </div>
                     <?php endif ?>
                 </div>
             </div>
             <div class="panel-body">
                 <p><strong>Name:</strong> <?= $order->user->full_name ?></p>
-                <p><strong>Ordered:</strong> <?= $this->Time->i18nFormat($order->placed, null, null, 'Europe/London') ?></p>
+                <p><strong>Ordered:</strong> <?= $order->placed_date ?></p>
                 <p><strong>Payment Method:</strong> <?= $order->paymentMethod ?></p>
 
-                <p><strong>Payment:</strong> <?= ($order->is_paid) ? $this->Time->i18nFormat($order->paid, null, null, 'Europe/London') : 'Outstanding' ?></p>
+                <p><strong>Payment:</strong> <?= $order->paid_date  ?></p>
 
                 <p><strong>Status:</strong> <?= $order->status ?></p>
             </div>
@@ -83,9 +83,9 @@ $this->assign('title', 'View Order #' . $order->id);
                                 <td><?= $item->getOrderedStatusIcon() ?></td>
                                 <td><?= $item->getArrivedStatusIcon() ?></td>
                                 <td><?= $item->getCollectedStatusIcon() ?>
-                                &nbsp;&nbsp;&nbsp;
                                 <?php if (!$item->collected && $item->is_arrived): ?>
-                                    <?= ($item->is_arrived) ? $this->Form->postLink(__('Collected'), ['action' => 'collected', $item->id], ['confirm' => 'Mark item as collected?\nYou cannot revert this status!']) : 'Collected' ?></td>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <?= ($item->is_arrived) ? '<a href="#" onclick="$(\'#collectedID\').val(\'' . $item->id . '\'); $(\'#collectedConfirmation\').modal()">Collected</a>' : 'Collected' ?></td>
                                 <?php endif; ?>
                             <?php endif ?>
                         </tr>
@@ -103,6 +103,52 @@ $this->assign('title', 'View Order #' . $order->id);
                     </tfoot>
                 </table>
             </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="cancelConfirmation" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <?= $this->Form->create(null, ['id' => 'cancelForm', 'url' => ['action' => 'cancel']]) ?>
+            <?= $this->Form->hidden('id', ['value' => $order->id]); ?>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Are you sure you want to cancel this order?</h4>
+            </div>
+            <div class="modal-body">
+                <?php if($order->is_paid): ?>
+                As the user has paid for this order, the money will need to be returned.<br/>
+                <?php endif ?>
+                This action cannot be reversed.
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Abort</button>
+                <?= $this->Form->button('Cancel Order', ['class' => ['btn', 'btn-danger']]) ?>
+            </div>
+            <?= $this->Form->end() ?>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="collectedConfirmation" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <?= $this->Form->create(null, ['id' => 'collectedForm', 'url' => ['action' => 'collected']]) ?>
+            <?= $this->Form->hidden('id', ['id' => 'collectedID']); ?>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Are you sure you want to mark this item as collected?</h4>
+            </div>
+            <div class="modal-body">
+                The user will receive an email confirming the item has been collected.<br/>
+                This action cannot be reversed.
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <?= $this->Form->button('Mark as Collected', ['class' => ['btn', 'btn-primary']]) ?>
+            </div>
+            <?= $this->Form->end() ?>
         </div>
     </div>
 </div>

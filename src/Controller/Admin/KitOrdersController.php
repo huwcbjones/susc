@@ -69,6 +69,8 @@ class KitOrdersController extends AppController
 
     public function cancel($id = null)
     {
+        if ($id === null) $id = $this->request->getData('id');
+
         /** @var Order $order */
         $order = $this->Orders->find('id', ['id' => $id])->firstOrFail();
 
@@ -97,6 +99,8 @@ class KitOrdersController extends AppController
         if ($this->request->getMethod() != 'POST') {
             return $this->redirect(['action' => 'index']);
         }
+
+        if ($id === null) $id = $this->request->getData('id');
 
         /** @var Order $order */
         $order = $this->Orders->find('ID', ['id' => $id])->firstOrFail();
@@ -173,6 +177,7 @@ class KitOrdersController extends AppController
         }
 
         /** @var ItemsOrder $item */
+        if ($id === null) $id = $this->request->getData('id');
         $item = $this->ItemsOrders->find('id', ['id' => $id])->firstOrFail();
         if ($item->is_collected) return $this->redirect($this->referer());
 
