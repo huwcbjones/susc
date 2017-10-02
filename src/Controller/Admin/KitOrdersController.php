@@ -99,7 +99,7 @@ class KitOrdersController extends AppController
         }
 
         /** @var Order $order */
-        $order = $this->Orders->get($id);
+        $order = $this->Orders->find('ID', ['id' => $id])->firstOrFail();
         if ($order->is_paid) {
             $this->Flash->success('Order has already been marked as paid.');
             return $this->redirect(['action' => 'index']);
@@ -108,7 +108,13 @@ class KitOrdersController extends AppController
         $order->paid = new DateTime();
 
         if ($this->Orders->save($order)) {
-            // TODO: Email user to confirm payment
+            $email = new Email();
+            $email
+                ->setTo($order->user->email_address, $order->user->full_name)
+                ->setSubject('Kit Order Payment #' . $order->id)
+                ->setTemplate('order_payment')
+                ->setViewVars(['order' => $order, 'user' => $order->user])
+                ->send();
 
             $this->Flash->success('Order has been marked as paid.');
         } else {
