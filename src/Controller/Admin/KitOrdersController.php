@@ -111,7 +111,7 @@ class KitOrdersController extends AppController
             $email = new Email();
             $email
                 ->setTo($order->user->email_address, $order->user->full_name)
-                ->setSubject('Kit Order Payment #' . $order->id)
+                ->setSubject('Payment Received - Order #' . $order->id)
                 ->setTemplate('order_payment')
                 ->setViewVars(['order' => $order, 'user' => $order->user])
                 ->send();

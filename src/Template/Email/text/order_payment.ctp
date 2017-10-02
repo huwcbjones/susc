@@ -21,6 +21,6 @@ use SUSC\Model\Entity\User;
 ?>
 Hi <?= $user->first_name ?>,
 
-This email is to confirm your payment for your kit order #<?= $order->id ?>.
+This email is to confirm your payment for your kit order #<?= $order->id ?> has been received.
 
 You will receive another email when your item(s) are ready for collection.
