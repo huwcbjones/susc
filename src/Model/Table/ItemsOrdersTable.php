@@ -121,6 +121,13 @@ class ItemsOrdersTable extends Table
         return $query->contain(['ItemsOrders']);
     }
 
+    public function findID(Query $query, $options = [])
+    {
+        return $query
+            ->contain(['Items', 'Orders' => ['Users']])
+            ->where(['ItemsOrders.id' => $options['id']]);
+    }
+
     public function findItemId(Query $query, $options = [])
     {
         return $query

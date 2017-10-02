@@ -2,6 +2,7 @@
 
 namespace SUSC\Model\Entity;
 
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Entity;
 
 /**
@@ -22,8 +23,9 @@ use Cake\ORM\Entity;
  * @property boolean $is_collected
  * @property int $processed_order_id
  * @property ProcessedOrder $processed_order
- * @property \Cake\I18n\FrozenTime $arrived
- * @property \Cake\I18n\FrozenTime $collected
+ * @property FrozenTime $arrived
+ * @property FrozenTime $collected
+ * @property string $collected_date
  *
  * @property \SUSC\Model\Entity\Order $order
  * @property \SUSC\Model\Entity\Item $item
@@ -44,6 +46,12 @@ class ItemsOrder extends Entity
         '*' => true,
         'id' => false
     ];
+
+    protected function _getCollectedDate(){
+        if($this->collected === null) return "-";
+        $collected = new FrozenTime($this->collected);
+        return $collected->i18nFormat( null,  'Europe/London', 'en-GB');
+    }
 
     public function getOrderedStatusIcon()
     {

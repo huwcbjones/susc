@@ -13,6 +13,7 @@ use Cake\ORM\TableRegistry;
 use DateTime;
 use SUSC\Controller\AppController;
 use SUSC\Controller\Component\KitProcessComponent;
+use SUSC\Model\Entity\ItemsOrder;
 use SUSC\Model\Entity\Order;
 use SUSC\Model\Entity\ProcessedOrder;
 use SUSC\Model\Table\ItemsOrdersTable;
@@ -165,14 +166,20 @@ class KitOrdersController extends AppController
             return $this->redirect($this->referer());
         }
 
-        /** @var Order $order */
-        $item = $this->ItemsOrders->get($id);
+        /** @var ItemsOrder $item */
+        $item = $this->ItemsOrders->find('id', ['id' => $id])->firstOrFail();
         if ($item->is_collected) return $this->redirect($this->referer());
 
         $item->collected = new DateTime();
 
         if ($this->ItemsOrders->save($item)) {
-            // TODO: Email user to confirm collection
+            $email = new Email();
+            $email
+                ->setTo($item->order->user->email_address, $item->order->user->full_name)
+                ->setSubject('Collected Item: ' . $item->item->title)
+                ->setTemplate('item_collected')
+                ->setViewVars(['item' => $item, 'user' => $item->order->user])
+                ->send();
 
             $this->Flash->success('Item marked as collected.');
         } else {

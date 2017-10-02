@@ -16,6 +16,7 @@ use Cake\ORM\Entity;
  * @property string $formattedTotal
  * @property string $paymentMethod
  * @property string $status
+ * @property string $order_date
  * @property FrozenTime $placed
  * @property Time $paid
  * @property int $ordered_left
@@ -51,6 +52,11 @@ class Order extends Entity
     protected $orderedCount = null;
     protected $arrivedCount = null;
     protected $collectedCount = null;
+
+    protected function _getOrderDate(){
+        if($this->placed === null) return "-";
+        return $this->placed->i18nFormat( null,  'Europe/London', 'en-GB');
+    }
 
     public function getPaidStatusIcon()
     {
