@@ -94,7 +94,7 @@ class User extends Entity
      */
     public function isEnabled()
     {
-        return $this->is_enable;
+        return $this->is_enable == '1';
     }
 
     /**
@@ -103,7 +103,7 @@ class User extends Entity
      */
     public function isActivated()
     {
-        return $this->is_active;
+        return $this->is_active == '1';
     }
 
     /**
