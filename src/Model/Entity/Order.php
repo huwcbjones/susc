@@ -25,6 +25,7 @@ use Cake\ORM\Entity;
  * @property bool $is_all_ordered
  * @property bool $is_all_arrived
  * @property bool $is_all_collected
+ * @property bool $is_cancelled
  *
  * @property User $user
  * @property ItemsOrder[] $items_orders
@@ -163,6 +164,9 @@ class Order extends Entity
 
     protected function _getStatus()
     {
+        if($this->is_cancelled) {
+            return 'Cancelled';
+        }
         if ($this->is_all_collected) {
             return 'Collected';
         }

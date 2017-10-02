@@ -162,7 +162,7 @@ class KitController extends AppController
             $data['total'] += $item_data['subtotal'];
             $data['items_orders'][] = $item_data;
         }
-        if(count($data['items_orders']) == 0){
+        if (count($data['items_orders']) == 0) {
             return $this->redirect(['_name' => 'order']);
         }
         $order = $this->Orders->newEntity($data);
@@ -191,12 +191,11 @@ class KitController extends AppController
 
     public function orders()
     {
-        $orders = $this->paginate($this->Orders, [
-            'finder' => [
-                'user' => ['user_id' => $this->currentUser->id]
-            ],
-            'order' => ['id' => 'DESC']
-        ]);
+        $query = $this->Orders
+            ->find('user', ['user_id' => $this->currentUser->id])
+            ->where(['is_cancelled' => false])
+            ->order(['Orders.id' => 'DESC']);
+        $orders = $this->paginate($query);
 
         $this->set(compact('items', 'orders'));
     }

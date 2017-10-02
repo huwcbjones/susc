@@ -116,7 +116,8 @@ class ItemsOrdersTable extends Table
         return parent::find($type, $options);
     }
 
-    public function findAssoc(Query $query, $options = []){
+    public function findAssoc(Query $query, $options = [])
+    {
         return $query->contain(['ItemsOrders']);
     }
 
@@ -131,10 +132,15 @@ class ItemsOrdersTable extends Table
     {
         return $query
             ->contain(['Orders'])
-            ->where(['Orders.paid IS NOT NULL', 'processed_order_id IS NULL']);
+            ->where([
+                'Orders.paid IS NOT NULL',
+                'processed_order_id IS NULL',
+                ['Orders.is_cancelled' => false]
+            ]);
     }
 
-    public function findBatch(Query $query, $options = []){
+    public function findBatch(Query $query, $options = [])
+    {
         return $query
             ->contain(['ProcessedOrders', 'Orders' => 'Users'])
             ->where(['processed_order_id' => $options['processed_order_id']]);

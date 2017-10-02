@@ -8,6 +8,7 @@ namespace SUSC\Controller\Admin;
 
 
 use Aura\Intl\Exception;
+use Cake\Mailer\Email;
 use Cake\ORM\TableRegistry;
 use DateTime;
 use SUSC\Controller\AppController;
@@ -65,18 +66,29 @@ class KitOrdersController extends AppController
         $this->set(compact('order'));
     }
 
-    public function cancel($id = null){
+    public function cancel($id = null)
+    {
         /** @var Order $order */
         $order = $this->Orders->find('id', ['id' => $id])->firstOrFail();
 
-        if($order->ordered_left != count($order->items)){
+        if ($order->ordered_left != count($order->items)) {
             $this->Flash->error('Cannot cancel order - some items have already been ordered!');
             return $this->redirect($this->referer());
         }
 
-        $this->Orders->delete($order);
-        // TODO: Send cancellation email
-        return $this->redirect(['action' => 'index']);
+        $order->is_cancelled = true;
+        if ($this->Orders->save($order)) {
+            $email = new Email();
+            $email
+                ->setTo($order->user->email_address, $order->user->full_name)
+                ->setSubject('Cancelled Kit Order #' . $order->id)
+                ->setTemplate('order_cancel')
+                ->setViewVars(['orderNumber' => $order->id, 'user' => $order->user])
+                ->send();
+            return $this->redirect(['action' => 'index']);
+        } else {
+            $this->Flash->error('Failed to cancel order!');
+        }
     }
 
     public function paid($id = null)

@@ -105,7 +105,13 @@ class OrdersTable extends Table
         return $query->where(['user_id' => $options['user_id']])->contain(['ItemsOrders' => ['ProcessedOrders', 'Items'], 'Users']);
     }
 
-    public function findID(Query $query, array $options = []){
+    public function findCancelled(Query $query, array $options = [])
+    {
+        return $query->where(['is_cancelled' => 1])->contain(['ItemsOrders' => ['ProcessedOrders', 'Items'], 'Users']);
+    }
+
+    public function findID(Query $query, array $options = [])
+    {
         return $query->where(['Orders.id' => $options['id']])->contain(['ItemsOrders' => ['ProcessedOrders', 'Items'], 'Users']);
     }
 }

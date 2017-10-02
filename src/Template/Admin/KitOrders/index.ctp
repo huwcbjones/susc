@@ -37,22 +37,26 @@ $this->assign('title', 'Kit Orders');
             <tbody>
             <?php foreach ($orders as $order): ?>
                 <tr>
-                    <td><?= h($order->id) ?></td>
+                    <td><?= h($order->id) . ($order->is_cancelled ? '*' : '') ?></td>
                     <td><?= ($currentUser->isAuthorised('admin.users.view')) ? $this->Html->link(h($order->user->full_name), ['controller' => 'Users', 'action' => 'view', $order->user_id]) : h($order->user->full_name) ?></td>
                     <td><?= $this->Time->format($order->placed, null, null, 'Europe/London') ?></td>
-                    <td><?= h($order->formattedTotal) ?></td>
-                    <td><?= h($order->paymentMethod) ?></td>
+                    <td><?= $order->is_cancelled ? '-' : $order->formattedTotal ?></td>
+                    <td><?= $order->is_cancelled ? '-' : h($order->paymentMethod) ?></td>
                     <td><?= h($order->status) ?></td>
+                    <?php if($order->is_cancelled) : ?>
+                        <td colspan="4" class="text-center"><span class="text-muted glyphicon glyphicon-ban-circle"></span></td>
+                    <?php else: ?>
                     <td><?= $order->getPaidStatusIcon() ?></td>
                     <td><?= $order->getOrderedStatusIcon() ?></td>
                     <td><?= $order->getArrivedStatusIcon() ?></td>
                     <td><?= $order->getCollectedStatusIcon() ?></td>
+                    <?php endif; ?>
                     <?php if ($currentUser->isAuthorised('admin.kit-orders.view')): ?>
                         <td><?= $this->Html->link('View', ['action' => 'view', $order->id]) ?></td>
                     <?php endif; ?>
                     <?php if ($currentUser->isAuthorised('admin.kit-orders.status')): ?>
                         <td>
-                        <?php if ($order->ordered_left == count($order->items)): ?>
+                        <?php if ($order->ordered_left == count($order->items) && !$order->is_cancelled): ?>
                             <?= $this->Form->postLink(__('Paid'), ['action' => 'paid', $order->id]) ?></td>
                         <?php endif; ?>
                         </td>
@@ -61,13 +65,16 @@ $this->assign('title', 'Kit Orders');
             <?php endforeach; ?>
             </tbody>
         </table>
+        <p>
+            <small>* Cancelled order</small>
+        </p>
     </div>
     <div class="paginator">
         <nav>
             <ul class="pagination">
                 <?= $this->Paginator->first('<< ' . __('first')) ?>
                 <?= $this->Paginator->prev('< ' . __('previous')) ?>
-                <?= $this->Paginator->numbers(['before'=> null, 'after' => null]) ?>
+                <?= $this->Paginator->numbers(['before' => null, 'after' => null]) ?>
                 <?= $this->Paginator->next(__('next') . ' >') ?>
                 <?= $this->Paginator->last(__('last') . ' >>') ?>
             </ul>
