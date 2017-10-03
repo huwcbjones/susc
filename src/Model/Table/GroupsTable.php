@@ -41,9 +41,7 @@ class GroupsTable extends Table
         $this->setPrimaryKey('id');
 
         $this->hasOne('Groups')
-            //->setAlias('GroupParent')
-            ->setForeignKey('parent')
-            ->setProperty('parent_id');
+            ->setForeignKey('parent_id');
 
         $this->hasMany('Users')
             ->setForeignKey('group_id');
