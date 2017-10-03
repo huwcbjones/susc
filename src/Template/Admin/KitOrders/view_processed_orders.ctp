@@ -33,6 +33,7 @@ $this->assign('title', 'View Batch # ' . $order->id);
                 <table class="table table-bordered">
                     <thead>
                     <tr>
+                        <th>Order #</th>
                         <th>Name</th>
                         <th>Item</th>
                         <th class="text-center">Additional Info</th>
@@ -54,7 +55,8 @@ $this->assign('title', 'View Batch # ' . $order->id);
                     <tbody>
                     <?php foreach ($order->items_orders as $item): ?>
                         <tr>
-                            <th><?= $item->order->user->full_name ?> </th>
+                            <th><?= $this->Html->link($item->order->id, ['action' => 'view', $item->order->id]) ?></th>
+                            <td><?= $item->order->user->full_name ?></td>
                             <td data-th="Item"><?= $this->Html->link(h($item->item->title), [
                                     '_name' => 'kit_item',
                                     'action' => 'view',
@@ -69,9 +71,9 @@ $this->assign('title', 'View Batch # ' . $order->id);
                             <?php if ($currentUser->isAuthorised('admin.kit-orders.status')) : ?>
                                 <td><?= $order->getOrderedStatusIcon() ?></td>
                                 <td><?= $order->getArrivedStatusIcon() ?></td>
-                                <td><?= $item->getCollectedStatusIcon() ?>&nbsp;&nbsp;&nbsp;
-                                    <?php if (!$item->collected && $order->is_arrived): ?>
-                                        <?= ($order->is_arrived) ? $this->Form->postLink(__('Collected'), ['action' => 'collected', $item->id], ['confirm' => 'Mark item as collected?\nYou cannot revert this status!']) : 'Collected' ?>
+                                <td><?= $item->getCollectedStatusIcon() ?>
+                                    <?php if (!$item->collected && $order->is_arrived): ?>&nbsp;&nbsp;&nbsp;
+                                        <a href="#" onclick="$('#collectedID').val('<?= $item->id ?>');$('#collectedConfirmation').modal()">Collected</a>
                                     <?php endif; ?>
                                 </td>
                             <?php endif ?>
@@ -80,7 +82,7 @@ $this->assign('title', 'View Batch # ' . $order->id);
                     </tbody>
                     <tfoot>
                     <tr>
-                        <td colspan="3"></td>
+                        <td colspan="4"></td>
                         <th class="text-center" colspan="2"><h3 class="h4">Total:</h3></th>
                         <th class="text-center" style="vertical-align: middle"><?= $order->item_count ?></th>
                         <th class="text-center" style="vertical-align: middle"><?= $order->formatted_total ?></th>
@@ -91,6 +93,28 @@ $this->assign('title', 'View Batch # ' . $order->id);
                     </tfoot>
                 </table>
             </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="collectedConfirmation" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <?= $this->Form->create(null, ['id' => 'collectedForm', 'url' => ['action' => 'collected']]) ?>
+            <?= $this->Form->hidden('id', ['id' => 'collectedID']); ?>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Are you sure you want to mark this item as collected?</h4>
+            </div>
+            <div class="modal-body">
+                The person who ordered this item will be sent an email confirming their item has been collected.<br/>
+                This action cannot be reversed.
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <?= $this->Form->button('Mark as Arrived', ['class' => ['btn', 'btn-primary']]) ?>
+            </div>
+            <?= $this->Form->end() ?>
         </div>
     </div>
 </div>
