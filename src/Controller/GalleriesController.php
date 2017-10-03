@@ -38,7 +38,8 @@ class GalleriesController extends AppController
      */
     public function index()
     {
-        $this->set('galleries', $this->Galleries->find('gallery')->toArray());
+        $galleries = $this->Galleries->find('gallery')->toArray();
+        $this->set(compact('galleries'));
     }
 
     public function thumbnail($id)
@@ -46,19 +47,22 @@ class GalleriesController extends AppController
         /** @var Image $image */
         $image = TableRegistry::get('Images')->get($id);
 
-        $this->autoRender = true;
+        // TODO: Fix content-type
         $response = $this->response
-            ->withType($image->extension)
-            ->withBody(Cache::remember('image-thumb-' . $image->id, function () use ($image) {
+            ->withStringBody(Cache::remember('image-thumb-' . $image->id, function () use ($image) {
                 // Cache thumbnail using thumbnail rule (we are dynamically creating the thumbnail using php)
                 try {
                     $thumb = new GD($image->full_path);
                     $thumb->resize(500, 500);
+
+                    ob_get_status();
                     $thumb->show(true);
-                } catch (Exception $e){
+                    return ob_get_clean();
+                } catch (Exception $e) {
                     throw new ServiceUnavailableException($e);
                 }
-            }, 'thumbnail'));
+            }, 'thumbnail'))
+            ->withType('image/jpeg');
         return $response;
     }
 
