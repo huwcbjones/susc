@@ -1,6 +1,7 @@
 <?php
 namespace SUSC\Model\Table;
 
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -83,7 +84,11 @@ class ProcessedOrdersTable extends Table
 
     public function find($type = 'all', $options = [])
     {
-        return parent::find($type, $options)->contain(['ItemsOrders' => ['Orders' => 'Users', 'Items']]);
+        return parent::find($type, $options);
+    }
+
+    public function findAssoc(Query $query, $options = []){
+        return $query->contain(['ItemsOrders' => ['Orders' => 'Users', 'Items']]);
     }
 
 
