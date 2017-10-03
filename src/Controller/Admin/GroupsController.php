@@ -85,20 +85,20 @@ class GroupsController extends AppController
         $all_acls = Acl::splattify($all_acls);
         $this->set('all_acls', $all_acls);
 
-        $user = $this->Users->newEntity();
+        $group = $this->Groups->newEntity();
         if ($this->request->is('post')) {
-            $user = $this->Users->patchEntity($user, $this->request->getData());
-            if ($this->Users->save($user)) {
-                $this->Flash->success(__('The user has been saved.'));
+            $group = $this->Groups->patchEntity($group, $this->request->getData());
+            if ($this->Groups->save($group)) {
+                $this->Flash->success(__('The group has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The user could not be saved. Please, try again.'));
+            $this->Flash->error(__('The group could not be saved. Please, try again.'));
         }
-        $groups = $this->Users->Groups->find('list', ['limit' => 200]);
-        $acls = $this->Users->Acls->find('list', ['limit' => 200]);
-        $this->set(compact('user', 'groups', 'acls'));
-        $this->set('_serialize', ['user']);
+        $parent = $this->Groups->find('list', ['limit' => 200]);
+        $acls = $this->Groups->Acls->find('list', ['limit' => 200]);
+        $this->set(compact('group', 'parent', 'acls'));
+        $this->set('_serialize', ['group']);
     }
 
     /**
