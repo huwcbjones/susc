@@ -41,8 +41,8 @@ class ItemsTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsToMany('Orders', [
-            'through' => 'ItemsOrders'
+        $this->hasMany('ItemsOrders', [
+            'joinType' => 'LEFT'
         ]);
     }
 

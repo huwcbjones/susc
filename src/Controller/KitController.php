@@ -2,6 +2,7 @@
 
 namespace SUSC\Controller;
 
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Mailer\Email;
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
@@ -38,7 +39,11 @@ class KitController extends AppController
         if (empty($this->BasketData)) $this->BasketData = array();
 
         foreach ($this->BasketData as $hash => $data) {
-            $this->BasketData[$hash]['item'] = $this->Kit->get($data['id']);
+            try {
+                $this->BasketData[$hash]['item'] = $this->Kit->get($data['id']);
+            } catch(RecordNotFoundException $ex){
+                unset($this->BasketData[$hash]);
+            }
         }
         $this->set('basketData', $this->BasketData);
         $this->set('basketTotal', $this->request->session()->read('Kit.Basket.Total'));

@@ -125,6 +125,17 @@ class KitItemsController extends AppController
         $this->request->allowMethod(['post', 'delete']);
 
         $item = $this->Items->get($id);
+        $this->Items->loadInto($item, ['ItemsOrders']);
+        if(count($item->items_orders) != 0) {
+            $item->status = false;
+            if($this->Items->save($item)) {
+                $this->Flash->set(__('Cannot delete item as there are orders attached to this item. Item has been disabled instead.'),['element' => 'warn']);
+            } else {
+                $this->Flash->error(__('Cannot delete item as there are orders attached to this item. Failed to disable item!'));
+            }
+            return $this->redirect($this->referer());
+        }
+
 
         if ($this->Items->delete($item)) {
             $this->Flash->success(__('The item has been deleted.'));
