@@ -2,15 +2,22 @@
 
 namespace SUSC\Model\Entity;
 
+use Cake\Core\Exception\Exception;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
+
 
 /**
  * Group Entity
  *
  * @property string $id
  * @property string $name
- * @property null|string $parent
+ * @property FrozenTime $created
+ * @property FrozenTime $modified
+ * @property string $description
+ * @property boolean $is_enable
+ * @property null|string|Group $parent
  *
  * @property Acl[] $acls
  */
@@ -31,37 +38,43 @@ class Group extends Entity
         'id' => false
     ];
 
-    protected function _getAcls($acls)
+    protected $_effectiveAcls = null;
+
+    protected $_parentObject = null;
+
+    public function getEffectiveAcls()
     {
-        // Convert numeric indexed array to Acl ID indexed array
-        $new_acls = array();
-        /** @var Acl $acl */
-        foreach($acls as $acl) {
-            //if($this->name == 'Member') var_dump($acl);
-            $id = explode('.', $acl->id);
-            $head = &$new_acls;
-            foreach($id as $bit) {
-                if(!array_key_exists($bit, $head)){
-                    $head[$bit] = array();
-                }
-                $head = &$head[$bit];
-            }
-            $head['_'] = $acl;
-        }
-
-        $acls = $new_acls;
-
-        if ($this->parent === null) return $acls;
+        if ($this->_effectiveAcls !== null) return $this->_effectiveAcls;
+        if ($this->parent === null) return Acl::splattify($this->acls);
 
         // Merge parent group acls with this group's acls
-        /** @var Group $parent */
-        $parent = TableRegistry::get('Groups')->get($this->parent);
-
-        return array_merge($acls, $parent->acls);
+        $this->_effectiveAcls = array_merge_recursive(Acl::splattify($this->acls), $this->parent->getEffectiveAcls());
+        return $this->_effectiveAcls;
     }
 
-    protected function _getParentName()
+    protected function _getIsEnable($is_enable){
+        return $is_enable;
+    }
+
+    public function isEnabled()
     {
-        return TableRegistry::get('Groups')->get($this->parent)->name;
+        if($this->parent == null) return $this->is_enable;
+        return $this->is_enable && $this->parent->isEnabled();
+    }
+
+    protected function _getParent($parent)
+    {
+        if ($parent == null) return null;
+        if ($this->_parentObject != null) return $this->_parentObject;
+        /** @var Group $parent */
+        try {
+            if (!is_string($parent)) {
+                $parent = $parent->id;
+            }
+            $this->_parentObject = TableRegistry::get('Groups' )->get($parent);
+            return $this->_parentObject;
+        } catch (Exception $ex) {
+            return null;
+        }
     }
 }

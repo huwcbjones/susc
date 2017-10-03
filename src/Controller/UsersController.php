@@ -28,7 +28,7 @@ class UsersController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        $this->Auth->allow(['register', 'logout', 'activateAccount', 'forgotPassword', 'resetPassword']);
+        $this->Auth->allow(['register', 'logout', 'activateAccount', 'forgotPassword', 'resetPassword', 'verifyEmailChange']);
     }
 
 
@@ -176,25 +176,78 @@ class UsersController extends AppController
         $user = $this->currentUser;
 
         if ($this->request->is(['patch', 'post', 'put'])) {
+            $now = new DateTime;
+            $timestamp = $now->getTimestamp();
+            $code = sha1(
+                    $timestamp . $this->request->getData('new_email')
+                ) . sha1(
+                    $timestamp . $user->full_name
+                );
+
             $user = $this->Users->patchEntity(
                 $user,
                 [
                     'password' => $this->request->getData('password'),
-                    'email_address' => $this->request->getData('new_email_address'),
-                    'new_email_address' => $this->request->getData('new_email_address'),
-                    'conf_email_address' => $this->request->getData('conf_email_address')
+                    'new_email' => $this->request->getData('new_email'),
+                    'conf_email' => $this->request->getData('conf_email'),
+                    'new_email_code' => $code,
+                    'new_email_code_date' => $now
                 ],
                 ['validate' => 'changeEmail']
             );
             if ($this->Users->save($user)) {
-                // TODO: Email to confirm new email address
-                $this->Flash->success(__('An email has been sent to "' . $this->request->getData('new_email_address') . '", please click on the link to verify your email address.'));
+                $email = new Email();
+                $email
+                    ->setTo($user->new_email, $user->full_name)
+                    ->setSubject('Verify Email Address')
+                    ->setViewVars(['user' => $user, 'code' => $code])
+                    ->setTemplate('change_email')
+                    ->send();
+                $this->Flash->success(__('An email has been sent to "' . $user->new_email . '", please click on the link to verify your email address.'));
             } else {
-                $this->Flash->error(__('Your email address could not be changed. Please, try again.'));
+                $this->Flash->error(__('Your email address could not be changed.'));
             }
         }
         $this->set(compact('user'));
         $this->set('_serialize', ['user']);
+    }
+
+    public function verifyEmailChange($code){
+        try {
+            /** @var User $user */
+            $user = $this->Users->find('changeEmail', ['code' => $code])->firstOrFail();
+
+            if(!$user->isChangeEmailValid()){
+                $this->Flash->error(__('Verification code has expired'));
+                return $this->redirect(['_name' => 'change_email']);
+            }
+
+            $user->setAccess('email_address', true);
+
+            $this->Users->patchEntity($user, [
+                'email_address' => $user->new_email,
+                'new_email_code' => null,
+                'new_email_code_date' => null,
+                'new_email' => null
+            ]);
+
+            if($this->Users->save($user)){
+                $email = new Email();
+                $email
+                    ->setTo($user->email_address, $user->full_name)
+                    ->setSubject('Email Address Changed')
+                    ->setViewVars(['user' => $user])
+                    ->setTemplate('change_email_complete')
+                    ->send();
+                $this->Flash->success(__('Your email address was changed!'));
+            } else {
+                $this->Flash->error(__('Failed to change email address. Please try again.'));
+            }
+            return $this->redirect(['_name' => 'change_email']);
+        } catch (RecordNotFoundException $ex){
+            $this->Flash->error(__('Email address verification failed.'));
+            return $this->redirect(['_name' => 'change_email']);
+        }
     }
 
     /**
@@ -245,11 +298,12 @@ class UsersController extends AppController
                 'first_name' => $this->request->getData('first_name'),
                 'last_name' => $this->request->getData('last_name'),
                 'password' => $this->request->getData('password'),
-                'activation_code' => $activation_code
             ], ['guard' => false]);
 
             $user->setAccess('email_address', true);
             $user->email_address = $this->request->getData('email_address');
+            $user->setAccess('activation_code', true);
+            $user->activation_code = $activation_code;
 
             if ($this->Users->save($user)) {
                 $email = new Email();
@@ -374,11 +428,12 @@ class UsersController extends AppController
         $this->Users->patchEntity($user,
             [
                 'password' => $this->request->getData('new_password'),
-                'reset_code' => null,
                 'reset_code_date' => null,
             ],
             ['guard' => false]
         );
+
+        $user->reset_code = null;
 
         if ($this->Users->save($user)) {
             $email = new Email();
