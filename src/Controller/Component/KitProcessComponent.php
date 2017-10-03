@@ -13,6 +13,7 @@ use Psr\Log\LogLevel;
 use SUSC\Controller\AppController;
 use SUSC\Model\Entity\Config;
 use SUSC\Model\Entity\ItemsOrder;
+use SUSC\Model\Entity\ProcessedOrder;
 use SUSC\Model\Table\ConfigTable;
 use SUSC\Model\Table\ItemsOrdersTable;
 use SUSC\Model\Table\ItemsTable;
@@ -100,6 +101,9 @@ class KitProcessComponent extends Component
         return false;
     }
 
+    /**
+     * Loads the config from the database
+     */
     protected function _loadConfig()
     {
         $config = $this->Config->find()->where(["`key` LIKE 'kit-orders.%'"])->toArray();
@@ -111,15 +115,19 @@ class KitProcessComponent extends Component
         }
     }
 
+    /**
+     * Loads the items that need processing from the database
+     */
     protected function _loadItems()
     {
-        $batch = $this->ProcessedOrders->get($this->_batchID);
+        /** @var ProcessedOrder $batch */
+        $batch = $this->ProcessedOrders->find('assoc')->where(['id' => $this->_batchID])->firstOrFail();
         $items = [];
         foreach ($batch->items_orders as $item) {
             try {
                 /** * @var Config $configItem */
-                if (!array_key_exists($item->item_id, $this->_configMap)){
-                    $this->_configMap[$item->item_id] =$item->item->slug;
+                if (!array_key_exists($item->item_id, $this->_configMap)) {
+                    $this->_configMap[$item->item_id] = $item->item->slug;
                 };
                 $items[$this->_configMap[$item->item_id]][] = $item;
             } catch (RecordNotFoundException $ex) {
@@ -129,6 +137,9 @@ class KitProcessComponent extends Component
         $this->_items = $items;
     }
 
+    /**
+     * Processes items
+     */
     protected function _processItems()
     {
         foreach ($this->_items as $fileName => $item) {
@@ -138,8 +149,10 @@ class KitProcessComponent extends Component
     }
 
     /**
-     * @param $fileName string
-     * @param ItemsOrder[] $items
+     * Processes each item
+     *
+     * @param $fileName string filename of item
+     * @param ItemsOrder[] $items Items to include in file
      */
     protected function _processItem($fileName, array $items)
     {
@@ -190,6 +203,9 @@ class KitProcessComponent extends Component
         return $string;
     }
 
+    /**
+     * Compresses the temporary csv files into a zip
+     */
     protected function _compressData()
     {
         $zipFile = $this->getZipFilePath();
@@ -204,29 +220,78 @@ class KitProcessComponent extends Component
         $zipArchive->close();
     }
 
-    public function getZipFileName($batchID = null)
+    /**
+     * Gets the full path of a the zip file for a given batch ID
+     *
+     * @param string|null $batchID Batch ID
+     * @return string Full path to zip file
+     */
+    public function getZipFilePath($batchID = null)
     {
-        if($batchID == null) $batchID = $this->_batchID;
-        return 'susc-kit-order-' . $batchID . '.zip';
-    }
-
-    public function getZipFilePath($batchID = null){
-        if($batchID == null) $batchID = $this->_batchID;
+        if ($batchID == null) $batchID = $this->_batchID;
         return $this->_saveDir . $this->getZipFileName($batchID);
     }
 
+    /**
+     * Gets the zip file name from a batch ID
+     * @param string|null $batchID Batch ID
+     * @return string Zip File Name
+     */
+    public function getZipFileName($batchID = null)
+    {
+        if ($batchID == null) $batchID = $this->_batchID;
+        return 'susc-kit-order-' . $batchID . '.zip';
+    }
+
+    /**
+     * Cleans up after processing
+     */
+    protected function _cleanUp()
+    {
+        $this->rrmdir($this->_tempDir);
+    }
+
+    /**
+     * Recursively removes a directory
+     * @param string $dir directory to remove
+     */
+    function rrmdir($dir)
+    {
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object != "." && $object != "..") {
+                    if (is_dir($dir . "/" . $object))
+                        $this->rrmdir($dir . "/" . $object);
+                    else
+                        unlink($dir . "/" . $object);
+                }
+            }
+            rmdir($dir);
+        }
+    }
+
+    /**
+     * Returns whether a download exists for a batch or not
+     *
+     * @param int|null $batchID Batch ID
+     * @return bool
+     */
     public function isDownloadExist($batchID = null)
     {
-
         if ($batchID == null) {
             $batchID = $this->_batchID;
         } elseif ($this->_batchID == null) {
             $this->_batchID = $batchID;
         };
+
         $file = $this->getZipFilePath($batchID);
         return file_exists($file);
     }
 
+    /**
+     * Processes a batch of items
+     */
     public function process()
     {
         /** @var ItemsOrder[] $items */
@@ -278,27 +343,6 @@ class KitProcessComponent extends Component
             });
         }
         return array_values($csv);
-    }
-
-    protected function _cleanUp()
-    {
-        $this->rrmdir($this->_tempDir);
-    }
-
-    function rrmdir($dir)
-    {
-        if (is_dir($dir)) {
-            $objects = scandir($dir);
-            foreach ($objects as $object) {
-                if ($object != "." && $object != "..") {
-                    if (is_dir($dir . "/" . $object))
-                        $this->rrmdir($dir . "/" . $object);
-                    else
-                        unlink($dir . "/" . $object);
-                }
-            }
-            rmdir($dir);
-        }
     }
 
 }
