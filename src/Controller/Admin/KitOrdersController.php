@@ -8,6 +8,7 @@ namespace SUSC\Controller\Admin;
 
 
 use Aura\Intl\Exception;
+use Cake\Http\Response;
 use Cake\Mailer\Email;
 use Cake\ORM\TableRegistry;
 use DateTime;
@@ -67,18 +68,27 @@ class KitOrdersController extends AppController
         $this->set(compact('order'));
     }
 
+    /**
+     * Cancels an order
+     *
+     * @param string|null $id ID of order to cancel
+     * @return Response|null
+     */
     public function cancel($id = null)
     {
+        // Get ID from post data if not in URL
         if ($id === null) $id = $this->request->getData('id');
 
         /** @var Order $order */
         $order = $this->Orders->find('id', ['id' => $id])->firstOrFail();
 
+        // Prevent cancelling and order that has items in a batch that has been ordered
         if ($order->ordered_left != count($order->items)) {
             $this->Flash->error('Cannot cancel order - some items have already been ordered!');
             return $this->redirect($this->referer());
         }
 
+        // Soft-delete the order
         $order->is_cancelled = true;
         if ($this->Orders->save($order)) {
             $email = new Email();
@@ -94,12 +104,18 @@ class KitOrdersController extends AppController
         }
     }
 
+    /**
+     * Marks an order as paid
+     * @param string|null $id ID of Order to mark as paid
+     * @return Response|null
+     */
     public function paid($id = null)
     {
         if ($this->request->getMethod() != 'POST') {
             return $this->redirect(['action' => 'index']);
         }
 
+        // Get ID from post data if not in URL
         if ($id === null) $id = $this->request->getData('id');
 
         /** @var Order $order */
@@ -127,6 +143,11 @@ class KitOrdersController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
+    /**
+     * Mark a processed order as ordered
+     * @param string|null $id ID of processed order
+     * @return Response|null
+     */
     public function ordered($id = null)
     {
         if ($this->request->getMethod() != 'POST') {
@@ -149,6 +170,11 @@ class KitOrdersController extends AppController
         return $this->redirect($this->referer());
     }
 
+    /**
+     * Mark a ProcessedOrder as arrived
+     * @param string|null $id ID of Processed Order
+     * @return Response|null
+     */
     public function arrived($id = null)
     {
         if ($this->request->getMethod() != 'POST') {
@@ -156,13 +182,29 @@ class KitOrdersController extends AppController
         }
 
         /** @var ProcessedOrder $order */
+        // Get ID from post data if not in URL
         if ($id === null) $id = $this->request->getData('id');
         $order = $this->ProcessedOrders->get($id);
-        $order->arrived = ($order->arrived == null) ? new DateTime() : null;
+
+        // If the order has already arrived, don't do anything
+        if($order->is_arrived) return $this->redirect($this->referer());
+        $order->arrived = new DateTime();
 
         if ($this->ProcessedOrders->save($order)) {
-            // TODO: Send email to users to say item is ready for collection
 
+            // Fetch orders and items that are in this batch
+            $orders = $this->Orders->find('batchID', ['id' => $order->id])->toArray();
+
+            // Email out each order
+            foreach($orders as $order){
+                $email = new Email();
+                $email
+                    ->setTo($order->user->email_address, $order->user->full_name)
+                    ->setSubject('Item Arrival - Order #' . $order->id)
+                    ->setTemplate('order_collection')
+                    ->setViewVars(['order' => $order, 'user' => $order->user])
+                    ->send();
+            }
             $this->Flash->success('Batch marked as arrived. Users have been emailed to collect their items.');
         } else {
             $this->Flash->error('Failed to mark the batch as arrived!');
@@ -170,6 +212,11 @@ class KitOrdersController extends AppController
         return $this->redirect($this->referer());
     }
 
+    /**
+     * Mark an Item (ItemsOrder) as collected
+     * @param string|null $id UUID of Item
+     * @return Response|null
+     */
     public function collected($id = null)
     {
         if ($this->request->getMethod() != 'POST') {
@@ -177,8 +224,11 @@ class KitOrdersController extends AppController
         }
 
         /** @var ItemsOrder $item */
+        // Get ID from post data if not in URL
         if ($id === null) $id = $this->request->getData('id');
         $item = $this->ItemsOrders->find('id', ['id' => $id])->firstOrFail();
+
+        // If the item is already collected, don't do anything
         if ($item->is_collected) return $this->redirect($this->referer());
 
         $item->collected = new DateTime();
@@ -199,6 +249,12 @@ class KitOrdersController extends AppController
         return $this->redirect($this->referer());
     }
 
+    /**
+     * Display all processed orders, or a single processed.
+     * If $id is null, all processed orders will be displayed.
+     *
+     * @param string|null $id ID of processed order to display
+     */
     public function processedOrders($id = null)
     {
         if ($id == null) {
@@ -208,11 +264,14 @@ class KitOrdersController extends AppController
             return;
         }
 
-        $order = $this->ProcessedOrders->get($id);
+        $order = $this->ProcessedOrders->find('assoc')->where(['id' => $id])->firstOrFail();
         $this->set('order', $order);
         $this->viewBuilder()->setTemplate('view_processed_orders');
     }
 
+    /**
+     * Kit Configuration Page
+     */
     public function config()
     {
         $items = [];
@@ -257,10 +316,14 @@ class KitOrdersController extends AppController
         $this->set(compact('items', 'config'));
     }
 
+    /**
+     * Batch order processing
+     * @return Response|null
+     */
     public function process()
     {
         if (!$this->request->is(['patch', 'post', 'put'])) {
-            return;
+            return null;
         }
 
         $this->loadComponent('KitProcess');
@@ -273,13 +336,21 @@ class KitOrdersController extends AppController
         }
     }
 
+    /**
+     * Downloads a processed order zip file
+     * @param string|null $id ID of processed order
+     * @return Response
+     */
     public function download($id = null)
     {
         $this->loadComponent('KitProcess');
 
+        // If the download doesn't exist, create the download
         if (!$this->KitProcess->isDownloadExist($id)) {
             $this->KitProcess->createDownload($id);
         }
+
+        // Send the download
         $response = $this->response
             ->withType('application/zip')
             ->withDownload($this->KitProcess->getZipFileName())
