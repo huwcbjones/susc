@@ -17,7 +17,8 @@ use Cake\ORM\TableRegistry;
  * @property FrozenTime $modified
  * @property string $description
  * @property boolean $is_enable
- * @property null|string|Group $parent
+ * @property string $parent_id
+ * @property null|Group $parent
  *
  * @property Acl[] $acls
  */
@@ -62,16 +63,13 @@ class Group extends Entity
         return $this->is_enable && $this->parent->isEnabled();
     }
 
-    protected function _getParent($parent)
+    protected function _getParent()
     {
-        if ($parent == null) return null;
+        if ($this->parent_id == null) return null;
         if ($this->_parentObject != null) return $this->_parentObject;
         /** @var Group $parent */
         try {
-            if (!is_string($parent)) {
-                $parent = $parent->id;
-            }
-            $this->_parentObject = TableRegistry::get('Groups' )->get($parent);
+            $this->_parentObject = TableRegistry::get('Groups' )->get($this->parent_id);
             return $this->_parentObject;
         } catch (Exception $ex) {
             return null;

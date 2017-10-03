@@ -25,7 +25,7 @@ $this->assign('title', 'Add Group');
     <div class="form-group">
         <label for="description" class="col-sm-2 control-label">Parent Group</label>
         <div class="col-sm-10">
-            <?= $this->Form->select('parent', $parent, ['empty' => '[None]']) ?>
+            <?= $this->Form->select('parent_id', $parent, ['empty' => '[None]']) ?>
         </div>
 
     </div>

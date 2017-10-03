@@ -15,8 +15,8 @@
     "league/oauth2-facebook": "@stable",
     "league/oauth2-google": "@stable",
     "google/recaptcha": "@stable",
-    "james-heinrich/phpthumb": "^1.7",
-    "cebe/markdown": "~1.0.1"
+    "cebe/markdown": "~1.0.1",
+    "masterexploder/phpthumb": "^2.1"
   },
   "require-dev": {
     "psy/psysh": "@stable",

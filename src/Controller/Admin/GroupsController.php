@@ -87,6 +87,7 @@ class GroupsController extends AppController
 
         $group = $this->Groups->newEntity();
         if ($this->request->is('post')) {
+
             $group = $this->Groups->patchEntity($group, $this->request->getData());
             if ($this->Groups->save($group)) {
                 $this->Flash->success(__('The group has been saved.'));
@@ -148,7 +149,7 @@ class GroupsController extends AppController
         }
         $group = $this->Groups->get($id);
         $parent = $this->currentUser->group;
-        while($parent->id != null){
+        while($parent->parent_id != null){
             if($parent->id == $id) {
                 $this->Flash->error(__('The group could not be deleted. You can\'t delete a group that\'s a parent of your group!'));
                 return $this->redirect(['action' => 'index']);
