@@ -137,6 +137,12 @@ class ItemsOrdersTable extends Table
 
     public function findUnprocessed(Query $query, $options = [])
     {
+        if(array_key_exists('itemIDs', $options)){
+            $query = $query->contain('Items')
+                ->where([
+               'Items.id IN' => $options['itemIDs']
+            ]);
+        }
         return $query
             ->contain(['Orders'])
             ->where([

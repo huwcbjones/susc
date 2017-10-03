@@ -294,8 +294,15 @@ class KitProcessComponent extends Component
      */
     public function process()
     {
+        $includeItems = $this->getController()->request->getData('items');
+
+        if(count($includeItems) == 0){
+            $this->Flash->success('No items were selected to process. Please select some items to process');
+            return;
+        }
+
         /** @var ItemsOrder[] $items */
-        $items = $this->ItemsOrders->find('unprocessed')->toArray();
+        $items = $this->ItemsOrders->find('unprocessed', ['itemIDs' => $includeItems])->toArray();
         if (count($items) === 0) {
             $this->Flash->success('No orders to process (you are up to date!)');
             return;

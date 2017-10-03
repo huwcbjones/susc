@@ -322,6 +322,9 @@ class KitOrdersController extends AppController
      */
     public function process()
     {
+        $items = TableRegistry::get('Items')->find('all')->toArray();
+        $this->set('items', $items);
+
         if (!$this->request->is(['patch', 'post', 'put'])) {
             return null;
         }
