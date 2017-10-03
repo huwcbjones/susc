@@ -1,12 +1,13 @@
 <?php
+
 namespace SUSC\Controller;
 
+use Aura\Intl\Exception;
 use Cake\Cache\Cache;
 use Cake\Controller\Component\AuthComponent;
-use Cake\Core\Configure;
-use Cake\Network\Exception\NotFoundException;
+use Cake\Network\Exception\ServiceUnavailableException;
 use Cake\ORM\TableRegistry;
-use phpthumb;
+use PHPThumb\GD;
 use SUSC\Model\Entity\Image;
 use SUSC\Model\Table\GalleriesTable;
 
@@ -37,39 +38,28 @@ class GalleriesController extends AppController
      */
     public function index()
     {
-        $this->set('galleries', $this->Galleries->findGallery('published'));
+        $this->set('galleries', $this->Galleries->find('gallery')->toArray());
     }
 
     public function thumbnail($id)
     {
-        $images = TableRegistry::get('Images')->find('id', [$id]);
-        if ($images->count() != 1) {
-            return new NotFoundException();
-        }
-
         /** @var Image $image */
-        $image = $images->first();
-        $this->autoRender = false;
-        $this->response->type($image->extension);
+        $image = TableRegistry::get('Images')->get($id);
 
-        // Cache thumbnail using thumbnail rule (we are dynamically creating the thumbnail using php)
-        $this->response->withBody(Cache::remember('image-thumb-' . $image->id, function () use ($image){
-            $pt = new phpthumb();
-
-            // Set phpthumb's debug to use the app debug level
-            $pt->config_disable_debug = !Configure::read('debug');
-
-            $pt->setParameter('w', 500);
-            $pt->setSourceFilename(WWW_ROOT . $image->path);
-
-            if ($pt->GenerateThumbnail()) {
-                $pt->RenderOutput();
-                return $pt->outputImageData;
-            } else {
-                throw new NotFoundException();
-            }
-
-        }, 'thumbnail'));
+        $this->autoRender = true;
+        $response = $this->response
+            ->withType($image->extension)
+            ->withBody(Cache::remember('image-thumb-' . $image->id, function () use ($image) {
+                // Cache thumbnail using thumbnail rule (we are dynamically creating the thumbnail using php)
+                try {
+                    $thumb = new GD($image->full_path);
+                    $thumb->resize(500, 500);
+                    $thumb->show(true);
+                } catch (Exception $e){
+                    throw new ServiceUnavailableException($e);
+                }
+            }, 'thumbnail'));
+        return $response;
     }
 
     /**

@@ -99,17 +99,17 @@ class GalleriesTable extends Table
         return parent::find($type, $options)->contain(['Images']);
     }
 
-    public function findHome(Query $query)
+    public function findHome(Query $query, $options = [])
     {
         return $query->where(['id' => 'a59b681c-f393-11e6-bffe-0050569388dc']);
     }
 
-    public function findGallery($type = 'all', $options = [])
+    public function findGallery(Query $query, $options = [])
     {
-        return parent::find($type, $options)
+        return $query
             ->contain(['Images'])
             ->contain(['ThumbnailImage'])
-            ->where(['`Galleries`.`id` !=' => 'a59b681c-f393-11e6-bffe-0050569388dc'])
+            ->where(['`Galleries`.`id` !=' => 'a59b681c-f393-11e6-bffe-0050569388dc', ['Galleries.status' => 1]])
             ->order(['`Galleries`.`created`' => 'ASC']);
     }
 

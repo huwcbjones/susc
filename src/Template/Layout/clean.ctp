@@ -29,6 +29,7 @@ $this->extend('/Layout/empty');
 
 <?php
 $this->start('postscript');
+echo $this->fetch('postscript');
 ?>
 <script type="text/javascript">
     $(document).ready(function () {
