@@ -28,14 +28,17 @@ if (!function_exists('print_acl')) {
 <div class="panel-group" id="accordion-<?= $group_id ?>" role="tablist" aria-multiselectable="true">
     <?php foreach ($acls as $tier1 => $t1_acls): ?>
         <?php
-        $id = $tier1 . md5(microtime(true))
+        $id = $tier1 . md5(microtime(true));
+        $title_array = explode('-', $tier1);
+        foreach($title_array as &$bit) $bit = ucfirst($bit);
+        $title = implode(' ', $title_array);
         ?>
         <div class="panel panel-primary">
             <div class="panel-heading" role="tab" id="h-<?= $id ?>">
                 <h4 class="panel-title">
                     <a role="button" data-toggle="collapse" data-parent="#accordion" href="#c-<?= $id ?>"
                        aria-expanded="true" aria-controls="c-<?= $id ?>">
-                        <?= ucfirst($tier1) ?>
+                        <?= $title ?>
                     </a>
                 </h4>
             </div>

@@ -19,6 +19,13 @@ $links['users'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'control
 $links['users_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Users', 'action' => 'add']);
 $links['groups'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index'])) !== false;
 $links['groups_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'add']);
+$links['kit-items'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index'])) !== false;
+$links['kit-items_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'add']);
+$links['kit-orders'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index'])) !== false;
+$links['kit-orders_view'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index']);
+$links['kit-orders_config'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'config']);
+$links['kit-orders_process'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'process']);
+$links['kit-orders_processed'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'processedOrders']);
 ?>
 
 <?= $this->element('header', ['fixedTop' => true]) ?>
@@ -84,9 +91,33 @@ $links['groups_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'contro
                     <li><?= $this->Html->link('Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index']) ?></li>
                 </ul>
             <?php endif ?>
-            <?php if ($currentUser->isAuthorised('admin.kit.*')): ?>
+            <?php if ($currentUser->isAuthorised('admin.kit-items.*')): ?>
                 <ul class="nav nav-sidebar">
-                    <li><?= $this->Html->link('Kit Orders', ['prefix' => 'admin', 'controller' => 'Kit', 'action' => 'index']) ?></li>
+                    <li<?= $links['kit-items'] ? ' class="active"' : '' ?>><?= $this->Html->link('Kit Items', ['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index']) ?></li>
+                    <?php if ($links['kit-items']) : ?>
+                        <?php if ($currentUser->isAuthorised('admin.kit-items.add')): ?>
+                            <li<?= $links['kit-items_add'] ? ' class="active"' : '' ?>><?= $this->Html->link('Add Item', ['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'add']) ?></li>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </ul>
+            <?php endif ?>
+            <?php if ($currentUser->isAuthorised('admin.kit-orders.*')): ?>
+                <ul class="nav nav-sidebar">
+                    <li<?= $links['kit-orders'] ? ' class="active"' : '' ?>><?= $this->Html->link('Kit Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index']) ?></li>
+                    <?php if ($links['kit-orders']) : ?>
+                        <?php if ($currentUser->isAuthorised('admin.kit-orders.view')): ?>
+                            <li<?= $links['kit-orders_view'] ? ' class="active"' : '' ?>><?= $this->Html->link('View Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index']) ?></li>
+                        <?php endif; ?>
+                        <?php if ($currentUser->isAuthorised('admin.kit-orders.process')): ?>
+                            <li<?= $links['kit-orders_processed'] ? ' class="active"' : '' ?>><?= $this->Html->link('Processed Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'processedOrders']) ?></li>
+                        <?php endif; ?>
+                        <?php if ($currentUser->isAuthorised('admin.kit-orders.process')): ?>
+                            <li<?= $links['kit-orders_process'] ? ' class="active"' : '' ?>><?= $this->Html->link('Process Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'process']) ?></li>
+                        <?php endif; ?>
+                        <?php if ($currentUser->isAuthorised('admin.kit-orders.config')): ?>
+                            <li<?= $links['kit-orders_config'] ? ' class="active"' : '' ?>><?= $this->Html->link('Configure', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'config']) ?></li>
+                        <?php endif; ?>
+                    <?php endif; ?>
                 </ul>
             <?php endif ?>
         </div>

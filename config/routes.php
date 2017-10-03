@@ -200,6 +200,31 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     });
 
+    // Connect Kit
+    $routes->scope('/kit', ['controller' => 'Kit'], function (RouteBuilder $routes) {
+        $routes->connect('/', ['action' => 'index'], ['_name' => 'kit']);
+        $routes->connect('/basket', ['action' => 'basket'], ['_name' => 'basket']);
+        $routes->connect('/pay', ['action' => 'pay'], ['_name' => 'pay']);
+        $routes->connect('/faq', ['action' => 'faq'], ['_name' => 'faq']);
+        $routes->connect('/order', ['action' => 'orders'], ['_name' => 'order']);
+        $routes->connect('/order/success', ['action' => 'order_complete'], ['_name' => 'order_complete']);
+        $routes->connect('/order/:orderid',
+            ['action' => 'vieworder'],
+            [
+                'pass' => ['orderid'],
+                'slug' => '[0-9]+'
+            ]
+        );
+        $routes->connect('/item/:slug',
+            ['action' => 'view'],
+            [
+                'pass' => ['slug'],
+                'slug' => '[A-z0-9\-]+',
+                '_name' => 'kit_item'
+            ]
+        );
+    });
+
 
     // Connect About
     $routes->scope('/about', ['controller' => 'About'], function (RouteBuilder $routes) {
@@ -209,7 +234,7 @@ Router::scope('/', function (RouteBuilder $routes) {
         $routes->connect('/coaches', ['action' => 'coaches'], ['_name' => 'coaches']);
         $routes->connect('/committee', ['action' => 'committee'], ['_name' => 'committee']);
     });
-    
+
 
     $routes->scope('/sitemap', function (RouteBuilder $routes) {
         $routes->extensions(['xml']);

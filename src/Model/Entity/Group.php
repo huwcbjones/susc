@@ -52,6 +52,10 @@ class Group extends Entity
         return $this->_effectiveAcls;
     }
 
+    protected function _getIsEnable($is_enable){
+        return $is_enable;
+    }
+
     public function isEnabled()
     {
         if($this->parent == null) return $this->is_enable;

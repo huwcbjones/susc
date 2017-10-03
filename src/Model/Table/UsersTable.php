@@ -55,10 +55,7 @@ class UsersTable extends Table
         $this->hasMany('Articles', [
             'foreignKey' => 'user_id'
         ]);
-        $this->hasMany('KitCompletedOrders', [
-            'foreignKey' => 'user_id'
-        ]);
-        $this->hasMany('KitOrders', [
+        $this->hasMany('Orders', [
             'foreignKey' => 'user_id'
         ]);
         $this->belongsTo('Groups')

@@ -75,6 +75,10 @@ class StaticContentTable extends Table
         return $rules;
     }
 
+    public function findKey(Query $query, $options = []){
+        return $query->where(['key' => $options['key']]);
+    }
+
     public function findClub(Query $query){
         return $query->where(['key' => 'about_club'])->limit(1);
     }

@@ -14,9 +14,6 @@
  */
 namespace SUSC\View;
 
-use Cake\Event\EventManager;
-use Cake\Network\Request;
-use Cake\Network\Response;
 
 /**
  * A view class that is used for AJAX responses.

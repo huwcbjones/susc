@@ -94,8 +94,8 @@ namespace SUSC\Controller {
             // Get Table instances
             $this->Users = TableRegistry::get('Users');
             $this->Config = TableRegistry::get('Config');
-            
-            
+
+
             // Setup Authentication
             $this->currentUser = null;
             if ($this->Auth->user('id') !== null) {
@@ -114,7 +114,7 @@ namespace SUSC\Controller {
                 return $this->currentUser->isAuthorised($acl);
             }
 
-            if($user == null) return false;
+            if ($user == null) return false;
 
             $user = $this->Users->get($user['id']);
             return $user->isAuthorised($acl);
@@ -126,11 +126,32 @@ namespace SUSC\Controller {
          */
         public function getACL()
         {
+            $this->log('Action: ' . $this->request->getParam('action'), LogLevel::DEBUG);
             // Create Acl id ($prefix).$controller.$action
-            $acl = strtolower($this->request->getParam('controller'));
+            $acl = $this->_convertControllerString($this->request->getParam('controller'));
             if ($this->request->getParam('prefix') != '') $acl = strtolower($this->request->getParam('prefix')) . '.' . $acl;
             if ($this->request->getParam('action') != '') $acl .= '.' . strtolower($this->request->getParam('action'));
             return $acl;
+        }
+
+        /**
+         * Converts a controller string into dashed version.
+         *
+         * E.g.: MyController => my-controller
+         *
+         * @param $controller string Controller Name
+         * @return string Dashed controller string
+         */
+        protected function _convertControllerString($controller)
+        {
+            // Break "MyController" into ['my', 'Controller']
+            $controller = preg_split('/(?=[A-Z])/', lcfirst($this->request->getParam('controller')));
+
+            // Convert all $controller bit to lowercase
+            foreach ($controller as &$bit) $bit = strtolower($bit);
+
+            // Stick the controller string back together
+            return implode('-', $controller);
         }
 
         public function beforeFilter(Event $event)
@@ -141,34 +162,34 @@ namespace SUSC\Controller {
             Cache::disable();
 
 
-            if($this->currentUser === null) {
+            if ($this->currentUser === null) {
                 $this->Auth->setConfig('authError', false);
                 return;
             }
 
             // Logout inactive users
-            if(!$this->currentUser->isEnabled()){
+            if (!$this->currentUser->isEnabled()) {
                 $this->Flash->error("Your account has been disabled.");
                 $this->Auth->logout();
             }
 
             // Logout users that are not active in any way
-            if(!$this->currentUser->isActive()){
+            if (!$this->currentUser->isActive()) {
                 $this->Flash->error("Your account has been disabled.");
                 $this->Auth->logout();
             }
 
-            if(!$this->currentUser->isActivated()){
+            if (!$this->currentUser->isActivated()) {
                 $this->Flash->error("Your account needs to be activated first.");
                 $this->Auth->logout();
             }
 
             // Force user to password change if needs password change
-            if($this->currentUser->isChangePassword()){
-                if(Router::normalize($this->request->getUri()->getPath()) !== Router::url(['_name'=>'change_password'])){
+            if ($this->currentUser->isChangePassword()) {
+                if (Router::normalize($this->request->getUri()->getPath()) !== Router::url(['_name' => 'change_password'])) {
                     return $this->redirect(['_name' => 'change_password']);
                 } else {
-                    $this->Flash->set("You must change your password before continuing.", ['element'=>'warn']);
+                    $this->Flash->set("You must change your password before continuing.", ['element' => 'warn']);
                 }
             }
         }
@@ -186,7 +207,7 @@ namespace SUSC\Controller {
             ) {
                 $this->set('_serialize', true);
             }
-            if($this->request->getParam('prefix') == 'admin' || strtolower($this->request->getParam('controller')) == 'admin'){
+            if ($this->request->getParam('prefix') == 'admin' || strtolower($this->request->getParam('controller')) == 'admin') {
                 $this->viewBuilder()->setLayout('admin');
             }
         }

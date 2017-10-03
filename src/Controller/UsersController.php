@@ -428,11 +428,12 @@ class UsersController extends AppController
         $this->Users->patchEntity($user,
             [
                 'password' => $this->request->getData('new_password'),
-                'reset_code' => null,
                 'reset_code_date' => null,
             ],
             ['guard' => false]
         );
+
+        $user->reset_code = null;
 
         if ($this->Users->save($user)) {
             $email = new Email();
