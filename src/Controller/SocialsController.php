@@ -46,6 +46,11 @@ class SocialsController extends AppController
                 ->toArray());
     }
 
+    public function getACL()
+    {
+        return 'socials';
+    }
+
     public function index($year = null, $month = null, $day = null)
     {
         $options = array();
