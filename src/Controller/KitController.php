@@ -151,11 +151,13 @@ class KitController extends AppController
         ];
 
         foreach ($this->BasketData as $hash => $d) {
+            $additional_info = trim($d['additional_info']);
+            if($additional_info == '') $additional_info = null;
             $item_data = [
                 'item_id' => $d['id'],
                 'size' => $d['size'],
                 'quantity' => $d['quantity'],
-                'additional_info' => $d['additional_info'],
+                'additional_info' => $additional_info,
                 'price' => $d['item']->price,
                 'subtotal' => $d['item']->price * $d['quantity']
             ];
