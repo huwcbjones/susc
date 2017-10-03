@@ -2,6 +2,7 @@
 namespace SUSC\Model\Table;
 
 use Cake\Datasource\EntityInterface;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -68,5 +69,9 @@ class ConfigTable extends Table
         $rules->add($rules->isUnique(['key']));
 
         return $rules;
+    }
+
+    public function findValue(Query $query, $options = []){
+        return $query->where(['value' => $options['value']]);
     }
 }

@@ -6,11 +6,15 @@ $this->extend('clean')
         <h1 class="h2">&nbsp;</h1><br/>
         <div class="btn-group-vertical btn-block" role="group">
             <?= $this->Html->link('My Details', ['_name' => 'profile'], ['class' => ['btn', 'btn-lg', 'btn-default', 'btn-block']]) ?>
-            <?php if($currentUser->isAuthorised('kit.order')): ?>
+            <?php if($currentUser->isAuthorised('kit.*')): ?>
             <?= $this->Html->link('My Orders', ['_name' => 'order'], ['class' => ['btn', 'btn-lg', 'btn-default', 'btn-block']]) ?>
             <?php endif; ?>
+            <?php if($currentUser->isAuthorised('users.changepassword')): ?>
             <?= $this->Html->link('Change Password', ['_name' => 'change_password'], ['class' => ['btn', 'btn-lg', 'btn-default', 'btn-block']]) ?>
+            <?php endif; ?>
+            <?php if($currentUser->isAuthorised('users.changeemail')): ?>
             <?= $this->Html->link('Change Email', ['_name' => 'change_email'], ['class' => ['btn', 'btn-lg', 'btn-default', 'btn-block']]) ?>
+            <?php endif; ?>
             <?= $this->Html->link('Logout', ['_name' => 'logout'], ['class' => ['btn', 'btn-lg', 'btn-default', 'btn-block']]) ?>
         </div>
     </div>

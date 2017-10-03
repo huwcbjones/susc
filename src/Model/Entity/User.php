@@ -19,8 +19,11 @@ use DateTime;
  * @property string $full_name
  * @property string $activation_code
  * @property string $reset_code
+ * @property string $new_email
+ * @property string $new_email_code
  * @property FrozenTime $activation_date
  * @property FrozenTime $reset_code_date
+ * @property FrozenTime $new_email_code_date
  * @property string|resource $password
  * @property bool $is_active
  * @property bool $is_enable
@@ -31,6 +34,7 @@ use DateTime;
  * @property Group $group
  * @property Article[] $articles
  * @property Acl[] $acls
+ * @property Order[] $orders
  */
 class User extends Entity
 {
@@ -47,8 +51,14 @@ class User extends Entity
     protected $_accessible = [
         'id' => false,
         'email_address' => false,
+        'users_acls' => true,
+        'activation_code' => false,
+        'reset_code' => false,
+        'new_email_code' => false,
         '*' => true
     ];
+
+    protected $_effectiveAcls = null;
 
     /**
      * Fields that are excluded from JSON versions of the entity.
@@ -56,12 +66,15 @@ class User extends Entity
      * @var array
      */
     protected $_hidden = [
-        'password'
+        'password',
+        'activation_code',
+        'reset_code',
+        'new_email_code'
     ];
 
     public function isChangePassword()
     {
-        return $this->is_change_password !== "0";
+        return $this->is_change_password;
     }
 
     /**
@@ -72,12 +85,16 @@ class User extends Entity
      */
     public function isActive()
     {
-        return $this->isEnabled() && $this->isActivated();
+        return $this->isEnabled() && $this->isActivated() && $this->group->isEnabled();
     }
 
+    /**
+     * Returns whether or not a user is enabled
+     * @return bool
+     */
     public function isEnabled()
     {
-        return $this->is_enable !== "0";
+        return $this->is_enable == '1';
     }
 
     /**
@@ -86,7 +103,7 @@ class User extends Entity
      */
     public function isActivated()
     {
-        return $this->activation_code === null;
+        return $this->is_active == '1';
     }
 
     /**
@@ -96,11 +113,9 @@ class User extends Entity
      */
     public function isAuthorised($acl)
     {
-
-
-        $acl_array = explode('.', $acl);
         /** @var array|Acl $acls */
-        $acls = $this->acls;
+        $acls = $this->getEffectiveAcls();
+        $acl_array = explode('.', $acl);
         $count = 1;
         foreach ($acl_array as $bit) {
             // Wildcard checking
@@ -136,9 +151,50 @@ class User extends Entity
         }
     }
 
+    public function getEffectiveAcls()
+    {
+        if ($this->_effectiveAcls != null) return $this->_effectiveAcls;
+        $this->_effectiveAcls = array_merge_recursive(Acl::splattify($this->acls), $this->group->getEffectiveAcls());
+        return $this->_effectiveAcls;
+    }
+
+    /**
+     * Gets whether or not the reset password code is still valid (not expired)
+     * @return bool
+     */
     public function isResetPasswordValid()
     {
+        if ($this->reset_code_date == null) return false;
         return (new DateTime()) < $this->reset_code_date->addHours(3);
+    }
+
+    /**
+     * Gets whether or the user is trying to reset their password
+     * @return bool
+     */
+    public function isResettingPassword()
+    {
+        return ($this->reset_code_date !== null);
+    }
+
+
+    /**
+     * Gets whether or not the change email code is still valid (not expired)
+     * @return bool
+     */
+    public function isChangeEmailValid()
+    {
+        if ($this->new_email_code_date == null) return false;
+        return (new DateTime()) < $this->new_email_code_date->addHours(3);
+    }
+
+    /**
+     * Gets whether or not the user is trying to change their email
+     * @return bool
+     */
+    public function isChangingEmail()
+    {
+        return ($this->new_email_code_date !== null);
     }
 
     protected function _getFull_name()
@@ -158,26 +214,5 @@ class User extends Entity
         if ($password == null) return null;
         if (is_string($password)) return $password;
         return stream_get_contents($password);
-    }
-
-    protected function _getAcls($acls)
-    {
-        // Convert numeric indexed array to Acl ID indexed array
-        $new_acls = array();
-        /** @var Acl $acl */
-        foreach ($acls as $acl) {
-            $id = explode('.', $acl->id);
-            $head = &$new_acls;
-            foreach ($id as $bit) {
-                $head[$bit] = array();
-                $head = &$head[$bit];
-            }
-            $head['_'] = $acl;
-        }
-
-        $acls = $new_acls;
-
-        // Merge User acls with group acls
-        return array_merge($acls, $this->group->acls);
     }
 }

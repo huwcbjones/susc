@@ -41,8 +41,6 @@ class AclsTable extends Table
             'joinTable' => 'groups_acls'
         ]);
         $this->belongsToMany('Users', [
-            'foreignKey' => 'acl_id',
-            'targetForeignKey' => 'user_id',
             'joinTable' => 'users_acls'
         ]);
     }

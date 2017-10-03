@@ -50,7 +50,7 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->connect('/admin', ['controller' => 'Admin', 'action' => 'index'], ['_name' => 'admin']);
 
     // Connect Admin pages
-    Router::prefix('admin', function (RouteBuilder $routes) {
+    $routes->prefix('admin', function (RouteBuilder $routes) {
         $routes->fallbacks(DashedRoute::class);
     });
 
@@ -67,108 +67,127 @@ Router::scope('/', function (RouteBuilder $routes) {
             '_name' => 'reset_password'
         ]
     );
-    $routes->connect('/user/profile', ['controller' => 'Users', 'action' => 'profile'], ['_name' => 'profile']);
-    $routes->connect('/user/profile/password', ['controller' => 'Users', 'action' => 'changePassword'], ['_name' => 'change_password']);
-    $routes->connect('/user/profile/email', ['controller' => 'Users', 'action' => 'changeEmail'], ['_name' => 'change_email']);
+    $routes->scope('/user/profile', ['controller' => 'Users'], function (RouteBuilder $routes) {
+        $routes->connect('/', ['action' => 'profile'], ['_name' => 'profile']);
+        $routes->connect('/password', ['action' => 'changePassword'], ['_name' => 'change_password']);
+        $routes->connect('/email', ['action' => 'changeEmail'], ['_name' => 'change_email']);
+    });
+
+    $routes->connect('/verify/:email_code',
+        ['controller' => 'Users', 'action' => 'verifyEmailChange'],
+        [
+            'pass' => ['email_code'],
+            'reset_code' => '[\da-f]{80}',
+            '_name' => 'verify_email'
+        ]
+    );
 
     // Connect News
-    $routes->connect('/news', ['controller' => 'News'], ['_name' => 'news']);
-    $routes->connect('/news/:year',
-        ['controller' => 'News', 'action' => 'index'],
-        ['pass' => ['year'],
-            'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
-        ]
-    );
-    $routes->connect('/news/:year/:month',
-        ['controller' => 'News', 'action' => 'index'],
-        [
-            'pass' => ['year', 'month'],
-            'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
-            'month' => '0[1-9]|1[012]',
-            '_name' => 'NewsMonthIndex'
-        ]
-    );
-    $routes->connect('/news/:year/:month/:day',
-        ['controller' => 'News', 'action' => 'index'],
-        [
-            'pass' => ['year', 'month', 'day'],
-            'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
-            'month' => '0[1-9]|1[012]',
-            'day' => '0[1-9]|[12][0-9]|3[01]',
-        ]
-    );
-    $routes->connect('/news/:year/:month/:day/:slug',
-        ['controller' => 'News', 'action' => 'view'],
-        [
-            'pass' => ['year', 'month', 'day', 'slug'],
-            'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
-            'month' => '0[1-9]|1[012]',
-            'day' => '0[1-9]|[12][0-9]|3[01]',
-            'slug' => '[A-z0-9\-]+'
-        ]
-    );
+    $routes->scope('/news', ['controller' => 'News'], function (RouteBuilder $routes) {
+        $routes->connect('/', [], ['_name' => 'news']);
+        $routes->connect('/:year',
+            ['action' => 'index'],
+            ['pass' => ['year'],
+                'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
+            ]
+        );
+        $routes->connect('/:year/:month',
+            ['action' => 'index'],
+            [
+                'pass' => ['year', 'month'],
+                'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
+                'month' => '0[1-9]|1[012]',
+                '_name' => 'NewsMonthIndex'
+            ]
+        );
+        $routes->connect('/:year/:month/:day',
+            ['action' => 'index'],
+            [
+                'pass' => ['year', 'month', 'day'],
+                'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
+                'month' => '0[1-9]|1[012]',
+                'day' => '0[1-9]|[12][0-9]|3[01]',
+            ]
+        );
+        $routes->connect('/:year/:month/:day/:slug',
+            ['action' => 'view'],
+            [
+                'pass' => ['year', 'month', 'day', 'slug'],
+                'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
+                'month' => '0[1-9]|1[012]',
+                'day' => '0[1-9]|[12][0-9]|3[01]',
+                'slug' => '[A-z0-9\-]+'
+            ]
+        );
+    });
 
     // Connect Training
-    $routes->connect('/training', ['controller' => 'Pages', 'action' => 'training'], ['_name' => 'training']);
-    $routes->connect('/training/competition', ['controller' => 'Pages', 'action' => 'training', 'competition'], ['_name' => 'training_comp']);
-    $routes->connect('/training/recreational', ['controller' => 'Pages', 'action' => 'training', 'recreation'], ['_name' => 'training_rec']);
-    $routes->connect('/training/facilities', ['controller' => 'Pages', 'action' => 'training', 'facilities'], ['_name' => 'training_facilities']);
+    $routes->scope('/training', ['controller' => 'Pages'], function (RouteBuilder $routes) {
+        $routes->connect('/', ['action' => 'training'], ['_name' => 'training']);
+        $routes->connect('/competition', ['action' => 'training', 'competition'], ['_name' => 'training_comp']);
+        $routes->connect('/recreational', ['action' => 'training', 'recreation'], ['_name' => 'training_rec']);
+        $routes->connect('/facilities', ['action' => 'training', 'facilities'], ['_name' => 'training_facilities']);
+    });
 
     // Connect Fixtures
-    $routes->connect('/fixtures', ['controller' => 'Fixtures'], ['_name' => 'fixtures']);
-    $routes->connect('/fixtures/calendar', ['controller' => 'Fixtures', 'action' => 'calendar'], ['_name' => 'fixture_calendar']);
-    $routes->connect('/fixtures/:year/:slug',
-        ['controller' => 'Fixtures', 'action' => 'view'],
-        [
-            'pass' => ['year', 'slug'],
-            'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
-            'slug' => '[A-z0-9\-]+'
-        ]
-    );
+    $routes->scope('/fixtures', ['controller' => 'Fixtures'], function (RouteBuilder $routes) {
+        $routes->connect('/', [], ['_name' => 'fixtures']);
+        $routes->connect('/calendar', ['action' => 'calendar'], ['_name' => 'fixture_calendar']);
+        $routes->connect('/:year/:slug',
+            ['action' => 'view'],
+            [
+                'pass' => ['year', 'slug'],
+                'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
+                'slug' => '[A-z0-9\-]+'
+            ]
+        );
+    });
 
     // Connect Socials
-    $routes->connect('/socials', ['controller' => 'Socials'], ['_name' => 'socials']);
-    $routes->connect('/socials/:year',
-        ['controller' => 'Socials', 'action' => 'index'],
-        [
-            'pass' => ['year'],
-            'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
-        ]
-    );
-    $routes->connect('/socials/:year/:month/',
-        ['controller' => 'Socials', 'action' => 'index'],
-        [
-            'pass' => ['year', 'month'],
-            'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
-            'month' => '0[1-9]|1[012]',
-            '_name' => 'SocialsMonthIndex'
-        ]
-    );
-    $routes->connect('/socials/:year/:month/:day',
-        ['controller' => 'Socials', 'action' => 'index'],
-        [
-            'pass' => ['year', 'month', 'day'],
-            'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
-            'month' => '0[1-9]|1[012]',
-            'day' => '0[1-9]|[12][0-9]|3[01]'
-        ]
-    );
-    $routes->connect('/socials/:year/:month/:day/:slug',
-        ['controller' => 'Socials', 'action' => 'view'],
-        [
-            'pass' => ['year', 'month', 'day', 'slug'],
-            'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
-            'month' => '0[1-9]|1[012]',
-            'day' => '0[1-9]|[12][0-9]|3[01]',
-            'slug' => '[A-z0-9\-]+'
-        ]
-    );
+    $routes->scope('/socials', ['controller' => 'Socials'], function (RouteBuilder $routes) {
+        $routes->connect('/', [], ['_name' => 'socials']);
+        $routes->connect('/:year',
+            ['action' => 'index'],
+            [
+                'pass' => ['year'],
+                'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
+            ]
+        );
+        $routes->connect('/:year/:month/',
+            ['action' => 'index'],
+            [
+                'pass' => ['year', 'month'],
+                'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
+                'month' => '0[1-9]|1[012]',
+                '_name' => 'SocialsMonthIndex'
+            ]
+        );
+        $routes->connect('/:year/:month/:day',
+            ['action' => 'index'],
+            [
+                'pass' => ['year', 'month', 'day'],
+                'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
+                'month' => '0[1-9]|1[012]',
+                'day' => '0[1-9]|[12][0-9]|3[01]'
+            ]
+        );
+        $routes->connect('/:year/:month/:day/:slug',
+            ['action' => 'view'],
+            [
+                'pass' => ['year', 'month', 'day', 'slug'],
+                'year' => '[12][0-9]{3}', // This *will* break in 3000-01-01, if we make it that far
+                'month' => '0[1-9]|1[012]',
+                'day' => '0[1-9]|[12][0-9]|3[01]',
+                'slug' => '[A-z0-9\-]+'
+            ]
+        );
+    });
 
     // Connect Galleries
     $routes->connect('/gallery',
         ['controller' => 'Galleries', 'action' => 'index'], ['_name' => 'gallery']
     );
-    Router::scope('/gallery/thumb', function (RouteBuilder $routes) {
+    $routes->scope('/gallery/thumb', function (RouteBuilder $routes) {
         $routes->extensions(['jpg']);
         $routes->connect('/:thumbid',
             ['controller' => 'Galleries', 'action' => 'thumbnail'],
@@ -181,32 +200,52 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     });
 
+    // Connect Kit
+    $routes->scope('/kit', ['controller' => 'Kit'], function (RouteBuilder $routes) {
+        $routes->connect('/', ['action' => 'index'], ['_name' => 'kit']);
+        $routes->connect('/basket', ['action' => 'basket'], ['_name' => 'basket']);
+        $routes->connect('/pay', ['action' => 'pay'], ['_name' => 'pay']);
+        $routes->connect('/faq', ['action' => 'faq'], ['_name' => 'faq']);
+        $routes->connect('/order', ['action' => 'orders'], ['_name' => 'order']);
+        $routes->connect('/order/success', ['action' => 'order_complete'], ['_name' => 'order_complete']);
+        $routes->connect('/order/:orderid',
+            ['action' => 'vieworder'],
+            [
+                'pass' => ['orderid'],
+                'slug' => '[0-9]+'
+            ]
+        );
+        $routes->connect('/item/:slug',
+            ['action' => 'view'],
+            [
+                'pass' => ['slug'],
+                'slug' => '[A-z0-9\-]+',
+                '_name' => 'kit_item'
+            ]
+        );
+    });
+
 
     // Connect About
-    $routes->connect('/about/club', ['controller' => 'About', 'action' => 'club'], ['_name' => 'about']);
-    $routes->redirect('/about', ['controller' => 'About', 'action' => 'club']);
-    $routes->connect('/about/contact', ['controller' => 'About', 'action' => 'contact'], ['_name' => 'contact']);
-    $routes->connect('/about/coaches', ['controller' => 'About', 'action' => 'coaches'], ['_name' => 'coaches']);
-    $routes->connect('/about/committee', ['controller' => 'About', 'action' => 'committee'], ['_name' => 'committee']);
+    $routes->scope('/about', ['controller' => 'About'], function (RouteBuilder $routes) {
+        $routes->redirect('/', ['action' => 'club']);
+        $routes->connect('/club', ['action' => 'club'], ['_name' => 'about']);
+        $routes->connect('/contact', ['action' => 'contact'], ['_name' => 'contact']);
+        $routes->connect('/coaches', ['action' => 'coaches'], ['_name' => 'coaches']);
+        $routes->connect('/committee', ['action' => 'committee'], ['_name' => 'committee']);
+    });
 
-    Router::scope('/sitemap', function (RouteBuilder $routes) {
+
+    $routes->scope('/sitemap', function (RouteBuilder $routes) {
         $routes->extensions(['xml']);
         $routes->connect('/', ['controller' => 'Sitemaps'], ['_name' => 'sitemap']);
         $routes->fallbacks('DashedRoute');
     });
-    Router::scope('/robots', function (RouteBuilder $routes) {
+    $routes->scope('/robots', function (RouteBuilder $routes) {
         $routes->extensions(['txt']);
         $routes->connect('/', ['controller' => 'Sitemaps', 'action' => 'robots']);
         $routes->fallbacks('DashedRoute');
     });
-
-    // Connect CakeDC/Users for easy user management
-    /*Router::prefix('users', function ($routes) {
-        Router::plugin('CakeDC/Users', ['path' => '/'], function($routes){
-            $routes->fallbacks('DashedRoute');
-        });
-    });*/
-
 
     /**
      * Connect catchall routes for all controllers.
