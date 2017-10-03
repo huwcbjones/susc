@@ -114,4 +114,19 @@ class OrdersTable extends Table
     {
         return $query->where(['Orders.id' => $options['id']])->contain(['ItemsOrders' => ['ProcessedOrders', 'Items'], 'Users']);
     }
+
+    public function findBatchID(Query $query, $options = [])
+    {
+        return $query
+            ->distinct('Orders.id')
+            ->matching('ItemsOrders', function (Query $q) use ($options) {
+                return $q
+                    ->where(['ItemsOrders.processed_order_id' => $options['id']]);
+            })
+            ->contain(['Users', 'ItemsOrders' => function(Query $q) use ($options) {
+                return $q
+                    ->where(['processed_order_id' => $options['id']])
+                    ->contain('Items');
+            }]);
+    }
 }
