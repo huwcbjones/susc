@@ -24,7 +24,9 @@ $links['about_club'] = $currentUrl === Router::url(['controller' => 'About', 'ac
 $links['about_coaches'] = $currentUrl === Router::url(['controller' => 'About', 'action' => 'coaches']);
 $links['about_committee'] = $currentUrl === Router::url(['controller' => 'About', 'action' => 'committee']);
 
-$links['kit'] = strpos($currentUrl, Router::url(['_name' => 'kit'])) !== false && $currentUrl !== Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index']) && $currentUrl !== Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index']);
+$links['kit'] = strpos($currentUrl, Router::url(['_name' => 'kit'])) !== false
+    && strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index'])) === false
+    && strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index'])) === false;
 $links['kit-shop'] = $currentUrl === Router::url(['_name' => 'kit']);
 $links['kit-faqs'] = $currentUrl === Router::url(['_name' => 'faq']);
 
@@ -34,8 +36,8 @@ $links['admin_users'] = $currentUrl === Router::url(['prefix' => 'admin', 'contr
 $links['admin_groups'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index']);
 $links['admin_socials'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Socials', 'action' => 'index']);
 $links['admin_news'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'News', 'action' => 'index']);
-$links['admin_kit-items'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index']);
-$links['admin_kit-orders'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index']);
+$links['admin_kit-items'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index'])) !== false;
+$links['admin_kit-orders'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index'])) !== false;
 $links['admin_fixtures'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'index']);
 $links['admin_training'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Training', 'action' => 'index']);
 $links['admin_coaches'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Coaches', 'action' => 'index']);
