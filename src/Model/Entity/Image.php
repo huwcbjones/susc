@@ -1,4 +1,5 @@
 <?php
+
 namespace SUSC\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -11,6 +12,7 @@ use Cake\ORM\Entity;
  * @property string $extension
  * @property string $copyright
  * @property string $path
+ * @property string $full_path
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
  * @property bool $status
@@ -34,7 +36,13 @@ class Image extends Entity
         'id' => false
     ];
 
-    protected function _getPath(){
-        return "/images/store/" . $this->id . '.' . $this->extension;
+    protected function _getPath()
+    {
+        return '/images/store/' . $this->id . '.' . $this->extension;
+    }
+
+    protected function _getFullPath()
+    {
+        return WWW_ROOT . 'images' . DS . 'store' . DS . $this->id . '.' . $this->extension;
     }
 }
