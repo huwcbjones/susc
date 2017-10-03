@@ -35,6 +35,7 @@ $this->assign('title', 'Processed Orders');
                 <th scope="col"><?= $this->Paginator->sort('total', 'Total') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('is_ordered', '<attr title="Ordered">O?</attr>', ['escape' => false]) ?></th>
                 <th scope="col"><?= $this->Paginator->sort('is_arrived', '<attr title="Arrived">A?</attr>', ['escape' => false]) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('is_collected', '<attr title="Collected">C?</attr>', ['escape' => false]) ?></th>
                 <?php if ($currentUser->isAuthorised('admin.kit-orders.process')): ?>
                     <th scope="col" class="actions"></th>
                 <?php endif; ?>
@@ -58,6 +59,9 @@ $this->assign('title', 'Processed Orders');
                     </td>
                     <td>
                         <?= $order->getArrivedStatusIcon() ?>
+                    </td>
+                    <td>
+                        <?= $order->getCollectedStatusIcon() ?>
                     </td>
                     <?php if ($currentUser->isAuthorised('admin.kit-orders.process')): ?>
                         <td>

@@ -84,6 +84,17 @@ class ProcessedOrder extends Entity
         }
     }
 
+    public function getCollectedStatusIcon()
+    {
+        if ($this->is_all_collected) {
+            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
+        }
+        if ($this->collected_left == count($this->items_orders)) {
+            return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
+        }
+        return '<span class="text-warning glyphicon glyphicon-hourglass"></span>';
+    }
+
     protected function _getIsOrdered()
     {
         return $this->ordered != null;
