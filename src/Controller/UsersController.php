@@ -130,6 +130,7 @@ class UsersController extends AppController
     public function activateAccount()
     {
         $this->set('activationCode', $this->request->getQuery('activation_code'));
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             $token = $this->request->getData('activation_code');
             $result = $this->Users->find('activationCode', ['activation_code' => $token]);
@@ -143,12 +144,13 @@ class UsersController extends AppController
             $this->Users->patchEntity(
                 $user,
                 [
-                    'activation_code' => null,
                     'activation_date' => Time::now(),
                     'is_active' => true
                 ],
                 ['guard' => false]
             );
+            $user->activation_code = null;
+
             if ($this->Users->save($user)) {
                 $email = new Email();
                 $email
@@ -212,12 +214,13 @@ class UsersController extends AppController
         $this->set('_serialize', ['user']);
     }
 
-    public function verifyEmailChange($code){
+    public function verifyEmailChange($code)
+    {
         try {
             /** @var User $user */
             $user = $this->Users->find('changeEmail', ['code' => $code])->firstOrFail();
 
-            if(!$user->isChangeEmailValid()){
+            if (!$user->isChangeEmailValid()) {
                 $this->Flash->error(__('Verification code has expired'));
                 return $this->redirect(['_name' => 'change_email']);
             }
@@ -231,7 +234,7 @@ class UsersController extends AppController
                 'new_email' => null
             ]);
 
-            if($this->Users->save($user)){
+            if ($this->Users->save($user)) {
                 $email = new Email();
                 $email
                     ->setTo($user->email_address, $user->full_name)
@@ -244,7 +247,7 @@ class UsersController extends AppController
                 $this->Flash->error(__('Failed to change email address. Please try again.'));
             }
             return $this->redirect(['_name' => 'change_email']);
-        } catch (RecordNotFoundException $ex){
+        } catch (RecordNotFoundException $ex) {
             $this->Flash->error(__('Email address verification failed.'));
             return $this->redirect(['_name' => 'change_email']);
         }
@@ -274,59 +277,79 @@ class UsersController extends AppController
         }
 
         $codes = TableRegistry::get('RegistrationCodes');
-        try {
-            /** @var RegistrationCode $registration_code */
-            $registration_code = $codes->get($this->request->getData('registration_code'));
+        $group_id = null;
 
-            if (!$registration_code->isValid()) {
+        $requiresCode = true;
+        try {
+            $requiresCode = ($this->Config->get('users.registration.requires_code')->value === 'true') ? true : false;
+        } catch (RecordNotFoundException $e) {
+
+        }
+
+        if ($requiresCode) {
+            try {
+                /** @var RegistrationCode $registration_code */
+                $registration_code = $codes->get($this->request->getData('registration_code'));
+                $group_id = $registration_code->group_id;
+
+                if (!$registration_code->isValid()) {
+                    $this->Flash->error('An error occurred whilst creating your account. Code invalid');
+                    return;
+                }
+            } catch (RecordNotFoundException $ex) {
                 $this->Flash->error('An error occurred whilst creating your account. Code invalid');
                 return;
             }
-
-
-            $now = new DateTime;
-            $timestamp = $now->getTimestamp();
-            $activation_code = sha1(
-                    $timestamp . $this->request->getData('email_address')
-                ) . sha1(
-                    $timestamp . $this->request->getData('first_name') . ' ' . $this->request->getData('last_name')
-                );
-
-            /** @var User $user */
-            $user = $this->Users->newEntity([
-                'group_id' => $registration_code->group_id,
-                'first_name' => $this->request->getData('first_name'),
-                'last_name' => $this->request->getData('last_name'),
-                'password' => $this->request->getData('password'),
-            ], ['guard' => false]);
-
-            $user->setAccess('email_address', true);
-            $user->email_address = $this->request->getData('email_address');
-            $user->setAccess('activation_code', true);
-            $user->activation_code = $activation_code;
-
-            if ($this->Users->save($user)) {
-                $email = new Email();
-                $email
-                    ->setTo($user->email_address, $user->full_name)
-                    ->setSubject('Activate Account')
-                    ->setViewVars(['user' => $user, 'activation_code' => $activation_code])
-                    ->setTemplate('activate_account')
-                    ->send();
-
-                $this->Flash->success(__('Your account has been created. To activate your account, please click the link sent to you.'));
-                return $this->redirect(['_name' => 'activate']);
+        } else {
+            try {
+                $group_id = $this->Config->get('users.registration.default_group_id')->value;
+            } catch (RecordNotFoundException $ex){
+                $this->Flash->error('An error occurred whilst creating your account. A registration code is required!');
+                return;
             }
-
-            if (count($user->getError('email_address')) != 0) {
-                $this->Flash->error('Email address is already registered. <a href="' . Router::url(['_name' => 'reset']) . '">Forgotten your password?</a>', ['escape' => false]);
-            } else {
-                $this->Flash->error(__('An error occurred whilst creating your account.'));
-            }
-
-        } catch (RecordNotFoundException $ex) {
-            $this->Flash->error('An error occurred whilst creating your account. Code invalid');
         }
+
+        $now = new DateTime;
+        $timestamp = $now->getTimestamp();
+        $activation_code = sha1(
+                $timestamp . $this->request->getData('email_address')
+            ) . sha1(
+                $timestamp . $this->request->getData('first_name') . ' ' . $this->request->getData('last_name')
+            );
+
+        /** @var User $user */
+        $user = $this->Users->newEntity([
+            'group_id' => $group_id,
+            'first_name' => $this->request->getData('first_name'),
+            'last_name' => $this->request->getData('last_name'),
+            'password' => $this->request->getData('password'),
+        ], ['guard' => false]);
+
+        $user->setAccess('email_address', true);
+        $user->email_address = $this->request->getData('email_address');
+        $user->setAccess('activation_code', true);
+        $user->activation_code = $activation_code;
+
+        if ($this->Users->save($user)) {
+            $email = new Email();
+            $email
+                ->setTo($user->email_address, $user->full_name)
+                ->setSubject('Activate Account')
+                ->setViewVars(['user' => $user, 'activation_code' => $activation_code])
+                ->setTemplate('activate_account')
+                ->send();
+
+            $this->Flash->success(__('Your account has been created. To activate your account, please click the link sent to you.'));
+            return $this->redirect(['_name' => 'activate']);
+        }
+
+        if (count($user->getError('email_address')) != 0) {
+            $this->Flash->error('Email address is already registered. <a href="' . Router::url(['_name' => 'reset']) . '">Forgotten your password?</a>', ['escape' => false]);
+        } else {
+            $this->Flash->error(__('An error occurred whilst creating your account.'));
+        }
+
+
     }
 
     /**
