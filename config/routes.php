@@ -125,7 +125,9 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->scope('/training', ['controller' => 'Pages'], function (RouteBuilder $routes) {
         $routes->connect('/', ['action' => 'training'], ['_name' => 'training']);
         $routes->connect('/competition', ['action' => 'training', 'competition'], ['_name' => 'training_comp']);
+        $routes->redirect('/comp', ['action' => 'training', 'competition']);
         $routes->connect('/recreational', ['action' => 'training', 'recreation'], ['_name' => 'training_rec']);
+        $routes->redirect('/rec', ['action' => 'training', 'recreation']);
         $routes->connect('/facilities', ['action' => 'training', 'facilities'], ['_name' => 'training_facilities']);
     });
 
