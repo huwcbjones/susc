@@ -57,15 +57,6 @@ $this->end();
             <?php endif ?>
         </div>
     </div>
-    <div class="form-group<?= !$this->Form->isFieldError('description') ? '' : ' has-error' ?>">
-        <label for="description" class="col-sm-2 control-label">Description</label>
-        <div class="col-sm-10">
-            <?= $this->Form->textarea('description') ?>
-            <?php if ($this->Form->isFieldError('description')) : ?>
-                <span id="helpBlock" class="help-block"><?= $this->Form->error('description') ?></span>
-            <?php endif ?>
-        </div>
-    </div>
     <div class="form-group<?= !$this->Form->isFieldError('valid_from') ? '' : ' has-error' ?>">
         <label for="valid_from" class="col-sm-2 control-label">Valid From</label>
         <div class="col-sm-10">
@@ -93,6 +84,15 @@ $this->end();
             <input name="valid_to" id="valid_to" type="hidden"/>
             <?php if ($this->Form->isFieldError('valid_to')) : ?>
                 <span id="helpBlock" class="help-block"><?= $this->Form->error('valid_to') ?></span>
+            <?php endif ?>
+        </div>
+    </div>
+    <div class="form-group<?= !$this->Form->isFieldError('description') ? '' : ' has-error' ?>">
+        <label for="description" class="col-sm-2 control-label">Description</label>
+        <div class="col-sm-10">
+            <?= $this->Form->textarea('description') ?>
+            <?php if ($this->Form->isFieldError('description')) : ?>
+                <span id="helpBlock" class="help-block"><?= $this->Form->error('description') ?></span>
             <?php endif ?>
         </div>
     </div>
