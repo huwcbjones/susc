@@ -2,9 +2,13 @@
 
 use Cake\Core\Configure;
 use Cake\Routing\Router;
-use Cake\View\View;
+use SUSC\View\AppView;
 
-/** @var View $this */
+/** @var AppView $this */
+$description = $this->fetch('description');
+$description = $this->Text->truncate(strip_tags($description), 160, ['ellipsis' => '', 'exact' => false]);
+
+
 ?>
 <?= $this->Html->charset() ?>
 
@@ -45,11 +49,11 @@ use Cake\View\View;
 <meta property="fb:app_id" content="1103769579691459"/>
 <meta property="og:url" content="<?= Router::url($this->request->getRequestTarget(), true) ?>"/>
 <meta property="og:title" content="<?= h($this->fetch('title')) ?>"/>
-<meta property="og:description" content="<?= h($this->fetch('description')) ?>"/>
-<meta property="og:image" content="<?= $this->Url->build('/img/logo.png', true) ?>"/>
+<meta property="og:description" content="<?= $description ?>"/>
+<meta property="og:image" content="<?= $this->Url->build('/img/logo.png', true) ?>"/>W
 <?= $this->Html->meta(
     'description',
-    h($this->fetch('description'))
+    $description
 ) ?>
 
 <title><?= h($this->fetch('title')) ?> | <?= Configure::read('App.name') ?></title>
