@@ -58,6 +58,18 @@ $this->end();
         </div>
     </div>
     <div class="form-group">
+        <label for="valid_from" class="col-sm-2 control-label">Valid From</label>
+        <div class="col-sm-10">
+            <input type="text" name="valid_from" class="form-control" readonly="readonly" value="<?= h($item->valid_from_string) ?>"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="valid_from" class="col-sm-2 control-label">Valid To</label>
+        <div class="col-sm-10">
+            <input type="text" name="valid_to" class="form-control" readonly="readonly" value="<?= h($item->valid_to_string) ?>"/>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="description" class="col-sm-2 control-label">Description</label>
         <div class="col-sm-10">
             <div class="panel panel-default">
