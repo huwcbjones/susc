@@ -7,13 +7,14 @@
  * @link      http://susc.org.uk SUSC Website
  */
 
+use SUSC\Model\Entity\MembershipType;
 use SUSC\View\AppView;
 
 /**
  * Author: Huw
  * Since: 07/10/2017
  * @var AppView $this
- * @var \SUSC\Model\Entity\MembershipType $item
+ * @var MembershipType $item
  */
 
 $this->assign('title', 'View Membership: ' . $item->title);
