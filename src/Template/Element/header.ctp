@@ -38,10 +38,11 @@ $links['admin_socials'] = $currentUrl === Router::url(['prefix' => 'admin', 'con
 $links['admin_news'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'News', 'action' => 'index']);
 $links['admin_kit-items'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index'])) !== false;
 $links['admin_kit-orders'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index'])) !== false;
-$links['admin_fixtures'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'index']);
-$links['admin_training'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Training', 'action' => 'index']);
-$links['admin_coaches'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Coaches', 'action' => 'index']);
-$links['admin_committee'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Committee', 'action' => 'index']);
+$links['admin_membership'] = strpos($currentUrl,Router::url(['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index'])) !== false;
+$links['admin_fixtures'] = strpos($currentUrl,Router::url(['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'index'])) !== false;
+$links['admin_training'] = strpos($currentUrl,Router::url(['prefix' => 'admin', 'controller' => 'Training', 'action' => 'index'])) !== false;
+$links['admin_coaches'] = strpos($currentUrl,Router::url(['prefix' => 'admin', 'controller' => 'Coaches', 'action' => 'index'])) !== false;
+$links['admin_committee'] =strpos($currentUrl,Router::url(['prefix' => 'admin', 'controller' => 'Committee', 'action' => 'index'])) !== false;
 ?>
 <nav class="navbar navbar-inverse <?php if (!isset($fixedTop) || !$fixedTop): ?>container fix-menu-margin <?php endif ?><?php if (isset($fixedTop) && $fixedTop): ?>navbar-fixed-top <?php endif ?>"
      id="nav">
@@ -140,6 +141,9 @@ $links['admin_committee'] = $currentUrl === Router::url(['prefix' => 'admin', 'c
                             <?php endif; ?>
                             <?php if ($currentUser->isAuthorised('admin.kit-orders.*')): ?>
                                 <li<?= $links['admin_kit-orders'] ? ' class="active"' : '' ?>><?= $this->Html->link('Kit Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index']) ?></li>
+                            <?php endif; ?>
+                            <?php if ($currentUser->isAuthorised('admin.membership.*')): ?>
+                                <li<?= $links['admin_membership'] ? ' class="active"' : '' ?>><?= $this->Html->link('Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index']) ?></li>
                             <?php endif; ?>
                             <?php if ($currentUser->isAuthorised('admin.news.*')): ?>
                                 <li<?= $links['admin_news'] ? ' class="active"' : '' ?>><?= $this->Html->link('News', ['prefix' => 'admin', 'controller' => 'News', 'action' => 'index']) ?></li>

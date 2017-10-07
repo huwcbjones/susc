@@ -26,6 +26,12 @@ $links['kit-orders_view'] = $currentUrl === Router::url(['prefix' => 'admin', 'c
 $links['kit-orders_config'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'config']);
 $links['kit-orders_process'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'process']);
 $links['kit-orders_processed'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'processedOrders']);
+$links['membership'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'membership'])) !== false;
+$links['membership_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'membership', 'action' => 'add']);
+$links['membership_view'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'membership', 'action' => 'index']);
+$links['membership_members'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'members']);
+$links['membership_process'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'membership']);
+
 ?>
 
 <?= $this->element('header', ['fixedTop' => true]) ?>
@@ -86,11 +92,6 @@ $links['kit-orders_processed'] = $currentUrl === Router::url(['prefix' => 'admin
                     <li><?= $this->Html->link('Add Social', ['prefix' => 'admin', 'controller' => 'Socials', 'action' => 'add']) ?></li>
                 <?php endif; ?>
             <?php endif ?>
-            <?php if ($currentUser->isAuthorised('admin.membership.*')): ?>
-                <ul class="nav nav-sidebar">
-                    <li><?= $this->Html->link('Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index']) ?></li>
-                </ul>
-            <?php endif ?>
             <?php if ($currentUser->isAuthorised('admin.kit-items.*')): ?>
                 <ul class="nav nav-sidebar">
                     <li<?= $links['kit-items'] ? ' class="active"' : '' ?>><?= $this->Html->link('Kit Items', ['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index']) ?></li>
@@ -116,6 +117,28 @@ $links['kit-orders_processed'] = $currentUrl === Router::url(['prefix' => 'admin
                         <?php endif; ?>
                         <?php if ($currentUser->isAuthorised('admin.kit-orders.config')): ?>
                             <li<?= $links['kit-orders_config'] ? ' class="active"' : '' ?>><?= $this->Html->link('Configure', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'config']) ?></li>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </ul>
+            <?php endif ?>
+            <?php if ($currentUser->isAuthorised('admin.membership.*')): ?>
+                <ul class="nav nav-sidebar">
+                    <li<?= $links['membership'] ? ' class="active"' : '' ?>><?= $this->Html->link('Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index']) ?></li>
+                    <?php if ($links['membership']) : ?>
+                        <?php if ($currentUser->isAuthorised('admin.membership.add')): ?>
+                            <li<?= $links['membership_add'] ? ' class="active"' : '' ?>><?= $this->Html->link('Add Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'add']) ?></li>
+                        <?php endif; ?>
+                        <?php if ($currentUser->isAuthorised('admin.membership.view')): ?>
+                            <li<?= $links['membership_view'] ? ' class="active"' : '' ?>><?= $this->Html->link('Membership Types', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index']) ?></li>
+                        <?php endif; ?>
+                        <?php if ($currentUser->isAuthorised('admin.membership.members')): ?>
+                            <li<?= $links['membership_members'] ? ' class="active"' : '' ?>><?= $this->Html->link('Members', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'members']) ?></li>
+                        <?php endif; ?>
+                        <?php if ($currentUser->isAuthorised('admin.membership.process')): ?>
+                            <li<?= $links['membership_process'] ? ' class="active"' : '' ?>><?= $this->Html->link('Process Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'process']) ?></li>
+                        <?php endif; ?>
+                        <?php if ($currentUser->isAuthorised('admin.membership.config')): ?>
+                            <li<?= $links['membership_config'] ? ' class="active"' : '' ?>><?= $this->Html->link('Configure', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'config']) ?></li>
                         <?php endif; ?>
                     <?php endif; ?>
                 </ul>
