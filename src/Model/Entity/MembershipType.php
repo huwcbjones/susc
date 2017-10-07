@@ -4,6 +4,7 @@ namespace SUSC\Model\Entity;
 
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Entity;
+use huwcbjones\markdown\GithubMarkdownExtended;
 
 /**
  * MembershipType Entity
@@ -21,6 +22,9 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime $modified
  *
+ * @property string $rendered_description
+ * @property string $formatted_price
+ *
  * @property \SUSC\Model\Entity\Membership[] $memberships
  */
 class MembershipType extends Entity
@@ -37,6 +41,9 @@ class MembershipType extends Entity
      */
     protected $_accessible = [
         '*' => true,
+        'slug' => false,
+        'created' => false,
+        'modified' => false,
         'id' => false
     ];
 
@@ -83,6 +90,17 @@ class MembershipType extends Entity
 
     protected function _getValidToString(){
         return $this->valid_to == null ? '' : $this->valid_to->format('d F Y');
+    }
+
+    protected function _getRenderedDescription()
+    {
+        $parser = new GithubMarkdownExtended();
+        return $parser->parse($this->description);
+    }
+
+    protected function _getFormattedPrice()
+    {
+        return sprintf("£%.2f", $this->price);
     }
 
 }
