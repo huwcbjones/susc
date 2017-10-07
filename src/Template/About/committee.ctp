@@ -1,5 +1,6 @@
 <?php
 $this->assign('title', 'Our Committee');
+$this->assign('description', 'Southampton University Swimming Club (SUSC) is run by its members for its members. Find out who is on the SUSC committee.');
 
 $this->start('css');
 echo $this->fetch('css'); ?>

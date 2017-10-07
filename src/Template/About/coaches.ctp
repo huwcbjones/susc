@@ -1,5 +1,6 @@
 <?php
 $this->assign('title', 'Our Coaches');
+$this->assign('description', 'Find out who coaches for Southampton University Swimming Club.');
 
 $this->start('css');
 echo $this->fetch('css'); ?>

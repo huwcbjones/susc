@@ -50,7 +50,7 @@ $description = $this->Text->truncate(strip_tags($description), 160, ['ellipsis' 
 <meta property="og:url" content="<?= Router::url($this->request->getRequestTarget(), true) ?>"/>
 <meta property="og:title" content="<?= h($this->fetch('title')) ?>"/>
 <meta property="og:description" content="<?= $description ?>"/>
-<meta property="og:image" content="<?= $this->Url->build('/img/logo.png', true) ?>"/>W
+<meta property="og:image" content="<?= $this->Url->build('/img/logo.png', true) ?>"/>
 <?= $this->Html->meta(
     'description',
     $description

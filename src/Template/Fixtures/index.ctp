@@ -1,4 +1,6 @@
 <?php
+$this->assign('description', 'Southampton University Swimming Club (SUSC) attend a variety of fixtures throughout the academic year. This page details fixtures past and present.');
+
 $this->start('css');
 echo $this->fetch('css');
 echo $this->Html->css('blog');

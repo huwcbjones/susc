@@ -2,6 +2,7 @@
 
 use SUSC\Form\KitBagForm;
 
+$this->assign('description', 'Southampton University Swimming Club (SUSC) offers a variety of branded kit available for purchase.');
 $this->layout('kit');
 
 $count = 0;
