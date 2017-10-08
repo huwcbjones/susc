@@ -49,7 +49,8 @@ $description = $this->Text->truncate(strip_tags($description), 160, ['ellipsis' 
 <meta property="fb:app_id" content="1103769579691459"/>
 <meta property="og:url" content="<?= Router::url($this->request->getRequestTarget(), true) ?>"/>
 <meta property="og:title" content="<?= h($this->fetch('title')) ?>"/>
-<meta property="og:description" content="<?= $description ?>"/>
+<meta property="og:type" content="website"/>
+<meta property="og:description" content="<?= h($this->fetch('description')) ?>"/>
 <meta property="og:image" content="<?= $this->Url->build('/img/logo.png', true) ?>"/>
 <?= $this->Html->meta(
     'description',
