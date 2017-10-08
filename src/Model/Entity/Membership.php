@@ -1,6 +1,8 @@
 <?php
+
 namespace SUSC\Model\Entity;
 
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Entity;
 
 /**
@@ -16,6 +18,8 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime $paid
  * @property string $payment_method
+ * @property boolean $is_paid
+ * @property boolean $is_valid
  *
  * @property \SUSC\Model\Entity\User $user
  * @property \SUSC\Model\Entity\MembershipType $membership_type
@@ -36,4 +40,44 @@ class Membership extends Entity
         '*' => true,
         'id' => false
     ];
+
+    public function getStatusIcon()
+    {
+        if ($this->is_valid && $this->is_paid) {
+            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
+        } else {
+            return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
+        }
+    }
+
+    public function getValidStatusIcon()
+    {
+        return '<span class="text-' . ($this->is_valid ? 'success' : 'danger') . ' glyphicon glyphicon-' . ($this->is_valid ? 'ok' : 'remove') . '-sign"></span>';
+    }
+
+    public function getPaidStatusIcon()
+    {
+        return '<span class="text-' . ($this->is_paid ? 'success' : 'danger') . ' glyphicon glyphicon-' . ($this->is_paid ? 'ok' : 'remove') . '-sign"></span>';
+    }
+
+    protected function _getIsPaid()
+    {
+        return $this->paid !== null;
+    }
+
+    protected function _getIsValid()
+    {
+        $now = new FrozenTime();
+        return $now->between($this->membership_type->valid_from, $this->membership_type->valid_to);
+    }
+
+    protected function _getPayment()
+    {
+        switch ($this->payment_method) {
+            case 'bat':
+                return 'Bank Account Transfer';
+            case 'cash':
+                return 'Cash';
+        }
+    }
 }
