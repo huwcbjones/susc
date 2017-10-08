@@ -1,6 +1,8 @@
 <?php
+
 namespace SUSC\Model\Table;
 
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -98,5 +100,26 @@ class MembershipTypesTable extends Table
         $rules->add($rules->isUnique(['slug']));
 
         return $rules;
+    }
+
+    public function findCurrentMemberships(Query $query, $options = [])
+    {
+        return $query
+            ->where([
+                'is_enable' => true,
+                'valid_to > NOW()',
+            ])
+            ->order([
+                'valid_from' => 'ASC',
+                'valid_to' => 'DESC',
+                'price' => 'DESC'
+            ]);
+    }
+
+    public function findSlug(Query $query, $options = []){
+        return $query
+            ->where([
+                'slug' => $options['slug']
+            ]);
     }
 }
