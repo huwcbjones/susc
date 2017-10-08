@@ -15,6 +15,7 @@ use Cake\ORM\Entity;
  * @property string $membership_type_id
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime $paid
+ * @property string $payment_method
  *
  * @property \SUSC\Model\Entity\User $user
  * @property \SUSC\Model\Entity\MembershipType $membership_type
