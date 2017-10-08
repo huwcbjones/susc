@@ -1,6 +1,8 @@
 <?php
+
 namespace SUSC\Model\Table;
 
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -87,5 +89,10 @@ class MembershipsTable extends Table
         $rules->add($rules->existsIn(['membership_type_id'], 'MembershipTypes'));
 
         return $rules;
+    }
+
+    public function findUser(Query $query, $options = [])
+    {
+        return $query->where(['user_id' => $options['user_id']]);
     }
 }
