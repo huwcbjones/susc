@@ -63,15 +63,28 @@ class MembershipsTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->allowEmpty('name');
+            ->requirePresence('name');
 
         $validator
             ->date('date_of_birth')
-            ->allowEmpty('date_of_birth');
+            ->requirePresence('date_of_birth');
+
+        $validator
+            ->integer('student_id')
+            ->requirePresence('student_id');
+
+        $validator
+            ->integer('soton_id')
+            ->requirePresence('soton_id');
 
         $validator
             ->dateTime('paid')
             ->allowEmpty('paid');
+
+        $validator
+            ->requirePresence('payment_method');
+
+
 
         return $validator;
     }
