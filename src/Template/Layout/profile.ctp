@@ -9,6 +9,9 @@ $this->extend('clean')
             <?php if($currentUser->isAuthorised('kit.*')): ?>
             <?= $this->Html->link('My Orders', ['_name' => 'order'], ['class' => ['btn', 'btn-lg', 'btn-default', 'btn-block']]) ?>
             <?php endif; ?>
+            <?php if($currentUser->isAuthorised('membership.*')): ?>
+                <?= $this->Html->link('My Membership', ['_name' => 'memberships'], ['class' => ['btn', 'btn-lg', 'btn-default', 'btn-block']]) ?>
+            <?php endif; ?>
             <?php if($currentUser->isAuthorised('users.changepassword')): ?>
             <?= $this->Html->link('Change Password', ['_name' => 'change_password'], ['class' => ['btn', 'btn-lg', 'btn-default', 'btn-block']]) ?>
             <?php endif; ?>
@@ -18,7 +21,7 @@ $this->extend('clean')
             <?= $this->Html->link('Logout', ['_name' => 'logout'], ['class' => ['btn', 'btn-lg', 'btn-default', 'btn-block']]) ?>
         </div>
     </div>
-    <div class="col-xs-12 col-md-8">
+    <div class="col-xs-12 col-md-9">
         <h1 class="h2"><?= h($this->fetch('title')) ?></h1><br/>
         <?= $this->fetch('content') ?>
     </div>
