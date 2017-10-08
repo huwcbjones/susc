@@ -30,6 +30,15 @@ $this->end();
 ?>
 
 <?= $this->Form->create($membership, ['class' => ['form-horizontal']]) ?>
+    <div class="form-group<?= !$this->Form->isFieldError('name') ? '' : ' has-error' ?>">
+        <label for="title" class="col-sm-2 control-label">Full Name</label>
+        <div class="col-sm-10">
+            <?= $this->Form->text('name', ['placeholder' => 'John Doe']) ?>
+            <?php if ($this->Form->isFieldError('name')) : ?>
+                <span id="helpBlock" class="help-block"><?= $this->Form->error('name') ?></span>
+            <?php endif; ?>
+        </div>
+    </div>
     <div class="form-group<?= !$this->Form->isFieldError('student_id') ? '' : ' has-error' ?>">
         <label for="title" class="col-sm-2 control-label">Student ID</label>
         <div class="col-sm-10">
@@ -45,15 +54,6 @@ $this->end();
             <?= $this->Form->text('soton_id', ['placeholder' => 'abcd1gxx']) ?>
             <?php if ($this->Form->isFieldError('soton_id')) : ?>
                 <span id="helpBlock" class="help-block"><?= $this->Form->error('student_id') ?></span>
-            <?php endif; ?>
-        </div>
-    </div>
-    <div class="form-group<?= !$this->Form->isFieldError('name') ? '' : ' has-error' ?>">
-        <label for="title" class="col-sm-2 control-label">Full Name</label>
-        <div class="col-sm-10">
-            <?= $this->Form->text('name', ['placeholder' => 'John Doe']) ?>
-            <?php if ($this->Form->isFieldError('name')) : ?>
-                <span id="helpBlock" class="help-block"><?= $this->Form->error('name') ?></span>
             <?php endif; ?>
         </div>
     </div>
