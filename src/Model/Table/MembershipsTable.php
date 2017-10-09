@@ -112,6 +112,10 @@ class MembershipsTable extends Table
         return parent::find($type, $options)->contain(['Users', 'MembershipTypes']);
     }
 
+    public function findID(Query $query, $options = [])
+    {
+        return $query->where(['Memberships.id' => $options['id']]);
+    }
 
     public function findUser(Query $query, $options = [])
     {
