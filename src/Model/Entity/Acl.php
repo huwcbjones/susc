@@ -8,7 +8,9 @@ use Cake\ORM\Entity;
  * Acl Entity
  *
  * @property string $id
+ * @property string $name
  * @property string $description
+ * @property boolean $is_public
  *
  * @property \SUSC\Model\Entity\Group[] $groups
  * @property \SUSC\Model\Entity\User[] $users

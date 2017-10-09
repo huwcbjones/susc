@@ -14,6 +14,8 @@
 namespace SUSC\View;
 
 use BootstrapUI\View\UIViewTrait;
+use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\ORM\TableRegistry;
 use Cake\View\View;
 
 /**
@@ -42,5 +44,19 @@ class AppView extends View
         $this->initializeUI(['layout' => false]);
         $this->loadHelper('Text');
         $this->loadHelper('Paginator');
+    }
+
+    public function hasAccessTo($acl){
+        if(array_key_exists('currentUser', $this->viewVars) && $this->viewVars['currentUser'] !== null){
+            return ($this->viewVars['currentUser'])->isAuthorised($acl);
+        }
+        try {
+            if(substr($acl, -2) == '.*') $acl = substr($acl, 0, -2);
+            $acl_entity = TableRegistry::get('Acls')->get($acl);
+            return $acl_entity->is_public;
+        } catch (RecordNotFoundException $ex) {
+
+        }
+        return false;
     }
 }
