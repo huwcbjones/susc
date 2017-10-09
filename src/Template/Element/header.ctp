@@ -30,6 +30,8 @@ $links['kit'] = strpos($currentUrl, Router::url(['_name' => 'kit'])) !== false
 $links['kit-shop'] = $currentUrl === Router::url(['_name' => 'kit']);
 $links['kit-faqs'] = $currentUrl === Router::url(['_name' => 'faq']);
 
+$links['membership'] = strpos($currentUrl, Router::url(['_name' => 'membership'])) !== false
+    && strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index'])) === false;
 $links['admin'] = strpos($currentUrl, Router::url(['prefix' => 'admin'])) !== false;
 $links['admin_panel'] = $currentUrl === Router::url(['controller' => 'Admin', 'action' => 'index']);
 $links['admin_users'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index']);
@@ -38,11 +40,11 @@ $links['admin_socials'] = $currentUrl === Router::url(['prefix' => 'admin', 'con
 $links['admin_news'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'News', 'action' => 'index']);
 $links['admin_kit-items'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index'])) !== false;
 $links['admin_kit-orders'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index'])) !== false;
-$links['admin_membership'] = strpos($currentUrl,Router::url(['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index'])) !== false;
-$links['admin_fixtures'] = strpos($currentUrl,Router::url(['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'index'])) !== false;
-$links['admin_training'] = strpos($currentUrl,Router::url(['prefix' => 'admin', 'controller' => 'Training', 'action' => 'index'])) !== false;
-$links['admin_coaches'] = strpos($currentUrl,Router::url(['prefix' => 'admin', 'controller' => 'Coaches', 'action' => 'index'])) !== false;
-$links['admin_committee'] =strpos($currentUrl,Router::url(['prefix' => 'admin', 'controller' => 'Committee', 'action' => 'index'])) !== false;
+$links['admin_membership'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index'])) !== false;
+$links['admin_fixtures'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'index'])) !== false;
+$links['admin_training'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Training', 'action' => 'index'])) !== false;
+$links['admin_coaches'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Coaches', 'action' => 'index'])) !== false;
+$links['admin_committee'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Committee', 'action' => 'index'])) !== false;
 ?>
 <nav class="navbar navbar-inverse <?php if (!isset($fixedTop) || !$fixedTop): ?>container fix-menu-margin <?php endif ?><?php if (isset($fixedTop) && $fixedTop): ?>navbar-fixed-top <?php endif ?>"
      id="nav">
@@ -68,7 +70,6 @@ $links['admin_committee'] =strpos($currentUrl,Router::url(['prefix' => 'admin', 
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-left">
-                <li<?= $links['home'] ? ' class="active"' : '' ?>><?= $this->Html->link('Home', ['_name' => 'home']) ?></li>
 
                 <li class="dropdown<?= $links['events'] ? ' active' : '' ?>">
                     <a href="<?= Router::url(['_name' => 'news']) ?>" class="dropdown-toggle" data-toggle="dropdown"
@@ -98,17 +99,16 @@ $links['admin_committee'] =strpos($currentUrl,Router::url(['prefix' => 'admin', 
                     </ul>
                 </li>
 
-                <?php if ($currentUser !== null && ($currentUser->isAuthorised('kit.*'))): ?>
-                    <li class="dropdown<?= $links['kit'] ? ' active' : '' ?>">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Kit <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li<?= $links['kit-shop'] ? ' class="active"' : '' ?>><?= $this->Html->link('Kit', ['_name' => 'kit']) ?></li>
-                            <li<?= $links['kit-faqs'] ? ' class="active"' : '' ?>><?= $this->Html->link('FAQs', ['_name' => 'faq']) ?></li>
-                        </ul>
-                    </li>
-
-                <?php endif; ?>
-
+                <li class="dropdown<?= $links['kit'] || $links['membership'] ? ' active' : '' ?>">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Kit &amp; Membership <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li<?= $links['kit-shop'] ? ' class="active"' : '' ?>><?= $this->Html->link('Kit', ['_name' => 'kit']) ?></li>
+                        <li role="separator" class="divider"></li>
+                        <li<?= $links['membership'] ? ' class="active"' : '' ?>><?= $this->Html->link('Membership', ['_name' => 'membership']) ?></li>
+                        <li role="separator" class="divider"></li>
+                        <li<?= $links['kit-faqs'] ? ' class="active"' : '' ?>><?= $this->Html->link('FAQs', ['_name' => 'faq']) ?></li>
+                    </ul>
+                </li>
 
                 <li<?= $links['gallery'] ? ' class="active"' : '' ?>><?= $this->Html->link('Gallery', ['_name' => 'gallery']) ?></li>
                 <li class="dropdown<?= $links['about'] ? ' active' : '' ?>">
