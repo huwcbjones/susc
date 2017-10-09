@@ -105,7 +105,7 @@ class MembershipController extends AppController
                 $email = new Email();
                 $email
                     ->setTo($this->currentUser->email_address, $this->currentUser->full_name)
-                    ->setSubject('SUSC Membership')
+                    ->setSubject('SUSC Membership Confirmation')
                     ->setTemplate('membership_confirm')
                     ->setViewVars(['membership' => $membership, 'user' => $this->currentUser])
                     ->send();
