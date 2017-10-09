@@ -232,6 +232,12 @@ Router::scope('/', function (RouteBuilder $routes) {
         $routes->connect('/memberships', ['action' => 'memberships'], ['_name' => 'memberships']);
         $routes->connect('/details', ['action' => 'details'], ['_name' => 'membership_details']);
         $routes->connect('/confirm', ['action' => 'confirm'], ['_name' => 'membership_confirm']);
+        $routes->connect('/view/:memberid',
+            ['action' => 'view'],
+            [
+                'pass' => ['memberid'],
+                'memberid' => '[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}'
+            ]);
     });
 
 
