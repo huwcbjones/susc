@@ -41,11 +41,13 @@ class MembershipController extends AppController
     public function getACL()
     {
         if ($this->request->getParam('action') == 'index') return 'admin.membership.*';
+        if ($this->request->getParam('action') == 'editMembership') return 'admin.membership.edit';
         if (in_array($this->request->getParam('action'), ['paid', 'ordered', 'arrived', 'collected'])) {
-            return 'admin.kit-orders.status';
+            return 'admin.membership.status';
         }
+
         if (in_array($this->request->getParam('action'), ['processedOrders'])) {
-            return 'admin.kit-orders.process';
+            return 'admin.membership.process';
         }
         return parent::getACL();
     }
@@ -161,7 +163,7 @@ class MembershipController extends AppController
         $item = $this->MembershipTypes->get($id);
         $this->MembershipTypes->loadInto($item, ['Memberships']);
         if (count($item->memberships) != 0) {
-            $item->status = false;
+            $item->is_enable = false;
             if ($this->MembershipTypes->save($item)) {
                 $this->Flash->set(__('Cannot delete membership as there are memberships attached to this type. Membership type has been disabled instead.'), ['element' => 'warn']);
             } else {
@@ -249,5 +251,36 @@ class MembershipController extends AppController
             $this->Flash->error('Failed to mark membership as paid!');
             return $this->redirect($this->referer());
         }
+    }
+
+    public function editMembership($id = null)
+    {
+        $membership = $this->Memberships->get($id);
+        $membership_types = $this->Memberships->MembershipTypes->find('list', ['limit' => 200]);
+
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            /** @var Membership $membership */
+            $membership->membership_type_id = $this->request->getData('membership_type_id');
+            if ($this->Memberships->save($membership)) {
+                $this->Flash->success(__('The membership has been updated.'));
+
+                $this->Memberships->loadInto($membership, ['MembershipTypes']);
+                $email = new Email();
+                $email
+                    ->setTo($this->currentUser->email_address, $this->currentUser->full_name)
+                    ->setSubject('SUSC Membership Confirmation')
+                    ->setTemplate('membership_confirm')
+                    ->setViewVars(['membership' => $membership, 'user' => $this->currentUser])
+                    ->send();
+
+                return $this->redirect(['action' => 'details', $membership->id]);
+            } else {
+                $this->Flash->error(__('The membership could not be saved. Please, try again.'));
+            }
+        }
+
+        $this->set('membership', $membership);
+        $this->set('membership_types', $membership_types);
+        $this->set('_serialize', ['membership']);
     }
 }
