@@ -10,6 +10,7 @@
 namespace SUSC\Controller;
 
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Mailer\Email;
 use Cake\ORM\TableRegistry;
 use SUSC\Model\Entity\Membership;
 use SUSC\Model\Table\MembershipsTable;
@@ -100,6 +101,15 @@ class MembershipController extends AppController
             if($this->Memberships->save($membership)){
                 $this->Flash->success('Your membership has been confirmed. Please now pay your membership fees.');
                 $this->request->session()->delete('Membership.Details');
+
+                $email = new Email();
+                $email
+                    ->setTo($this->currentUser->email_address, $this->currentUser->full_name)
+                    ->setSubject('SUSC Membership')
+                    ->setTemplate('membership_confirm')
+                    ->setViewVars(['membership' => $membership, 'user' => $this->currentUser])
+                    ->send();
+
                 return $this->redirect(['_name' => 'memberships']);
             } else {
                 $this->Flash->error('Failed to confirm membership. Please try again.');

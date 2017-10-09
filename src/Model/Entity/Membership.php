@@ -18,6 +18,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime $paid
  * @property string $payment_method
+ * @property string $payment
  * @property boolean $is_paid
  * @property boolean $is_valid
  *
