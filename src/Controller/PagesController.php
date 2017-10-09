@@ -93,4 +93,11 @@ class PagesController extends AppController
             throw new NotFoundException();
         }
     }
+
+    public function faq(){
+        /** @var StaticContent $content */
+        $content = $this->Static->find('key', ['key' => 'kit-membership.faqs'])->firstOrFail();
+        $content = (new GithubMarkdownExtended())->parse($content->value);
+        $this->set('content', $content);
+    }
 }
