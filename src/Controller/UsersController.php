@@ -384,7 +384,8 @@ class UsersController extends AppController
                     $timestamp . $user->full_name
                 );
 
-            $this->Users->patchEntity($user, ['reset_code' => $code, 'reset_code_date' => $now], ['guard' => false]);
+            $user->reset_code = $code;
+            $user->reset_code_date = $now;
 
             if ($this->Users->save($user)) {
                 $email = new Email();
