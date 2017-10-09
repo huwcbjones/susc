@@ -34,6 +34,7 @@ $this->layout('profile');
             <th scope="col"><?= $this->Paginator->sort('valid_from', 'Valid From') ?></th>
             <th scope="col"><?= $this->Paginator->sort('valid_to', 'Valid To') ?></th>
             <th scope="col"><?= $this->Paginator->sort('payment', 'Payment') ?></th>
+            <th scope="col">Status</th>
             <th scope="col"><?= $this->Paginator->sort('status', '<abbr title="Status">S</abbr>', ['escape' => false]) ?></th>
             <th scope="col"><?= $this->Paginator->sort('is_valid', '<abbr title="Valid">V</abbr>', ['escape' => false]) ?></th>
             <th scope="col"><?= $this->Paginator->sort('is_paid', '<abbr title="Paid">P</abbr>', ['escape' => false]) ?></th>
@@ -48,9 +49,14 @@ $this->layout('profile');
                 <td><?= h($membership->membership_type->valid_from_string) ?></td>
                 <td><?= h($membership->membership_type->valid_to_string) ?></td>
                 <td><?= h($membership->payment) ?></td>
+                <td><?= h($membership->status) ?></td>
+                <?php if($membership->is_cancelled): ?>
+                    <td colspan="3" class="text-center text-muted"><span class="glyphicon glyphicon-ban-circle"></span></td>
+                <?php else: ?>
                 <td><?= $membership->getStatusIcon() ?></td>
                 <td><?= $membership->getValidStatusIcon() ?></td>
                 <td><?= $membership->getPaidStatusIcon() ?></td>
+                <?php endif ?>
                 <td><?= $this->Html->link('View', ['action' => 'view', $membership->id]) ?></td>
             </tr>
         <?php endforeach; ?>
