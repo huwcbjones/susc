@@ -104,6 +104,15 @@ class MembershipsTable extends Table
         return $rules;
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function find($type = 'all', $options = [])
+    {
+        return parent::find($type, $options)->contain(['Users', 'MembershipTypes']);
+    }
+
+
     public function findUser(Query $query, $options = [])
     {
         return $query->where(['user_id' => $options['user_id']]);
