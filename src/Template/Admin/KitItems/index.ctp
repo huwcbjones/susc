@@ -33,17 +33,17 @@ $this->assign('title', 'Kit Items');
                     </td>
                     <td><?= $this->Time->format($item->created, null, null, 'Europe/London') ?></td>
                     <td><?= $this->Time->format($item->modified, null, null, 'Europe/London') ?></td>
-                    <?php if ($currentUser->isAuthorised('admin.kit-items.view')): ?>
+                    <?php if ($this->hasAccessTo('admin.kit-items.view')): ?>
                         <td class="actions">
                             <?= $this->Html->link(__('View'), ['action' => 'view', $item->id]) ?>
                         </td>
                     <?php endif; ?>
-                    <?php if ($currentUser->isAuthorised('admin.kit-items.edit')): ?>
+                    <?php if ($this->hasAccessTo('admin.kit-items.edit')): ?>
                         <td class="actions">
                             <?= $this->Html->link(__('Edit'), ['action' => 'edit', $item->id]) ?>
                         </td>
                     <?php endif; ?>
-                    <?php if ($currentUser->isAuthorised('admin.kit-items.delete')): ?>
+                    <?php if ($this->hasAccessTo('admin.kit-items.delete')): ?>
                         <td class="actions">
                             <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $item->id], ['confirm' => __('Are you sure you want to delete {0}?', $item->title)]) ?>
                         </td>

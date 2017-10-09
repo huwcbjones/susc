@@ -2,7 +2,7 @@
 
 use Migrations\AbstractMigration;
 
-class Migration extends AbstractMigration
+class Initial extends AbstractMigration
 {
     public function up()
     {
@@ -13,11 +13,21 @@ class Migration extends AbstractMigration
                 'limit' => 190,
                 'null' => false,
             ])
-            ->addColumn('description', 'string', [
+            ->addColumn('name', 'string', [
                 'default' => null,
                 'limit' => 255,
                 'null' => true,
             ])
+            ->addColumn('description', 'text', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addIndex(
+                [
+                    'id',
+                ]
+            )
             ->create();
 
         $this->table('articles', ['id' => false, 'primary_key' => ['id']])
@@ -209,11 +219,16 @@ class Migration extends AbstractMigration
                 'limit' => 190,
                 'null' => false,
             ])
-            ->addColumn('value', 'text', [
+            ->addColumn('value', 'string', [
                 'default' => null,
-                'limit' => null,
+                'limit' => 190,
                 'null' => true,
             ])
+            ->addIndex(
+                [
+                    'value',
+                ]
+            )
             ->create();
 
         $this->table('galleries', ['id' => false, 'primary_key' => ['id']])
@@ -282,11 +297,6 @@ class Migration extends AbstractMigration
             )
             ->addIndex(
                 [
-                    'image_id',
-                ]
-            )
-            ->addIndex(
-                [
                     'gallery_id',
                     'image_id',
                 ]
@@ -304,19 +314,44 @@ class Migration extends AbstractMigration
                 'limit' => 255,
                 'null' => true,
             ])
-            ->addColumn('parent', 'uuid', [
+            ->addColumn('description', 'text', [
                 'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('is_enable', 'boolean', [
+                'default' => true,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('parent_id', 'uuid', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('created', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addColumn('modified', 'datetime', [
+                'default' => 'CURRENT_TIMESTAMP',
                 'limit' => null,
                 'null' => true,
             ])
             ->addIndex(
                 [
-                    'parent',
+                    'parent_id',
                 ]
             )
             ->create();
 
-        $this->table('groups_acls', ['id' => false, 'primary_key' => ['group_id', 'acl_id']])
+        $this->table('groups_acls', ['id' => false, 'primary_key' => ['id']])
+            ->addColumn('id', 'uuid', [
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
             ->addColumn('group_id', 'uuid', [
                 'default' => null,
                 'limit' => null,
@@ -377,80 +412,7 @@ class Migration extends AbstractMigration
             ])
             ->create();
 
-        $this->table('kit_completed_items_orders', ['id' => false, 'primary_key' => ['order_id', 'kit_id']])
-            ->addColumn('order_id', 'biginteger', [
-                'default' => null,
-                'limit' => 20,
-                'null' => false,
-            ])
-            ->addColumn('kit_id', 'uuid', [
-                'default' => null,
-                'limit' => null,
-                'null' => false,
-            ])
-            ->addColumn('size', 'string', [
-                'default' => null,
-                'limit' => 255,
-                'null' => false,
-            ])
-            ->addColumn('quantity', 'integer', [
-                'default' => null,
-                'limit' => 11,
-                'null' => false,
-            ])
-            ->addColumn('price', 'decimal', [
-                'default' => null,
-                'null' => false,
-                'precision' => 10,
-                'scale' => 2,
-            ])
-            ->addColumn('subtotal', 'decimal', [
-                'default' => null,
-                'null' => false,
-                'precision' => 10,
-                'scale' => 2,
-            ])
-            ->addColumn('collected', 'timestamp', [
-                'default' => 'CURRENT_TIMESTAMP',
-                'limit' => null,
-                'null' => false,
-            ])
-            ->addIndex(
-                [
-                    'kit_id',
-                ]
-            )
-            ->addIndex(
-                [
-                    'order_id',
-                ]
-            )
-            ->create();
-
-        $this->table('kit_completed_orders', ['id' => false, 'primary_key' => ['id']])
-            ->addColumn('id', 'biginteger', [
-                'default' => null,
-                'limit' => 20,
-                'null' => false,
-            ])
-            ->addColumn('user_id', 'uuid', [
-                'default' => null,
-                'limit' => null,
-                'null' => false,
-            ])
-            ->addColumn('ordered', 'timestamp', [
-                'default' => 'CURRENT_TIMESTAMP',
-                'limit' => null,
-                'null' => false,
-            ])
-            ->addIndex(
-                [
-                    'user_id',
-                ]
-            )
-            ->create();
-
-        $this->table('kit_items', ['id' => false, 'primary_key' => ['id']])
+        $this->table('items', ['id' => false, 'primary_key' => ['id']])
             ->addColumn('id', 'uuid', [
                 'default' => null,
                 'limit' => null,
@@ -466,10 +428,10 @@ class Migration extends AbstractMigration
                 'limit' => 190,
                 'null' => false,
             ])
-            ->addColumn('image', 'string', [
-                'default' => null,
-                'limit' => 255,
-                'null' => true,
+            ->addColumn('image', 'boolean', [
+                'default' => false,
+                'limit' => null,
+                'null' => false,
             ])
             ->addColumn('price', 'decimal', [
                 'default' => null,
@@ -497,10 +459,20 @@ class Migration extends AbstractMigration
                 'limit' => null,
                 'null' => false,
             ])
-            ->addColumn('status', 'string', [
-                'default' => 'b\'0\'',
+            ->addColumn('status', 'boolean', [
+                'default' => false,
                 'limit' => null,
                 'null' => false,
+            ])
+            ->addColumn('additional_info', 'integer', [
+                'default' => '0',
+                'limit' => 4,
+                'null' => false,
+            ])
+            ->addColumn('additional_info_description', 'text', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
             ])
             ->addIndex(
                 [
@@ -510,13 +482,18 @@ class Migration extends AbstractMigration
             )
             ->create();
 
-        $this->table('kit_items_orders', ['id' => false, 'primary_key' => ['order_id', 'kit_id']])
+        $this->table('items_orders', ['id' => false, 'primary_key' => ['id']])
+            ->addColumn('id', 'uuid', [
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
             ->addColumn('order_id', 'biginteger', [
                 'default' => null,
                 'limit' => 20,
                 'null' => false,
             ])
-            ->addColumn('kit_id', 'uuid', [
+            ->addColumn('item_id', 'uuid', [
                 'default' => null,
                 'limit' => null,
                 'null' => false,
@@ -531,9 +508,41 @@ class Migration extends AbstractMigration
                 'limit' => 11,
                 'null' => false,
             ])
+            ->addColumn('additional_info', 'string', [
+                'default' => null,
+                'limit' => 255,
+                'null' => true,
+            ])
+            ->addColumn('price', 'decimal', [
+                'default' => null,
+                'null' => false,
+                'precision' => 10,
+                'scale' => 2,
+            ])
+            ->addColumn('subtotal', 'decimal', [
+                'default' => null,
+                'null' => false,
+                'precision' => 10,
+                'scale' => 2,
+            ])
+            ->addColumn('modified', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('processed_order_id', 'integer', [
+                'default' => null,
+                'limit' => 11,
+                'null' => true,
+            ])
+            ->addColumn('collected', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
             ->addIndex(
                 [
-                    'kit_id',
+                    'item_id',
                 ]
             )
             ->addIndex(
@@ -541,10 +550,16 @@ class Migration extends AbstractMigration
                     'order_id',
                 ]
             )
+            ->addIndex(
+                [
+                    'processed_order_id',
+                ]
+            )
             ->create();
 
-        $this->table('kit_orders', ['id' => false, 'primary_key' => ['id']])
+        $this->table('orders', ['id' => false, 'primary_key' => ['id']])
             ->addColumn('id', 'biginteger', [
+                'autoIncrement' => true,
                 'default' => null,
                 'limit' => 20,
                 'null' => false,
@@ -554,10 +569,64 @@ class Migration extends AbstractMigration
                 'limit' => null,
                 'null' => false,
             ])
-            ->addColumn('order_time', 'timestamp', [
+            ->addColumn('payment', 'string', [
+                'default' => null,
+                'limit' => 10,
+                'null' => true,
+            ])
+            ->addColumn('total', 'decimal', [
+                'default' => null,
+                'null' => true,
+                'precision' => 10,
+                'scale' => 2,
+            ])
+            ->addColumn('placed', 'timestamp', [
                 'default' => 'CURRENT_TIMESTAMP',
                 'limit' => null,
                 'null' => false,
+            ])
+            ->addColumn('paid', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('is_cancelled', 'boolean', [
+                'default' => false,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addIndex(
+                [
+                    'user_id',
+                ]
+            )
+            ->create();
+
+        $this->table('processed_orders')
+            ->addColumn('user_id', 'uuid', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('ordered', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('arrived', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('created', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('modified', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
             ])
             ->addIndex(
                 [
@@ -594,7 +663,7 @@ class Migration extends AbstractMigration
             )
             ->create();
 
-        $this->table('scontent', ['id' => false, 'primary_key' => ['id']])
+        $this->table('static_content', ['id' => false, 'primary_key' => ['id']])
             ->addColumn('id', 'uuid', [
                 'default' => null,
                 'limit' => null,
@@ -654,18 +723,18 @@ class Migration extends AbstractMigration
                 'limit' => null,
                 'null' => false,
             ])
-            ->addColumn('is_active', 'string', [
-                'default' => 'b\'0\'',
+            ->addColumn('is_active', 'boolean', [
+                'default' => false,
                 'limit' => null,
                 'null' => false,
             ])
-            ->addColumn('is_enable', 'string', [
-                'default' => 'b\'1\'',
+            ->addColumn('is_enable', 'boolean', [
+                'default' => true,
                 'limit' => null,
                 'null' => false,
             ])
-            ->addColumn('is_change_password', 'string', [
-                'default' => 'b\'0\'',
+            ->addColumn('is_change_password', 'boolean', [
+                'default' => false,
                 'limit' => null,
                 'null' => false,
             ])
@@ -694,6 +763,21 @@ class Migration extends AbstractMigration
                 'limit' => null,
                 'null' => true,
             ])
+            ->addColumn('new_email', 'string', [
+                'default' => null,
+                'limit' => 190,
+                'null' => true,
+            ])
+            ->addColumn('new_email_code', 'string', [
+                'default' => null,
+                'limit' => 80,
+                'null' => true,
+            ])
+            ->addColumn('new_email_code_date', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
             ->addIndex(
                 [
                     'activation_code',
@@ -703,6 +787,12 @@ class Migration extends AbstractMigration
             ->addIndex(
                 [
                     'email_address',
+                ],
+                ['unique' => true]
+            )
+            ->addIndex(
+                [
+                    'new_email_code',
                 ],
                 ['unique' => true]
             )
@@ -719,7 +809,12 @@ class Migration extends AbstractMigration
             )
             ->create();
 
-        $this->table('users_acls', ['id' => false, 'primary_key' => ['user_id', 'acl_id']])
+        $this->table('users_acls', ['id' => false, 'primary_key' => ['id']])
+            ->addColumn('id', 'uuid', [
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
             ->addColumn('user_id', 'uuid', [
                 'default' => null,
                 'limit' => null,
@@ -765,15 +860,6 @@ class Migration extends AbstractMigration
 
         $this->table('galleries')
             ->addForeignKey(
-                'id',
-                'galleries_images',
-                'gallery_id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
-                ]
-            )
-            ->addForeignKey(
                 'thumbnail_id',
                 'images',
                 'id',
@@ -803,20 +889,11 @@ class Migration extends AbstractMigration
                     'delete' => 'CASCADE'
                 ]
             )
-            ->addForeignKey(
-                'image_id',
-                'images',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
-                ]
-            )
             ->update();
 
         $this->table('groups')
             ->addForeignKey(
-                'parent',
+                'parent_id',
                 'groups',
                 'id',
                 [
@@ -847,10 +924,10 @@ class Migration extends AbstractMigration
             )
             ->update();
 
-        $this->table('kit_completed_items_orders')
+        $this->table('items_orders')
             ->addForeignKey(
-                'kit_id',
-                'kit_items',
+                'item_id',
+                'items',
                 'id',
                 [
                     'update' => 'CASCADE',
@@ -859,7 +936,16 @@ class Migration extends AbstractMigration
             )
             ->addForeignKey(
                 'order_id',
-                'kit_completed_orders',
+                'orders',
+                'id',
+                [
+                    'update' => 'CASCADE',
+                    'delete' => 'CASCADE'
+                ]
+            )
+            ->addForeignKey(
+                'processed_order_id',
+                'processed_orders',
                 'id',
                 [
                     'update' => 'CASCADE',
@@ -868,7 +954,7 @@ class Migration extends AbstractMigration
             )
             ->update();
 
-        $this->table('kit_completed_orders')
+        $this->table('orders')
             ->addForeignKey(
                 'user_id',
                 'users',
@@ -880,35 +966,14 @@ class Migration extends AbstractMigration
             )
             ->update();
 
-        $this->table('kit_items_orders')
-            ->addForeignKey(
-                'kit_id',
-                'kit_items',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'RESTRICT'
-                ]
-            )
-            ->addForeignKey(
-                'order_id',
-                'kit_orders',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'RESTRICT'
-                ]
-            )
-            ->update();
-
-        $this->table('kit_orders')
+        $this->table('processed_orders')
             ->addForeignKey(
                 'user_id',
                 'users',
                 'id',
                 [
                     'update' => 'CASCADE',
-                    'delete' => 'RESTRICT'
+                    'delete' => 'SET_NULL'
                 ]
             )
             ->update();
@@ -971,9 +1036,6 @@ class Migration extends AbstractMigration
 
         $this->table('galleries')
             ->dropForeignKey(
-                'id'
-            )
-            ->dropForeignKey(
                 'thumbnail_id'
             );
 
@@ -983,14 +1045,11 @@ class Migration extends AbstractMigration
             )
             ->dropForeignKey(
                 'image_id'
-            )
-            ->dropForeignKey(
-                'image_id'
             );
 
         $this->table('groups')
             ->dropForeignKey(
-                'parent'
+                'parent_id'
             );
 
         $this->table('groups_acls')
@@ -1001,28 +1060,23 @@ class Migration extends AbstractMigration
                 'group_id'
             );
 
-        $this->table('kit_completed_items_orders')
+        $this->table('items_orders')
             ->dropForeignKey(
-                'kit_id'
+                'item_id'
             )
             ->dropForeignKey(
                 'order_id'
+            )
+            ->dropForeignKey(
+                'processed_order_id'
             );
 
-        $this->table('kit_completed_orders')
+        $this->table('orders')
             ->dropForeignKey(
                 'user_id'
             );
 
-        $this->table('kit_items_orders')
-            ->dropForeignKey(
-                'kit_id'
-            )
-            ->dropForeignKey(
-                'order_id'
-            );
-
-        $this->table('kit_orders')
+        $this->table('processed_orders')
             ->dropForeignKey(
                 'user_id'
             );
@@ -1055,13 +1109,12 @@ class Migration extends AbstractMigration
         $this->dropTable('groups');
         $this->dropTable('groups_acls');
         $this->dropTable('images');
-        $this->dropTable('kit_completed_items_orders');
-        $this->dropTable('kit_completed_orders');
-        $this->dropTable('kit_items');
-        $this->dropTable('kit_items_orders');
-        $this->dropTable('kit_orders');
+        $this->dropTable('items');
+        $this->dropTable('items_orders');
+        $this->dropTable('orders');
+        $this->dropTable('processed_orders');
         $this->dropTable('registration_codes');
-        $this->dropTable('scontent');
+        $this->dropTable('static_content');
         $this->dropTable('users');
         $this->dropTable('users_acls');
     }

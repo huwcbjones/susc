@@ -18,6 +18,7 @@ namespace SUSC\Controller {
     use Cake\Cache\Cache;
     use Cake\Controller\Component\AuthComponent;
     use Cake\Controller\Controller as BaseController;
+    use Cake\Datasource\Exception\RecordNotFoundException;
     use Cake\Event\Event;
     use Cake\Network\Request;
     use Cake\ORM\TableRegistry;
@@ -82,7 +83,6 @@ namespace SUSC\Controller {
                     AuthComponent::ALL => ['userModel' => 'Users'],
                     'Form' => [
                         'fields' => ['username' => 'email_address', 'password' => 'password'],
-                        //'finder' => 'active'
                     ]
                 ],
                 'authError' => false,
@@ -90,6 +90,17 @@ namespace SUSC\Controller {
 
                 'storage' => 'Session'
             ]);
+
+            // Allow public pages to be seen
+            $acl = $this->getACL();
+            try {
+                if(substr($acl, -2) == '.*') $acl = substr($acl, 0, -2);
+                $acl_entity = TableRegistry::get('Acls')->get($acl);
+                if ($acl_entity->is_public) {
+                    $this->Auth->allow([$this->request->getParam('action')]);
+                };
+            } catch (RecordNotFoundException $ex) {
+            }
 
             // Get Table instances
             $this->Users = TableRegistry::get('Users');
@@ -105,21 +116,6 @@ namespace SUSC\Controller {
             $this->set('currentUser', $this->currentUser);
         }
 
-        public function isAuthorized($user = null)
-        {
-            $acl = $this->getACL();
-            $this->log('acl: ' . $acl, LogLevel::DEBUG);
-
-            if ($this->currentUser != null) {
-                return $this->currentUser->isAuthorised($acl);
-            }
-
-            if ($user == null) return false;
-
-            $user = $this->Users->get($user['id']);
-            return $user->isAuthorised($acl);
-        }
-
         /**
          * Converts the current request into an ACL string
          * @return string acl string
@@ -127,10 +123,12 @@ namespace SUSC\Controller {
         public function getACL()
         {
             $this->log('Action: ' . $this->request->getParam('action'), LogLevel::DEBUG);
+
             // Create Acl id ($prefix).$controller.$action
             $acl = $this->_convertControllerString($this->request->getParam('controller'));
             if ($this->request->getParam('prefix') != '') $acl = strtolower($this->request->getParam('prefix')) . '.' . $acl;
             if ($this->request->getParam('action') != '') $acl .= '.' . strtolower($this->request->getParam('action'));
+            $this->log('acl: ' . $acl, LogLevel::DEBUG);
             return $acl;
         }
 
@@ -152,6 +150,30 @@ namespace SUSC\Controller {
 
             // Stick the controller string back together
             return implode('-', $controller);
+        }
+
+
+        public function isAuthorized($user = null)
+        {
+            $acl = $this->getACL();
+
+
+            if ($this->currentUser != null) {
+                return $this->currentUser->isAuthorised($acl);
+            }
+
+            if ($user == null) {
+                try {
+                    $acl_entity = TableRegistry::get('Acls')->get($acl);
+
+                    return $acl_entity->is_public;
+                } catch (RecordNotFoundException $ex) {
+                    return false;
+                }
+            }
+
+            $user = $this->Users->get($user['id']);
+            return $user->isAuthorised($acl);
         }
 
         public function beforeFilter(Event $event)

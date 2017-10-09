@@ -17,7 +17,7 @@ use SUSC\View\AppView;
  * @var string $content
  */
 
-$this->assign('title', 'Kit FAQs');
+$this->assign('title', 'Kit/Membership FAQs');
 $this->assign('description', $content);
 
 echo $content;

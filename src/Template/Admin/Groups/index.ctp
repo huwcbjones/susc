@@ -27,7 +27,7 @@ $this->assign('title', 'Groups');
                     <td><?= h($group->name) ?></td>
                     <td><?= h($group->description) ?></td>
                     <td>
-                        <?php if ($currentUser->isAuthorised('admin.groups.view')): ?>
+                        <?php if ($this->hasAccessTo('admin.groups.view')): ?>
                             <?= $group->has('parent') ? $this->Html->link($group->parent->name, ['controller' => 'Groups', 'action' => 'view', $group->parent->id]) : '' ?>
                         <?php else: ?>
                             <?= $group->has('parent') ? $group->parent->name : '' ?>
@@ -39,17 +39,17 @@ $this->assign('title', 'Groups');
                     </td>
                     <td><?= $this->Time->format($group->created, null, null, 'Europe/London') ?></td>
                     <td><?= $this->Time->format($group->modified, null, null, 'Europe/London') ?></td>
-                    <?php if ($currentUser->isAuthorised('admin.groups.view')): ?>
+                    <?php if ($this->hasAccessTo('admin.groups.view')): ?>
                         <td class="actions">
                             <?= $this->Html->link(__('View'), ['action' => 'view', $group->id]) ?>
                         </td>
                     <?php endif; ?>
-                    <?php if ($currentUser->isAuthorised('admin.groups.edit')): ?>
+                    <?php if ($this->hasAccessTo('admin.groups.edit')): ?>
                         <td class="actions">
                             <?= $this->Html->link(__('Edit'), ['action' => 'edit', $group->id]) ?>
                         </td>
                     <?php endif; ?>
-                    <?php if ($currentUser->isAuthorised('admin.groups.delete')): ?>
+                    <?php if ($this->hasAccessTo('admin.groups.delete')): ?>
                         <td class="actions">
                             <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $group->id], ['confirm' => __('Are you sure you want to delete {0}?', $group->name)]) ?>
                         </td>

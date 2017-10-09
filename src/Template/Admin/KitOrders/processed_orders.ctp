@@ -36,13 +36,13 @@ $this->assign('title', 'Processed Orders');
                 <th scope="col"><?= $this->Paginator->sort('is_ordered', '<attr title="Ordered">O?</attr>', ['escape' => false]) ?></th>
                 <th scope="col"><?= $this->Paginator->sort('is_arrived', '<attr title="Arrived">A?</attr>', ['escape' => false]) ?></th>
                 <th scope="col"><?= $this->Paginator->sort('is_collected', '<attr title="Collected">C?</attr>', ['escape' => false]) ?></th>
-                <?php if ($currentUser->isAuthorised('admin.kit-orders.process')): ?>
+                <?php if ($this->hasAccessTo('admin.kit-orders.process')): ?>
                     <th scope="col" class="actions"></th>
                 <?php endif; ?>
-                <?php if ($currentUser->isAuthorised('admin.kit-orders.process')): ?>
+                <?php if ($this->hasAccessTo('admin.kit-orders.process')): ?>
                     <th scope="col" class="actions"></th>
                 <?php endif ?>
-                <?php if ($currentUser->isAuthorised('admin.kit-orders.view')): ?>
+                <?php if ($this->hasAccessTo('admin.kit-orders.view')): ?>
                     <th scope="col" class="actions" colspan="2"></th>
                 <?php endif ?>
             </tr>
@@ -63,14 +63,14 @@ $this->assign('title', 'Processed Orders');
                     <td>
                         <?= $order->getCollectedStatusIcon() ?>
                     </td>
-                    <?php if ($currentUser->isAuthorised('admin.kit-orders.process')): ?>
+                    <?php if ($this->hasAccessTo('admin.kit-orders.process')): ?>
                         <td>
                             <?php if (!$order->is_arrived): ?>
                                 <?= $this->Form->postLink(__('Ordered'), ['action' => 'ordered', $order->id]) ?>
                             <?php endif ?>
                         </td>
                     <?php endif; ?>
-                    <?php if ($currentUser->isAuthorised('admin.kit-orders.process')): ?>
+                    <?php if ($this->hasAccessTo('admin.kit-orders.process')): ?>
                         <td>
                             <?php if (!$order->is_arrived): ?>
                                 <?php if ($order->is_ordered) : ?>
@@ -81,7 +81,7 @@ $this->assign('title', 'Processed Orders');
                             <?php endif; ?>
                         </td>
                     <?php endif; ?>
-                    <?php if ($currentUser->isAuthorised('admin.kit-orders.view')): ?>
+                    <?php if ($this->hasAccessTo('admin.kit-orders.view')): ?>
                         <td><?= $this->Html->link('View', ['action' => 'processed-orders', $order->id]) ?></td>
                         <td><?= $this->Html->link('Download', ['action' => 'download', $order->id]) ?></td>
                     <?php endif ?>
