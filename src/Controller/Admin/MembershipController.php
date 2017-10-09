@@ -9,10 +9,14 @@
 
 namespace SUSC\Controller\Admin;
 
+use Cake\HTTP\Response;
 use Cake\I18n\Time;
+use Cake\Mailer\Email;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Text;
+use DateTime;
 use SUSC\Controller\AppController;
+use SUSC\Model\Entity\Membership;
 use SUSC\Model\Entity\MembershipType;
 use SUSC\Model\Table\MembershipsTable;
 use SUSC\Model\Table\MembershipTypesTable;
@@ -174,5 +178,76 @@ class MembershipController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * Cancels a membership
+     *
+     * @param string|null $id ID of membership to cancel
+     * @return Response|null
+     */
+    public function cancel($id = null)
+    {
+        // Get ID from post data if not in URL
+        if ($id === null) $id = $this->request->getData('id');
+
+        /** @var Membership $membership */
+        $membership = $this->Memberships->find('id', ['id' => $id])->firstOrFail();
+
+        // Soft-delete the order
+        $membership->is_cancelled = true;
+        if ($this->Memberships->save($membership)) {
+            $email = new Email();
+            $email
+                ->setTo($membership->user->email_address, $membership->user->full_name)
+                ->setSubject('Cancelled Membership')
+                ->setTemplate('membership_cancel')
+                ->setViewVars(['membership' => $membership, 'user' => $membership->user])
+                ->send();
+            return $this->redirect(['action' => 'members']);
+        } else {
+            $this->Flash->error('Failed to cancel membership!');
+            return $this->redirect($this->referer());
+        }
+    }
+
+    /**
+     * Marks a membership as paid
+     * @param string|null $id ID of Membership to mark as paid
+     * @return Response|null
+     */
+    public function paid($id = null)
+    {
+        if ($this->request->getMethod() != 'POST') {
+            return $this->redirect(['action' => 'members']);
+        }
+
+        // Get ID from post data if not in URL
+        if ($id === null) $id = $this->request->getData('id');
+
+        /** @var Membership $membership */
+        $membership = $this->Memberships->find('ID', ['id' => $id])->firstOrFail();
+        if ($membership->is_paid) {
+            $this->Flash->success('Membership has already been marked as paid.');
+            return $this->redirect(['action' => 'index']);
+        }
+
+        $membership->paid = new DateTime();
+
+        if ($this->Memberships->save($membership)) {
+            $email = new Email();
+            $email
+                ->setTo($membership->user->email_address, $membership->user->full_name)
+                ->setSubject('Membership Payment Received')
+                ->setTemplate('membership_payment')
+                ->setViewVars(['membership' => $membership, 'user' => $membership->user])
+                ->send();
+
+            $this->Flash->success('Membership has been marked as paid.');
+            return $this->redirect(['action' => 'members']);
+        } else {
+            $this->Flash->error('Failed to mark membership as paid!');
+            return $this->redirect($this->referer());
+        }
     }
 }
