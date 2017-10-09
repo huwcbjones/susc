@@ -40,17 +40,17 @@ $this->assign('title', 'Users');
                     <td><?= $this->Time->format($user->created, null, null, 'Europe/London') ?></td>
                     <td><?= $this->Time->format($user->modified, null, null, 'Europe/London') ?></td>
                     <td><?= $this->Time->format($user->activation_date, null, null, 'Europe/London') ?></td>
-                    <?php if ($currentUser->isAuthorised('admin.users.view')): ?>
+                    <?php if ($this->hasAccessTo('admin.users.view')): ?>
                         <td class="actions">
                             <?= $this->Html->link(__('View'), ['action' => 'view', $user->id]) ?>
                         </td>
                     <?php endif; ?>
-                    <?php if ($currentUser->isAuthorised('admin.users.edit')): ?>
+                    <?php if ($this->hasAccessTo('admin.users.edit')): ?>
                         <td class="actions">
                             <?= $this->Html->link(__('Edit'), ['action' => 'edit', $user->id]) ?>
                         </td>
                     <?php endif; ?>
-                    <?php if ($currentUser->isAuthorised('admin.users.delete') && $user->id != $currentUser->id): ?>
+                    <?php if ($this->hasAccessTo('admin.users.delete') && $user->id != $currentUser->id): ?>
                         <td class="actions">
                             <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $user->id], ['confirm' => __('Are you sure you want to delete {0}?', $user->full_name)]) ?>
                         </td>

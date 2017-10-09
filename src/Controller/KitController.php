@@ -51,7 +51,7 @@ class KitController extends AppController
 
     public function getACL()
     {
-        if (in_array($this->request->getParam('action'), ['index', 'view', 'basket', 'orderComplete', 'faq'])) return 'kit.*';
+        if (in_array($this->request->getParam('action'), ['index', 'view', 'basket', 'orderComplete'])) return 'kit.*';
         if (in_array($this->request->getParam('action'), ['order', 'pay', 'orders', 'vieworder'])) return 'kit.order';
 
         return parent::getACL();
@@ -228,12 +228,5 @@ class KitController extends AppController
 
         $this->processKitBag();
         $this->loadKitBag();
-    }
-
-    public function faq(){
-        /** @var StaticContent $content */
-        $content = $this->Static->find('key', ['key' => 'kit.faqs'])->firstOrFail();
-        $content = (new GithubMarkdownExtended())->parse($content->value);
-        $this->set('content', $content);
     }
 }
