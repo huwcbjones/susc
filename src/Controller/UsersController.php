@@ -286,25 +286,26 @@ class UsersController extends AppController
 
         }
 
-        if ($requiresCode) {
-            try {
-                /** @var RegistrationCode $registration_code */
-                $registration_code = $codes->get($this->request->getData('registration_code'));
-                $group_id = $registration_code->group_id;
+        try {
+            /** @var RegistrationCode $registration_code */
+            $registration_code = $codes->get($this->request->getData('registration_code'));
+            $group_id = $registration_code->group_id;
 
-                if (!$registration_code->isValid()) {
-                    $this->Flash->error('An error occurred whilst creating your account. Code invalid');
-                    return;
-                }
-            } catch (RecordNotFoundException $ex) {
-                $this->Flash->error('An error occurred whilst creating your account. Code invalid');
+            if (!$registration_code->isValid() && $requiresCode) {
+                $this->Flash->error('An error occurred whilst creating your account. Code invalid!');
                 return;
             }
-        } else {
+        } catch (RecordNotFoundException $ex) {
+            if ($requiresCode) {
+                $this->Flash->error('An error occurred whilst creating your account. Code invalid!');
+                return;
+            }
+        }
+        if ($group_id == null) {
             try {
                 $group_id = $this->Config->get('users.registration.default_group_id')->value;
-            } catch (RecordNotFoundException $ex){
-                $this->Flash->error('An error occurred whilst creating your account. A registration code is required!');
+            } catch (RecordNotFoundException $ex) {
+                $this->Flash->error('An error occurred whilst creating your account.' . ($requiresCode ? ' A registration code is required.' : ''));
                 return;
             }
         }
