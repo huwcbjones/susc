@@ -35,7 +35,7 @@ class MembershipController extends AppController
 
     public function getACL()
     {
-        if (in_array($this->request->getParam('action'), ['index', 'confirm', 'faq', 'memberships'])) return 'membership.*';
+        if (in_array($this->request->getParam('action'), ['index', 'confirm', 'faq', 'memberships', 'view'])) return 'membership.*';
         if (in_array($this->request->getParam('action'), ['details'])) return 'membership.order';
 
         return parent::getACL();
@@ -51,7 +51,7 @@ class MembershipController extends AppController
 
     public function details()
     {
-        if(($membership = $this->request->session()->read('Membership.Details')) === null) {
+        if (($membership = $this->request->session()->read('Membership.Details')) === null) {
             $membership = $this->Memberships->newEntity($this->request->getData(), ['validate' => $this->request->is(['patch', 'post', 'put'])]);
         }
         $membership->user_id = $this->currentUser->id;
@@ -93,12 +93,12 @@ class MembershipController extends AppController
     public function confirm()
     {
         /** @var Membership $membership */
-        if(($membership = $this->request->session()->read('Membership.Details')) === null){
+        if (($membership = $this->request->session()->read('Membership.Details')) === null) {
             return $this->redirect(['_name' => 'membership_details']);
         }
 
         if ($this->request->is(['patch', 'post', 'put'])) {
-            if($this->Memberships->save($membership)){
+            if ($this->Memberships->save($membership)) {
                 $this->Flash->success('Your membership has been confirmed. Please now pay your membership fees.');
                 $this->request->session()->delete('Membership.Details');
 
@@ -120,7 +120,8 @@ class MembershipController extends AppController
         $this->set('membership', $membership);
     }
 
-    public function memberships(){
+    public function memberships()
+    {
         $query = $this->Memberships
             ->find('user', ['user_id' => $this->currentUser->id])
             ->contain('MembershipTypes')
@@ -128,6 +129,13 @@ class MembershipController extends AppController
         $memberships = $this->paginate($query);
 
         $this->set('memberships', $memberships);
+    }
+
+    public function view($id = null)
+    {
+        $membership = $this->Memberships->get($id);
+
+        $this->set('membership', $membership);
     }
 
 }

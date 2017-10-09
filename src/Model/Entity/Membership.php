@@ -21,6 +21,7 @@ use Cake\ORM\Entity;
  * @property string $payment
  * @property boolean $is_paid
  * @property boolean $is_valid
+ * @property string $status
  *
  * @property \SUSC\Model\Entity\User $user
  * @property \SUSC\Model\Entity\MembershipType $membership_type
@@ -79,6 +80,23 @@ class Membership extends Entity
                 return 'Bank Account Transfer';
             case 'cash':
                 return 'Cash';
+        }
+    }
+
+    protected function _getStatus(){
+        if(!$this->is_paid){
+            return 'Waiting for payment';
+        }
+
+        if($this->is_paid && $this->is_valid){
+            return 'Active';
+        }
+
+        if(new FrozenTime() < $this->membership_type->valid_from){
+            return 'Not Active';
+        }
+        if(new FrozenTime() > $this->membership_type->valid_to){
+            return 'Expired';
         }
     }
 }
