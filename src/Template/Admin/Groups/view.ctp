@@ -23,7 +23,7 @@ $this->assign('title', 'View Group: ' . $group->name);
     <div class="form-group">
         <label for="description" class="col-sm-2 control-label">Parent Group</label>
         <div class="col-sm-10">
-            <p class="form-control-static"> <?php if ($currentUser->isAuthorised('admin.groups.view')): ?>
+            <p class="form-control-static"> <?php if ($this->hasAccessTo('admin.groups.view')): ?>
                     <?= $group->has('parent') ? $this->Html->link($group->parent->name, ['controller' => 'Groups', 'action' => 'view', $group->parent->id]) : '&mdash;' ?>
                 <?php else: ?>
                     <?= $group->has('parent') ? $group->parent->name : '&mdash;' ?>

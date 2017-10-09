@@ -41,7 +41,7 @@ $this->assign('title', 'View Batch # ' . $order->id);
                         <th class="text-center">Price</th>
                         <th class="text-center">Quantity</th>
                         <th class="text-center">Subtotal</th>
-                        <?php if ($currentUser->isAuthorised('admin.kit-orders.status')) : ?>
+                        <?php if ($this->hasAccessTo('admin.kit-orders.status')) : ?>
                             <th scope="col">
                                 <attr title="Ordered">O?</attr>
                             </th>
@@ -68,7 +68,7 @@ $this->assign('title', 'View Batch # ' . $order->id);
                             <td data-th="Price" class="text-center"><?= $item->formattedPrice ?></td>
                             <td data-th="Quantity" class="text-center"><?= $item->quantity ?></td>
                             <td data-th="Quantity" class="text-center"><?= $item->formattedSubtotal ?></td>
-                            <?php if ($currentUser->isAuthorised('admin.kit-orders.status')) : ?>
+                            <?php if ($this->hasAccessTo('admin.kit-orders.status')) : ?>
                                 <td><?= $order->getOrderedStatusIcon() ?></td>
                                 <td><?= $order->getArrivedStatusIcon() ?></td>
                                 <td><?= $item->getCollectedStatusIcon() ?>
@@ -86,7 +86,7 @@ $this->assign('title', 'View Batch # ' . $order->id);
                         <th class="text-center" colspan="2"><h3 class="h4">Total:</h3></th>
                         <th class="text-center" style="vertical-align: middle"><?= $order->item_count ?></th>
                         <th class="text-center" style="vertical-align: middle"><?= $order->formatted_total ?></th>
-                        <?php if ($currentUser->isAuthorised('admin.kit-orders.status')) : ?>
+                        <?php if ($this->hasAccessTo('admin.kit-orders.status')) : ?>
                             <th colspan="3"></th>
                         <?php endif ?>
                     </tr>

@@ -52,17 +52,17 @@ $this->assign('title', 'Membership Types');
                     </td>
                     <td><?= $this->Time->format($membership->created, null, null, 'Europe/London') ?></td>
                     <td><?= $this->Time->format($membership->modified, null, null, 'Europe/London') ?></td>
-                    <?php if ($currentUser->isAuthorised('admin.membership.view')): ?>
+                    <?php if ($this->hasAccessTo('admin.membership.view')): ?>
                         <td class="actions">
                             <?= $this->Html->link(__('View'), ['action' => 'view', $membership->id]) ?>
                         </td>
                     <?php endif; ?>
-                    <?php if ($currentUser->isAuthorised('admin.membership.edit')): ?>
+                    <?php if ($this->hasAccessTo('admin.membership.edit')): ?>
                         <td class="actions">
                             <?= $this->Html->link(__('Edit'), ['action' => 'edit', $membership->id]) ?>
                         </td>
                     <?php endif; ?>
-                    <?php if ($currentUser->isAuthorised('admin.membership.delete')): ?>
+                    <?php if ($this->hasAccessTo('admin.membership.delete')): ?>
                         <td class="actions">
                             <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $membership->id], ['confirm' => __('Are you sure you want to delete {0}?', $membership->title)]) ?>
                         </td>

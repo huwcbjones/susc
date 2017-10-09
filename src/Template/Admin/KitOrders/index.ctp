@@ -26,10 +26,10 @@ $this->assign('title', 'Kit Orders');
                 <th scope="col"><?= $this->Paginator->sort('is_ordered', '<attr title="Ordered">O?</attr>', ['escape' => false]) ?></th>
                 <th scope="col"><?= $this->Paginator->sort('is_arrived', '<attr title="Arrived">A?</attr>', ['escape' => false]) ?></th>
                 <th scope="col"><?= $this->Paginator->sort('is_collected', '<attr title="Collected">C?</attr>', ['escape' => false]) ?></th>
-                <?php if ($currentUser->isAuthorised('admin.kit-orders.view')): ?>
+                <?php if ($this->hasAccessTo('admin.kit-orders.view')): ?>
                     <th scope="col" class="actions"></th>
                 <?php endif; ?>
-                <?php if ($currentUser->isAuthorised('admin.kit-orders.status')): ?>
+                <?php if ($this->hasAccessTo('admin.kit-orders.status')): ?>
                     <th scope="col" class="actions"></th>
                 <?php endif ?>
             </tr>
@@ -38,7 +38,7 @@ $this->assign('title', 'Kit Orders');
             <?php foreach ($orders as $order): ?>
                 <tr>
                     <td><?= h($order->id) . ($order->is_cancelled ? '*' : '') ?></td>
-                    <td><?= ($currentUser->isAuthorised('admin.users.view')) ? $this->Html->link(h($order->user->full_name), ['controller' => 'Users', 'action' => 'view', $order->user_id]) : h($order->user->full_name) ?></td>
+                    <td><?= ($this->hasAccessTo('admin.users.view')) ? $this->Html->link(h($order->user->full_name), ['controller' => 'Users', 'action' => 'view', $order->user_id]) : h($order->user->full_name) ?></td>
                     <td><?= $this->Time->format($order->placed, null, null, 'Europe/London') ?></td>
                     <td><?= $order->is_cancelled ? '-' : $order->formattedTotal ?></td>
                     <td><?= $order->is_cancelled ? '-' : h($order->paymentMethod) ?></td>
@@ -51,10 +51,10 @@ $this->assign('title', 'Kit Orders');
                         <td><?= $order->getArrivedStatusIcon() ?></td>
                         <td><?= $order->getCollectedStatusIcon() ?></td>
                     <?php endif; ?>
-                    <?php if ($currentUser->isAuthorised('admin.kit-orders.view')): ?>
+                    <?php if ($this->hasAccessTo('admin.kit-orders.view')): ?>
                         <td><?= $this->Html->link('View', ['action' => 'view', $order->id]) ?></td>
                     <?php endif; ?>
-                    <?php if ($currentUser->isAuthorised('admin.kit-orders.status')): ?>
+                    <?php if ($this->hasAccessTo('admin.kit-orders.status')): ?>
                         <td>
                         <?php if (!$order->is_paid && !$order->is_cancelled): ?>
                             <a href="#" onclick="$('#paymentID').val(<?= $order->id ?>); $('#paymentConfirmation').modal()">Paid</a>

@@ -54,7 +54,7 @@ $this->assign('title', 'View Order #' . $order->id);
                         <th class="text-center">Price</th>
                         <th class="text-center">Quantity</th>
                         <th class="text-center">Subtotal</th>
-                        <?php if ($currentUser->isAuthorised('admin.kit-orders.status')) : ?>
+                        <?php if ($this->hasAccessTo('admin.kit-orders.status')) : ?>
                             <th scope="col">
                                 <attr title="Ordered">O?</attr>
                             </th>
@@ -79,7 +79,7 @@ $this->assign('title', 'View Order #' . $order->id);
                             <td data-th="Price" class="text-center"><?= $item->formattedPrice ?></td>
                             <td data-th="Quantity" class="text-center"><?= $item->quantity ?></td>
                             <td data-th="Quantity" class="text-center"><?= $item->formattedSubtotal ?></td>
-                            <?php if ($currentUser->isAuthorised('admin.kit-orders.status')) : ?>
+                            <?php if ($this->hasAccessTo('admin.kit-orders.status')) : ?>
                                 <td><?= $item->getOrderedStatusIcon() ?></td>
                                 <td><?= $item->getArrivedStatusIcon() ?></td>
                                 <td><?= $item->getCollectedStatusIcon() ?>
@@ -96,7 +96,7 @@ $this->assign('title', 'View Order #' . $order->id);
                         <td colspan="4"></td>
                         <td class="text-center"><h3 class="h4">Total:</h3></td>
                         <td class="text-center" style="vertical-align: middle"><?= $order->formattedTotal ?> </td>
-                        <?php if ($currentUser->isAuthorised('admin.kit-orders.status')) : ?>
+                        <?php if ($this->hasAccessTo('admin.kit-orders.status')) : ?>
                             <th colspan="3"></th>
                         <?php endif ?>
                     </tr>

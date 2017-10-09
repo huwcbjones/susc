@@ -28,7 +28,7 @@ $links['kit'] = strpos($currentUrl, Router::url(['_name' => 'kit'])) !== false
     && strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index'])) === false
     && strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index'])) === false;
 $links['kit-shop'] = $currentUrl === Router::url(['_name' => 'kit']);
-$links['kit-faqs'] = $currentUrl === Router::url(['_name' => 'faq']);
+$links['faqs'] = $currentUrl === Router::url(['_name' => 'faq']);
 
 $links['membership'] = strpos($currentUrl, Router::url(['_name' => 'membership'])) !== false
     && strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index'])) === false;
@@ -78,7 +78,7 @@ $links['admin_committee'] = strpos($currentUrl, Router::url(['prefix' => 'admin'
                     <ul class="dropdown-menu">
                         <li<?= $links['news'] ? ' class="active"' : '' ?>><?= $this->Html->link('News', ['_name' => 'news']) ?></li>
                         <li role="separator" class="divider"></li>
-                        <?php if ($currentUser !== null && $currentUser->isAuthorised('socials.*')): ?>
+                        <?php if ( $this->hasAccessTo('socials.*')): ?>
                             <li<?= $links['socials'] ? ' class="active"' : '' ?>><?= $this->Html->link('Socials', ['_name' => 'socials']) ?></li>
                             <li role="separator" class="divider"></li>
                         <?php endif; ?>
@@ -99,14 +99,14 @@ $links['admin_committee'] = strpos($currentUrl, Router::url(['prefix' => 'admin'
                     </ul>
                 </li>
 
-                <li class="dropdown<?= $links['kit'] || $links['membership'] ? ' active' : '' ?>">
+                <li class="dropdown<?= $links['kit'] || $links['membership'] || $links['faqs'] ? ' active' : '' ?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Kit &amp; Membership <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li<?= $links['kit-shop'] ? ' class="active"' : '' ?>><?= $this->Html->link('Kit', ['_name' => 'kit']) ?></li>
                         <li role="separator" class="divider"></li>
                         <li<?= $links['membership'] ? ' class="active"' : '' ?>><?= $this->Html->link('Membership', ['_name' => 'membership']) ?></li>
                         <li role="separator" class="divider"></li>
-                        <li<?= $links['kit-faqs'] ? ' class="active"' : '' ?>><?= $this->Html->link('FAQs', ['_name' => 'faq']) ?></li>
+                        <li<?= $links['faqs'] ? ' class="active"' : '' ?>><?= $this->Html->link('FAQs', ['_name' => 'faq']) ?></li>
                     </ul>
                 </li>
 
@@ -123,44 +123,44 @@ $links['admin_committee'] = strpos($currentUrl, Router::url(['prefix' => 'admin'
                         <li<?= $links['about_contact'] ? ' class="active"' : '' ?>><?= $this->Html->link('Contact Us', ['_name' => 'contact']) ?></li>
                     </ul>
                 </li>
-                <?php if ($currentUser !== null && $currentUser->isAuthorised('admin.*')): ?>
+                <?php if ( $this->hasAccessTo('admin.*')): ?>
                     <li class="dropdown<?= $links['admin'] ? ' active' : '' ?>">
                         <a href="<?= Router::url(['_name' => 'admin']) ?>" class="dropdown-toggle"
                            data-toggle="dropdown"
                            aria-expanded="false">Admin <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li<?= $links['admin_panel'] ? ' class="active"' : '' ?>><?= $this->Html->link('Admin Panel', ['_name' => 'admin']) ?></li>
-                            <?php if ($currentUser->isAuthorised('admin.users.*')): ?>
+                            <?php if ($this->hasAccessTo('admin.users.*')): ?>
                                 <li<?= $links['admin_users'] ? ' class="active"' : '' ?>><?= $this->Html->link('Users', ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index']) ?></li>
                             <?php endif; ?>
-                            <?php if ($currentUser->isAuthorised('admin.groups.*')): ?>
+                            <?php if ($this->hasAccessTo('admin.groups.*')): ?>
                                 <li<?= $links['admin_groups'] ? ' class="active"' : '' ?>><?= $this->Html->link('Groups', ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index']) ?></li>
                             <?php endif; ?>
-                            <?php if ($currentUser->isAuthorised('admin.kit-items.*')): ?>
+                            <?php if ($this->hasAccessTo('admin.kit-items.*')): ?>
                                 <li<?= $links['admin_kit-items'] ? ' class="active"' : '' ?>><?= $this->Html->link('Kit Items', ['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index']) ?></li>
                             <?php endif; ?>
-                            <?php if ($currentUser->isAuthorised('admin.kit-orders.*')): ?>
+                            <?php if ($this->hasAccessTo('admin.kit-orders.*')): ?>
                                 <li<?= $links['admin_kit-orders'] ? ' class="active"' : '' ?>><?= $this->Html->link('Kit Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index']) ?></li>
                             <?php endif; ?>
-                            <?php if ($currentUser->isAuthorised('admin.membership.*')): ?>
+                            <?php if ($this->hasAccessTo('admin.membership.*')): ?>
                                 <li<?= $links['admin_membership'] ? ' class="active"' : '' ?>><?= $this->Html->link('Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index']) ?></li>
                             <?php endif; ?>
-                            <?php if ($currentUser->isAuthorised('admin.news.*')): ?>
+                            <?php if ($this->hasAccessTo('admin.news.*')): ?>
                                 <li<?= $links['admin_news'] ? ' class="active"' : '' ?>><?= $this->Html->link('News', ['prefix' => 'admin', 'controller' => 'News', 'action' => 'index']) ?></li>
                             <?php endif; ?>
-                            <?php if ($currentUser->isAuthorised('admin.socials.*')): ?>
+                            <?php if ($this->hasAccessTo('admin.socials.*')): ?>
                                 <li<?= $links['admin_socials'] ? ' class="active"' : '' ?>><?= $this->Html->link('Socials', ['prefix' => 'admin', 'controller' => 'Socials', 'action' => 'index']) ?></li>
                             <?php endif; ?>
-                            <?php if ($currentUser->isAuthorised('admin.fixtures.*')): ?>
+                            <?php if ($this->hasAccessTo('admin.fixtures.*')): ?>
                                 <li<?= $links['admin_fixtures'] ? ' class="active"' : '' ?>><?= $this->Html->link('Fixtures', ['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'index']) ?></li>
                             <?php endif; ?>
-                            <?php if ($currentUser->isAuthorised('admin.coaches.*')): ?>
+                            <?php if ($this->hasAccessTo('admin.coaches.*')): ?>
                                 <li<?= $links['admin_coaches'] ? ' class="active"' : '' ?>><?= $this->Html->link('Coaches', ['prefix' => 'admin', 'controller' => 'Coaches', 'action' => 'index']) ?></li>
                             <?php endif; ?>
-                            <?php if ($currentUser->isAuthorised('admin.committee.*')): ?>
+                            <?php if ($this->hasAccessTo('admin.committee.*')): ?>
                                 <li<?= $links['admin_committee'] ? ' class="active"' : '' ?>><?= $this->Html->link('Committee', ['prefix' => 'admin', 'controller' => 'Committee', 'action' => 'index']) ?></li>
                             <?php endif; ?>
-                            <?php if ($currentUser->isAuthorised('admin.training.*')): ?>
+                            <?php if ($this->hasAccessTo('admin.training.*')): ?>
                                 <li<?= $links['admin_training'] ? ' class="active"' : '' ?>><?= $this->Html->link('Training', ['prefix' => 'admin', 'controller' => 'Training', 'action' => 'index']) ?></li>
                             <?php endif; ?>
                         </ul>

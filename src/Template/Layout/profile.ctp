@@ -6,16 +6,16 @@ $this->extend('clean')
         <h1 class="h2">&nbsp;</h1><br/>
         <div class="btn-group-vertical btn-block" role="group">
             <?= $this->Html->link('My Details', ['_name' => 'profile'], ['class' => ['btn', 'btn-lg', 'btn-default', 'btn-block']]) ?>
-            <?php if($currentUser->isAuthorised('kit.*')): ?>
+            <?php if($this->hasAccessTo('kit.*')): ?>
             <?= $this->Html->link('My Orders', ['_name' => 'order'], ['class' => ['btn', 'btn-lg', 'btn-default', 'btn-block']]) ?>
             <?php endif; ?>
-            <?php if($currentUser->isAuthorised('membership.*')): ?>
+            <?php if($this->hasAccessTo('membership.*')): ?>
                 <?= $this->Html->link('My Membership', ['_name' => 'memberships'], ['class' => ['btn', 'btn-lg', 'btn-default', 'btn-block']]) ?>
             <?php endif; ?>
-            <?php if($currentUser->isAuthorised('users.changepassword')): ?>
+            <?php if($this->hasAccessTo('users.changepassword')): ?>
             <?= $this->Html->link('Change Password', ['_name' => 'change_password'], ['class' => ['btn', 'btn-lg', 'btn-default', 'btn-block']]) ?>
             <?php endif; ?>
-            <?php if($currentUser->isAuthorised('users.changeemail')): ?>
+            <?php if($this->hasAccessTo('users.changeemail')): ?>
             <?= $this->Html->link('Change Email', ['_name' => 'change_email'], ['class' => ['btn', 'btn-lg', 'btn-default', 'btn-block']]) ?>
             <?php endif; ?>
             <?= $this->Html->link('Logout', ['_name' => 'logout'], ['class' => ['btn', 'btn-lg', 'btn-default', 'btn-block']]) ?>
