@@ -10,6 +10,7 @@ use SUSC\View\AppView;
  */
 $this->layout('kit');
 $this->assign('title', h($kit->title));
+$this->assign('description', $kit->description);
 
 $this->element('Kit/basket');
 $kitBagForm = new KitBagForm();

@@ -1,9 +1,11 @@
 <?php
+
 use Cake\Core\Configure;
 use Cake\Error\Debugger;
 
 $this->layout = 'error';
 $this->assign('title', $message);
+$this->assign('description', 'Whoops! Something went wrong whilst trying to deliver this page.');
 
 if (Configure::read('debug')):
     $this->layout = 'dev_error';

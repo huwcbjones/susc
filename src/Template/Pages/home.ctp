@@ -1,8 +1,30 @@
 <?php
+/**
+ * SUSC Website
+ * Copyright (c) Southampton University Swimming Club. (https://susc.org.uk)
+ *
+ * @copyright Copyright (c) Southampton University Swimming Club. (https://susc.org.uk)
+ * @link      http://susc.org.uk SUSC Website
+ */
+
+use Cake\Collection\CollectionInterface;
+use SUSC\Model\Entity\Article;
+use SUSC\Model\Entity\Gallery;
+use SUSC\Model\Entity\User;
+use SUSC\View\AppView;
 
 /**
- * @var \SUSC\View\AppView $this
+ * Author: Huw
+ * Since: 03/10/2017
+ *
+ * @var AppView $this
+ * @var Gallery $gallery
+ * @var User $currentUser
+ * @var Article[]|CollectionInterface $news
+ * @var Article[]|CollectionInterface $socials
+ * @var Article[]|CollectionInterface $fixtures
  */
+$this->assign('description', 'Southampton University Swimming Club. Winning\'s the Aim &mdash; Swimming\'s the Game. SUSC Unbelievable');
 $this->start('css');
 echo $this->fetch('css');
 echo $this->Html->css('carousel');

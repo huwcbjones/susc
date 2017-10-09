@@ -2,9 +2,13 @@
 
 use Cake\Core\Configure;
 use Cake\Routing\Router;
-use Cake\View\View;
+use SUSC\View\AppView;
 
-/** @var View $this */
+/** @var AppView $this */
+$description = $this->fetch('description');
+$description = $this->Text->truncate(strip_tags($description), 160, ['ellipsis' => '', 'exact' => false]);
+
+
 ?>
 <?= $this->Html->charset() ?>
 
@@ -37,7 +41,7 @@ use Cake\View\View;
 <meta name="msapplication-wide310x150logo" content="/img/icon/mstile-310x150.png"/>
 <meta name="msapplication-square310x310logo" content="/img/icon/mstile-310x310.png"/>
 <meta name="COPYRIGHT"
-      content="© 2016. All content, photos and text are the property of Southampton University Swimming Club. All Rights Reserved. Site conducted in accordance with the ASA &quot;Guidelines for Club Web Sites&quot;."/>
+      content="© <?= date('Y') ?>. All content, photos and text are the property of Southampton University Swimming Club. All Rights Reserved. Site conducted in accordance with the ASA &quot;Guidelines for Club Web Sites&quot;."/>
 <meta http-equiv="Content-Language" content="en-gb"/>
 <meta http-equiv="CONTENT-LANGUAGE" content="en-US,en-GB,en"/>
 <meta name="msvalidate.01" content="0507DB2FA5C0529E705119BE61898740"/>
@@ -45,11 +49,12 @@ use Cake\View\View;
 <meta property="fb:app_id" content="1103769579691459"/>
 <meta property="og:url" content="<?= Router::url($this->request->getRequestTarget(), true) ?>"/>
 <meta property="og:title" content="<?= h($this->fetch('title')) ?>"/>
+<meta property="og:type" content="website"/>
 <meta property="og:description" content="<?= h($this->fetch('description')) ?>"/>
 <meta property="og:image" content="<?= $this->Url->build('/img/logo.png', true) ?>"/>
 <?= $this->Html->meta(
     'description',
-    h($this->fetch('description'))
+    $description
 ) ?>
 
 <title><?= h($this->fetch('title')) ?> | <?= Configure::read('App.name') ?></title>

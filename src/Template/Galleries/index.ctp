@@ -7,6 +7,8 @@
 use SUSC\Model\Entity\Gallery;
 use SUSC\View\AppView;
 
+$this->assign('description', 'View galleries from various SUSC (Southampton University Swimming Club) events.');
+
 $this->start('css');
 echo $this->fetch('css');
 echo $this->Html->css(['jquery.fancybox', 'helpers/jquery.fancybox-buttons']);

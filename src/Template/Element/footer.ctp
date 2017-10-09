@@ -9,16 +9,16 @@
             </div>
             <div class="row">
                 <div class="col-xs-6">
-                    <?= $this->Html->link('<h5>Union Southampton</h5>' .
-                        $this->Html->image('us_logo.svg', ['alt' => 'Union Southampton', 'class' => 'img-responsive footer-logo center-block']),
-                        'https://www.unionsouthampton.org',
+                    <?= $this->Html->link('<h5>University of Southampton Students\' Union</h5>' .
+                        $this->Html->image('us_logo.svg', ['alt' => 'University of Southampton Students\' Union', 'class' => 'img-responsive footer-logo center-block']),
+                        'https://www.susu.org',
                         ['target' => '_blank', 'escape' => false])
                     ?>
                 </div>
                 <div class="col-xs-6">
                     <?= $this->Html->link('<h5>Team Southampton</h5>' .
                         $this->Html->image('team_southampton.png', ['alt' => 'Team Southampton', 'class' => 'img-responsive footer-logo center-block']),
-                        'https://www.unionsouthampton.org/groups/',
+                        'https://www.susu.org/groups/',
                         ['target' => '_blank', 'escape' => false])
                     ?>
                 </div>

@@ -9,7 +9,7 @@
             <?php if ($article->created != $article->modified) : ?>
                 <p class="blog-post-meta pull-right"> (Last
                     updated at <span itemprop="dateModified"
-                                  content="<?= $article->modified->format("Y-m-d H:i:s") ?>"><?= $article->modified->format('g:iA F j<\s\u\p>S</\s\u\p> Y') ?></span>
+                                     content="<?= $article->modified->format("Y-m-d H:i:s") ?>"><?= $article->modified->format('g:iA F j<\s\u\p>S</\s\u\p> Y') ?></span>
                     )</p>
             <?php endif; ?>
         </div>
@@ -23,13 +23,13 @@
     </div>
     <div class="hidden" itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
         <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
-            <?= $this->Html->Image('logo.png', ['fullBase' => true]) ?>
+            <?= $this->Html->Image('logo.png', ['fullBase' => true, 'alt' => 'SUSC Logo']) ?>
             <meta itemprop="url" content="<?= $this->Url->build('/img/logo.png', true) ?>">
         </div>
         <meta itemprop="name" content="SUSC">
     </div>
     <div class="hidden" itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
-        <img src="<?= $this->Url->build('/img/logo.png', true) ?>"/>
+        <img src="<?= $this->Url->build('/img/logo.png', true) ?>" alt="SUSC Logo"/>
         <meta itemprop="url" content="<?= $this->Url->build('/img/logo.png', true) ?>"/>
         <meta itemprop="height width" content="1024"/>
     </div>

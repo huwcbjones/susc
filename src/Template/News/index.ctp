@@ -1,4 +1,25 @@
 <?php
+/**
+ * SUSC Website
+ * Copyright (c) Southampton University Swimming Club. (https://susc.org.uk)
+ *
+ * @copyright Copyright (c) Southampton University Swimming Club. (https://susc.org.uk)
+ * @link      http://susc.org.uk SUSC Website
+ */
+
+use SUSC\Model\Entity\Article;
+use SUSC\View\AppView;
+
+/**
+ * Author: Huw
+ * Since: 16/02/2017
+ *
+ * @var AppView $this
+ * @var Article[] $news
+ */
+
+$this->assign('description', 'Find out the latest news from Southampton University Swimming Club (SUSC).');
+
 $this->start('css');
 echo $this->fetch('css');
 echo $this->Html->css('blog');

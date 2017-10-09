@@ -6,6 +6,8 @@ use Cake\Error\Debugger;
 $this->layout = 'error';
 /** @var ErrorException $error */
 $this->assign('title', $message);
+$this->assign('description', 'There was an error finding this page!');
+
 if (Configure::read('debug')):
     $this->layout = 'dev_error';
 
