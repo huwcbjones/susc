@@ -7,6 +7,13 @@
  * @link      http://susc.org.uk SUSC Website
  */
 
+namespace SUSC\Controller\Admin;
+
+use Cake\I18n\Time;
+use Cake\ORM\TableRegistry;
+use Cake\Utility\Text;
+use SUSC\Controller\AppController;
+use SUSC\Model\Entity\MembershipType;
 use SUSC\Model\Table\MembershipsTable;
 use SUSC\Model\Table\MembershipTypesTable;
 
@@ -17,16 +24,6 @@ use SUSC\Model\Table\MembershipTypesTable;
  * @property MembershipTypesTable $MembershipTypes
  * @property MembershipsTable $Memberships
  */
-
-namespace SUSC\Controller\Admin;
-
-
-use Cake\I18n\Time;
-use Cake\ORM\TableRegistry;
-use Cake\Utility\Text;
-use SUSC\Controller\AppController;
-use SUSC\Model\Entity\MembershipType;
-
 class MembershipController extends AppController
 {
     public function initialize()
@@ -137,7 +134,15 @@ class MembershipController extends AppController
 
     public function members()
     {
+        $memberships = $this->Paginate($this->Memberships);
 
+        $this->set('memberships', $memberships);
+    }
+
+    public function details($id = null)
+    {
+        $membership = $this->Memberships->get($id);
+        $this->set('membership', $membership);
     }
 
     /**
