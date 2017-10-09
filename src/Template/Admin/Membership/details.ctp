@@ -29,7 +29,7 @@ $this->assign('title', $membership->name . ' - Membership');
                     <div class="btn-group">
                         <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">Options <span class="caret"></span></button>
                         <ul class="dropdown-menu">
-                            <li><a href="#" onclick="$('#paidConfirmation').modal()">Mark Paid</a></li>
+                            <?php if(!$membership->is_paid): ?><li><a href="#" onclick="$('#paidConfirmation').modal()">Mark Paid</a></li><?php endif ?>
                             <li><?= $this->Html->link('Edit Membership', ['action' => 'edit_membership', $membership->id]) ?></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="#" onclick="$('#cancelConfirmation').modal()">Cancel Membership</a></li>
@@ -74,6 +74,7 @@ $this->assign('title', $membership->name . ' - Membership');
         </div>
     </div>
 </div>
+<?php if(!$membership->is_cancelled): ?>
 <div class="modal fade" id="cancelConfirmation" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -98,6 +99,8 @@ $this->assign('title', $membership->name . ' - Membership');
         </div>
     </div>
 </div>
+<?php endif ?>
+<?php if(!$membership->is_paid): ?>
 <div class="modal fade" id="paidConfirmation" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -120,3 +123,4 @@ $this->assign('title', $membership->name . ' - Membership');
         </div>
     </div>
 </div>
+<?php endif ?>
