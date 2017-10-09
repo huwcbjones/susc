@@ -69,7 +69,7 @@ class MembershipController extends AppController
 
 
         /** @var Membership $prior_membership */
-        $prior_membership = $this->Memberships->find('user', ['user_id' => $this->currentUser->id])->order(['created' => 'DESC'])->first();
+        $prior_membership = $this->Memberships->find('user', ['user_id' => $this->currentUser->id])->order(['Memberships.created' => 'DESC'])->first();
         $email = strtolower($this->currentUser->email_address);
         if ($prior_membership !== null) {
             if ($membership->student_id == null) $membership->student_id = $prior_membership->student_id;

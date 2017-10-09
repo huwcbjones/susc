@@ -26,7 +26,7 @@ Hi <?= $user->first_name ?>,
 
 This email is to confirm your SUSC membership. Your membership is as follows:
 
-** <?= $membership->name ?> - Memberrhip **
+** <?= $membership->name ?> - Membership: <?= $membership->membership_type->title ?> **
 Name: <?= $membership->name ?>
 
 Student ID: <?= $membership->student_id ?>
@@ -35,11 +35,13 @@ Southampton ID: <?= $membership->soton_id ?>
 
 Date of Birth: <?= $membership->date_of_birth ?>
 
+
 Membership: <?= $membership->membership_type->title ?>
 
 Membership Cost: <?= $membership->membership_type->formatted_price ?>
 
 Your selected payment method is: <?= $membership->payment ?>
+
 
 Please note your membership will not be valid until payment is received.
 You can find out how to pay at <?= $this->Url->build(['_name' => 'faq'], ['fullBase' => true]) ?>.

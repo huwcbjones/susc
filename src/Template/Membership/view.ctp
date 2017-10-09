@@ -44,7 +44,9 @@ $this->layout('profile');
                         <h2 class="h3">Order Details</h2>
                         <p><strong>Ordered:</strong> <?= $this->Time->i18nFormat($membership->created, null, null, 'Europe/London') ?></p>
                         <p><strong>Payment Method:</strong> <?= $membership->payment ?></p>
-                        <p><strong>Payment:</strong> <?= ($membership->is_paid)? $this->Time->i18nFormat($membership->paid, null, null, 'Europe/London') : 'Outstanding'?></p>
+                        <p>
+                            <strong>Payment:</strong> <?= ($membership->is_paid) ? $this->Time->i18nFormat($membership->paid, null, null, 'Europe/London') : 'Outstanding' ?>
+                        </p>
                         <p><strong>Status:</strong> <?= $membership->status ?></p>
                     </div>
                 </div>
