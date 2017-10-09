@@ -56,7 +56,7 @@ class MembershipController extends AppController
         }
         $membership->user_id = $this->currentUser->id;
 
-        $membership_types = $this->Memberships->MembershipTypes->find('list', ['limit' => 200]);
+        $membership_types = $this->Memberships->MembershipTypes->find('currentMemberships')->find('list', ['limit' => 200]);
 
         if ($membership->membership_type_id == null && $this->request->getQuery('type') != null) {
             try {
