@@ -22,6 +22,7 @@ use Cake\ORM\Entity;
  * @property boolean $is_paid
  * @property boolean $is_valid
  * @property string $status
+ * @property boolean $is_cancelled
  *
  * @property \SUSC\Model\Entity\User $user
  * @property \SUSC\Model\Entity\MembershipType $membership_type
@@ -84,6 +85,10 @@ class Membership extends Entity
     }
 
     protected function _getStatus(){
+        if($this->is_cancelled){
+            return 'Cancelled';
+        }
+
         if(!$this->is_paid){
             return 'Waiting for payment';
         }
