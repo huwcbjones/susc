@@ -22,6 +22,7 @@ use SUSC\View\AppView;
  * @var MembershipType[]|QueryInterface $memberships
  */
 
+$this->assign('description', 'View the membership options and register your membership for Southampton University Swimming Club (SUSC).');
 $count = 0;
 ?>
 <?php foreach ($memberships as $membership): $count++; ?>
