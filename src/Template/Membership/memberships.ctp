@@ -52,7 +52,7 @@ $this->layout('profile');
                     <td><?= $membership->getStatusIcon() ?></td>
                     <td><?= $membership->getValidStatusIcon() ?></td>
                     <td><?= $membership->getPaidStatusIcon() ?></td>
-                    <td><?= $this->Html->link('View', ['controller' => 'Kit', 'action' => 'vieworder', 'orderid' => $membership->id]) ?></td>
+                    <td><?= $this->Html->link('View', ['action' => 'view', $membership->id]) ?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
