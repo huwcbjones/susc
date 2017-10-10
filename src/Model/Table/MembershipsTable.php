@@ -74,7 +74,6 @@ class MembershipsTable extends Table
             ->requirePresence('student_id');
 
         $validator
-            ->integer('soton_id')
             ->requirePresence('soton_id');
 
         $validator

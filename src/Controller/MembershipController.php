@@ -51,13 +51,20 @@ class MembershipController extends AppController
 
     public function details()
     {
-        if (($membership = $this->request->session()->read('Membership.Details')) === null) {
+        // If no saved membership in session, created new membership
+        //if (($membership = $this->request->session()->read('Membership.Details')) === null) {
             $membership = $this->Memberships->newEntity($this->request->getData(), ['validate' => $this->request->is(['patch', 'post', 'put'])]);
-        }
-        $membership->user_id = $this->currentUser->id;
+       // }
 
+
+
+        // Load membership types
         $membership_types = $this->Memberships->MembershipTypes->find('currentMemberships')->find('list', ['limit' => 200]);
 
+        // Link to current user
+        $membership->user_id = $this->currentUser->id;
+
+        // If membership hasn't been selected, set membership from query string
         if ($membership->membership_type_id == null && $this->request->getQuery('type') != null) {
             try {
                 $membership->membership_type_id = $this->MembershipTypes->find('slug', ['slug' => $this->request->getQuery('type')])->firstOrFail()->id;
@@ -65,9 +72,11 @@ class MembershipController extends AppController
             }
         }
 
+        // If name hasn't been set, set name from current user's details
         if ($membership->name == null) $membership->name = $this->currentUser->full_name;
 
 
+        // Check for previous memberships and load the details if they haven't been set
         /** @var Membership $prior_membership */
         $prior_membership = $this->Memberships->find('user', ['user_id' => $this->currentUser->id])->order(['Memberships.created' => 'DESC'])->first();
         $email = strtolower($this->currentUser->email_address);
@@ -76,11 +85,11 @@ class MembershipController extends AppController
             if ($membership->soton_id == null) $membership->soton_id = $prior_membership->soton_id;
             if ($membership->name == null) $membership->name = $prior_membership->name;
             if ($membership->date_of_birth == null) $membership->date_of_birth = $prior_membership->date_of_birth;
-        } else if (strpos($email, '@soton.ac.uk') !== false && $membership->soton_id === null) {
+        } else if ($membership->soton_id === null && strpos($email, '@soton.ac.uk') !== false ) {
             $membership->soton_id = str_replace('@soton.ac.uk', '', $email);
         }
 
-        if ($this->request->is(['patch', 'post', 'put'])) {
+        if ($this->request->is(['patch', 'post', 'put']) && count($membership->getErrors()) == 0) {
             $this->request->session()->write('Membership.Details', $membership);
             return $this->redirect(['_name' => 'membership_confirm']);
         }
