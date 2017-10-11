@@ -52,10 +52,11 @@ class MembershipController extends AppController
     public function details()
     {
         // If no saved membership in session, created new membership
-        //if (($membership = $this->request->session()->read('Membership.Details')) === null) {
+        if (($membership = $this->request->session()->read('Membership.Details')) !== null) {
+            $this->Memberships->patchEntity($membership, $this->request->getData(), ['validate' => $this->request->is(['patch', 'post', 'put'])]);
+        } else {
             $membership = $this->Memberships->newEntity($this->request->getData(), ['validate' => $this->request->is(['patch', 'post', 'put'])]);
-       // }
-
+        }
 
 
         // Load membership types
@@ -85,8 +86,8 @@ class MembershipController extends AppController
             if ($membership->soton_id == null) $membership->soton_id = $prior_membership->soton_id;
             if ($membership->name == null) $membership->name = $prior_membership->name;
             if ($membership->date_of_birth == null) $membership->date_of_birth = $prior_membership->date_of_birth;
-        } else if ($membership->soton_id === null && strpos($email, '@soton.ac.uk') !== false ) {
-            $membership->soton_id = str_replace('@soton.ac.uk', '', $email);
+        } else if ($membership->soton_id === null && strpos($email, 'soton.ac.uk') !== false) {
+            $membership->soton_id = explode('@', $email)[0];
         }
 
         if ($this->request->is(['patch', 'post', 'put']) && count($membership->getErrors()) == 0) {
