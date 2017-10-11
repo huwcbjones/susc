@@ -283,4 +283,16 @@ class MembershipController extends AppController
         $this->set('membership_types', $membership_types);
         $this->set('_serialize', ['membership']);
     }
+
+    public function list()
+    {
+        if (!$this->request->is(['patch', 'post', 'put'])) return;
+
+        // Send the download
+        $response = $this->response
+            ->withType('application/zip')
+            ->withDownload($this->KitProcess->getZipFileName())
+            ->withFile($this->KitProcess->getZipFilePath());
+        return $response;
+    }
 }

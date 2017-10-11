@@ -36,7 +36,7 @@ $links['membership'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'co
 $links['membership_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'membership', 'action' => 'add']);
 $links['membership_view'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'membership', 'action' => 'index']);
 $links['membership_members'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'membership', 'action' => 'members'])) !== false;
-$links['membership_process'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'membership']);
+$links['membership_list'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'membership', 'action' => 'list']);
 
 ?>
 <ul class="nav nav-sidebar">
@@ -134,8 +134,8 @@ $links['membership_process'] = $currentUrl === Router::url(['prefix' => 'admin',
             <?php if ($this->hasAccessTo('admin.membership.members')): ?>
                 <li<?= $links['membership_members'] ? ' class="active"' : '' ?>><?= $this->Html->link('Members', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'members']) ?></li>
             <?php endif; ?>
-            <?php if ($this->hasAccessTo('admin.membership.process')): ?>
-                <li<?= $links['membership_process'] ? ' class="active"' : '' ?>><?= $this->Html->link('Process Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'process']) ?></li>
+            <?php if ($this->hasAccessTo('admin.membership.list')): ?>
+                <li<?= $links['membership_list'] ? ' class="active"' : '' ?>><?= $this->Html->link('Membership List', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'list']) ?></li>
             <?php endif; ?>
             <?php if ($this->hasAccessTo('admin.membership.config')): ?>
                 <li<?= $links['membership_config'] ? ' class="active"' : '' ?>><?= $this->Html->link('Configure', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'config']) ?></li>
