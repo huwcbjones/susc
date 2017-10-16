@@ -44,7 +44,7 @@ $this->assign('title', 'Memberships');
                     <td><?= $this->hasAccessTo('admin.users.view') ? $this->Html->link($membership->first_name, ['controller' => 'Users', 'action' => 'view', $membership->user->id]) : h($membership->first_name) ?></td>
                     <td><?= $this->hasAccessTo('admin.users.view') ? $this->Html->link($membership->last_name, ['controller' => 'Users', 'action' => 'view', $membership->user->id]) : h($membership->last_name) ?></td>
                     <td><?= h($membership->membership_type->title) ?></td>
-                    <td><?= $this->Time->format($membership->created, null, null, 'Europe/London') ?></td>
+                    <td><?= $membership->created ?></td>
                     <td><?= $membership->is_cancelled ? '-' : h($membership->payment) ?></td>
                     <td><?= $membership->status ?></td>
                     <?php if ($membership->is_cancelled): ?>
@@ -64,7 +64,7 @@ $this->assign('title', 'Memberships');
         <ul class="pagination">
             <?= $this->Paginator->first('<< ' . __('first')) ?>
             <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
+            <?= $this->Paginator->numbers(['before' => null, 'after' => null]) ?>
             <?= $this->Paginator->next(__('next') . ' >') ?>
             <?= $this->Paginator->last(__('last') . ' >>') ?>
         </ul>

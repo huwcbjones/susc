@@ -143,7 +143,7 @@ class MembershipController extends AppController
 
     public function members()
     {
-        $memberships = $this->Paginate($this->Memberships);
+        $memberships = $this->Paginate($this->Memberships, ['order' => ['created' => 'DESC']]);
 
         $this->set('memberships', $memberships);
     }

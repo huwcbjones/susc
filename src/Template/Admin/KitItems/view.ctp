@@ -99,3 +99,17 @@ $this->end();
         </div>
     </div>
 </form>
+
+
+<div class="row">
+    <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-0 col-lg-4">
+        <?= $this->Html->link('<span class="glyphicon glyphicon-chevron-left"></span> Back', ['action' => 'index'], ['class' => ['btn', 'btn-default', 'btn-block'], 'escape' => false]) ?>
+    </div>
+    <?php if ($this->hasAccessTo('admin.kit-items.edit')): ?>
+        <div class="col-xs-12 visible-xs-block"><br/></div>
+        <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-2 col-lg-4 col-lg-offset-4">
+            <?= $this->Html->link('Edit <span class="glyphicon glyphicon-pencil"></span>', ['action' => 'edit', $item->id], ['class' => ['btn', 'btn-primary', 'btn-block'], 'escape' => false]) ?>
+        </div>
+    <?php endif ?>
+</div>
+

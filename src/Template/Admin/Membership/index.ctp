@@ -57,11 +57,6 @@ $this->assign('title', 'Membership Types');
                             <?= $this->Html->link(__('View'), ['action' => 'view', $membership->id]) ?>
                         </td>
                     <?php endif; ?>
-                    <?php if ($this->hasAccessTo('admin.membership.edit')): ?>
-                        <td class="actions">
-                            <?= $this->Html->link(__('Edit'), ['action' => 'edit', $membership->id]) ?>
-                        </td>
-                    <?php endif; ?>
                     <?php if ($this->hasAccessTo('admin.membership.delete')): ?>
                         <td class="actions">
                             <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $membership->id], ['confirm' => __('Are you sure you want to delete {0}?', $membership->title)]) ?>
@@ -77,7 +72,7 @@ $this->assign('title', 'Membership Types');
         <ul class="pagination">
             <?= $this->Paginator->first('<< ' . __('first')) ?>
             <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
+            <?= $this->Paginator->numbers(['before' => null, 'after' => null]) ?>
             <?= $this->Paginator->next(__('next') . ' >') ?>
             <?= $this->Paginator->last(__('last') . ' >>') ?>
         </ul>
