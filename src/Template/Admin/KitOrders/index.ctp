@@ -29,9 +29,6 @@ $this->assign('title', 'Kit Orders');
                 <?php if ($this->hasAccessTo('admin.kit-orders.view')): ?>
                     <th scope="col" class="actions"></th>
                 <?php endif; ?>
-                <?php if ($this->hasAccessTo('admin.kit-orders.status')): ?>
-                    <th scope="col" class="actions"></th>
-                <?php endif ?>
             </tr>
             </thead>
             <tbody>
@@ -54,13 +51,6 @@ $this->assign('title', 'Kit Orders');
                     <?php if ($this->hasAccessTo('admin.kit-orders.view')): ?>
                         <td><?= $this->Html->link('View', ['action' => 'view', $order->id]) ?></td>
                     <?php endif; ?>
-                    <?php if ($this->hasAccessTo('admin.kit-orders.status')): ?>
-                        <td>
-                        <?php if (!$order->is_paid && !$order->is_cancelled): ?>
-                            <a href="#" onclick="$('#paymentID').val(<?= $order->id ?>); $('#paymentConfirmation').modal()">Paid</a>
-                        <?php endif; ?>
-                        </td>
-                    <?php endif; ?>
                 </tr>
             <?php endforeach; ?>
             </tbody>
@@ -80,28 +70,5 @@ $this->assign('title', 'Kit Orders');
             </ul>
         </nav>
         <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
-    </div>
-</div>
-<div class="modal fade" id="paymentConfirmation" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <?= $this->Form->create(null, ['id' => 'paymentForm', 'url' => ['action' => 'paid']]) ?>
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Are you sure you want to mark this order as paid?</h4>
-            </div>
-            <div class="modal-body">
-                If you mark this order as paid, the user will receive an email letting them know that their payment has been received.<br/>
-                This action cannot be reversed.
-
-                <?= $this->Form->hidden('id', ['id' => 'paymentID']); ?>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <?= $this->Form->button('Confirm Payment', ['class' => ['btn', 'btn-primary']]) ?>
-            </div>
-            <?= $this->Form->end() ?>
-        </div>
     </div>
 </div>
