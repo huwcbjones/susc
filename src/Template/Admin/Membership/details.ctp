@@ -17,13 +17,13 @@ use SUSC\View\AppView;
  * @var Membership $membership
  * @var AppView $this
  */
-$this->assign('title', $membership->name . ' - Membership');
+$this->assign('title', $membership->full_name . ' - Membership');
 ?>
 
 <div class="row">
     <div class="col-xs-12">
         <div class="panel panel-default">
-            <div class="panel-heading"><h3 style="display:inline"><?= $membership->name ?> - Membership: <?= $membership->membership_type->title ?></h3>
+            <div class="panel-heading"><h3 style="display:inline"><?= $membership->full_name ?> - Membership: <?= $membership->membership_type->title ?></h3>
                 <?php if(!$membership->is_cancelled): ?>
                 <div style="display:inline" class="pull-right">
                     <div class="btn-group">
@@ -42,7 +42,8 @@ $this->assign('title', $membership->name . ' - Membership');
                 <div class="row">
                     <div class="col-sm-6">
                         <h2 class="h3">Their Details</h2>
-                        <p><strong>Name:</strong> <?= $membership->name ?></p>
+                        <p><strong>First Name:</strong> <?= $membership->first_name ?></p>
+                        <p><strong>Last Name:</strong> <?= $membership->last_name ?></p>
                         <p><strong>Student ID:</strong> <?= $membership->student_id ?></p>
                         <p><strong>Southampton ID:</strong> <?= $membership->soton_id ?></p>
                         <p><strong>Date of Birth:</strong> <?= $membership->date_of_birth ?></p>

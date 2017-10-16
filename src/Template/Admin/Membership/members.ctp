@@ -26,7 +26,8 @@ $this->assign('title', 'Memberships');
         <table class="table table-hover table-striped table-condensed">
             <thead>
             <tr>
-                <th scope="col"><?= $this->Paginator->sort('name') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('first_name') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('last_name') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('membership_type', 'Type') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('created', 'Date') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('payment', 'Payment') ?></th>
@@ -40,7 +41,8 @@ $this->assign('title', 'Memberships');
             <tbody>
             <?php foreach ($memberships as $membership): ?>
                 <tr>
-                    <td><?= $this->hasAccessTo('admin.users.view') ? $this->Html->link($membership->name, ['controller' => 'Users', 'action' => 'view', $membership->user->id]) : h($membership->name) ?></td>
+                    <td><?= $this->hasAccessTo('admin.users.view') ? $this->Html->link($membership->first_name, ['controller' => 'Users', 'action' => 'view', $membership->user->id]) : h($membership->first_name) ?></td>
+                    <td><?= $this->hasAccessTo('admin.users.view') ? $this->Html->link($membership->last_name, ['controller' => 'Users', 'action' => 'view', $membership->user->id]) : h($membership->last_name) ?></td>
                     <td><?= h($membership->membership_type->title) ?></td>
                     <td><?= $membership->created ?></td>
                     <td><?= $membership->is_cancelled ? '-' : h($membership->payment) ?></td>

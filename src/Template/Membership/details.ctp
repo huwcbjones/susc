@@ -30,12 +30,21 @@ $this->end();
 ?>
 
 <?= $this->Form->create($membership, ['class' => ['form-horizontal']]) ?>
-    <div class="form-group<?= !$this->Form->isFieldError('name') ? '' : ' has-error' ?>">
-        <label for="title" class="col-sm-2 control-label">Full Name</label>
+    <div class="form-group<?= !$this->Form->isFieldError('first_name') ? '' : ' has-error' ?>">
+        <label for="title" class="col-sm-2 control-label">First Name</label>
         <div class="col-sm-10">
-            <?= $this->Form->text('name', ['placeholder' => 'John Doe']) ?>
-            <?php if ($this->Form->isFieldError('name')) : ?>
-                <span id="helpBlock" class="help-block"><?= $this->Form->error('name') ?></span>
+            <?= $this->Form->text('first_name', ['placeholder' => 'John']) ?>
+            <?php if ($this->Form->isFieldError('first_name')) : ?>
+                <span id="helpBlock" class="help-block"><?= $this->Form->error('first_name') ?></span>
+            <?php endif; ?>
+        </div>
+    </div>
+    <div class="form-group<?= !$this->Form->isFieldError('last_name') ? '' : ' has-error' ?>">
+        <label for="title" class="col-sm-2 control-label">Last Name</label>
+        <div class="col-sm-10">
+            <?= $this->Form->text('last_name', ['placeholder' => 'Doe']) ?>
+            <?php if ($this->Form->isFieldError('last_name')) : ?>
+                <span id="helpBlock" class="help-block"><?= $this->Form->error('last_name') ?></span>
             <?php endif; ?>
         </div>
     </div>

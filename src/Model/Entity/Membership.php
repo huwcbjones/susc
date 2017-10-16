@@ -13,6 +13,9 @@ use Cake\ORM\Entity;
  * @property int $student_id
  * @property string $soton_id
  * @property string $name
+ * @property string $full_name
+ * @property string $first_name
+ * @property string $last_name
  * @property \Cake\I18n\FrozenDate $date_of_birth
  * @property string $membership_type_id
  * @property \Cake\I18n\FrozenTime $created
@@ -43,6 +46,14 @@ class Membership extends Entity
         '*' => true,
         'id' => false
     ];
+
+    protected function _getName(){
+        return $this->full_name;
+    }
+
+    protected function _getFullName(){
+        return $this->first_name . ' ' . $this->last_name;
+    }
 
     public function getStatusIcon()
     {
