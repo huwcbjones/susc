@@ -76,7 +76,15 @@ $this->end();
     </div>
 
 
-<?= $this->Form->submit(); ?>
+    <div class="row">
+        <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-0 col-lg-4">
+            <?= $this->Html->link('<span class="glyphicon glyphicon-chevron-left"></span> Cancel', ['action' => 'index'], ['class' => ['btn', 'btn-default', 'btn-block'], 'escape' => false]) ?>
+        </div>
+        <div class="col-xs-12 visible-xs-block"><br/></div>
+        <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-2 col-lg-4 col-lg-offset-4">
+            <?= $this->Form->button('Save <span class="glyphicon glyphicon-floppy-disk"></span>', ['type' => 'submit', 'class' => ['btn', 'btn-primary', 'btn-block'], 'escape' => false]); ?>
+        </div>
+    </div>
 <?= $this->Form->end() ?>
 
 <?php
