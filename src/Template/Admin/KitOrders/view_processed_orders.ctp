@@ -23,7 +23,27 @@ $this->assign('title', 'View Batch # ' . $order->id);
 <div class="row">
     <div class="col-xs-12">
         <div class="panel panel-default">
-            <div class="panel-heading"> Batch #<?= $order->id ?></div>
+            <div class="panel-heading"><h3 style="display:inline">Batch #<?= $order->id ?></h3>
+                <?php if ($this->hasAccessTo('admin.kit-orders.process') && !$order->is_arrived): ?>
+                    <div style="display:inline" class="pull-right">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">Options <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <?php if (!$order->is_arrived): ?>
+                                    <?php if (!$order->is_ordered): ?>
+                                        <li><?= $this->Form->postLink(__('Mark as Ordered'), ['action' => 'ordered', $order->id]) ?></li>
+                                    <?php else: ?>
+                                        <li><?= $this->Form->postLink(__('Mark as not Ordered'), ['action' => 'ordered', $order->id]) ?></li>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                                <?php if ($order->is_ordered && !$order->is_arrived) : ?>
+                                    <li><a href="#" onclick="$('#arriveConfirmation').modal()">Mark as Arrived</a></li>
+                                <?php endif ?>
+                            </ul>
+                        </div>
+                    </div>
+                <?php endif ?></div>
             <div class="panel-body">
                 <p><strong>Ordered:</strong> <?= $order->order_date ?></p>
 
@@ -93,6 +113,30 @@ $this->assign('title', 'View Batch # ' . $order->id);
                     </tfoot>
                 </table>
             </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="arriveConfirmation" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <?= $this->Form->create(null, ['id' => 'arriveForm', 'url' => ['action' => 'arrived']]) ?>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Are you sure you want to mark Batch <?= $order->id ?> as arrived?</h4>
+            </div>
+            <div class="modal-body">
+                If you mark Batch <?= $order->id ?> as arrived, users with items in this batch will be notified via email that their items are available for
+                collection.<br/>
+                In addition, after setting a batch as arrived, you cannot revert the status.
+
+                <?= $this->Form->hidden('id', ['value' => $order->id]); ?>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <?= $this->Form->button('Confirm', ['class' => ['btn', 'btn-primary']]) ?>
+            </div>
+            <?= $this->Form->end() ?>
         </div>
     </div>
 </div>

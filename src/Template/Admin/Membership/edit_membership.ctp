@@ -72,10 +72,10 @@ $this->assign('title', 'Edit Membership: ' . $membership->name);
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Are you sure you want to edit this membership?</h4>
+                <h4 class="modal-title" id="myModalLabel">Are you sure you want to edit  <?= $membership->name?>'s membership?</h4>
             </div>
             <div class="modal-body">
-                The user will receive an email confirming the update to their membership.
+                <?= $membership->user->first_name?> will receive an email confirming the update to their membership.
 
             </div>
             <div class="modal-footer">

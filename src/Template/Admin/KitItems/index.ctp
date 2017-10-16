@@ -38,11 +38,6 @@ $this->assign('title', 'Kit Items');
                             <?= $this->Html->link(__('View'), ['action' => 'view', $item->id]) ?>
                         </td>
                     <?php endif; ?>
-                    <?php if ($this->hasAccessTo('admin.kit-items.edit')): ?>
-                        <td class="actions">
-                            <?= $this->Html->link(__('Edit'), ['action' => 'edit', $item->id]) ?>
-                        </td>
-                    <?php endif; ?>
                     <?php if ($this->hasAccessTo('admin.kit-items.delete')): ?>
                         <td class="actions">
                             <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $item->id], ['confirm' => __('Are you sure you want to delete {0}?', $item->title)]) ?>
@@ -58,7 +53,7 @@ $this->assign('title', 'Kit Items');
         <ul class="pagination">
             <?= $this->Paginator->first('<< ' . __('first')) ?>
             <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
+            <?= $this->Paginator->numbers(['before' => null, 'after' => null]) ?>
             <?= $this->Paginator->next(__('next') . ' >') ?>
             <?= $this->Paginator->last(__('last') . ' >>') ?>
         </ul>

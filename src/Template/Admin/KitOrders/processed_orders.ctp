@@ -63,24 +63,6 @@ $this->assign('title', 'Processed Orders');
                     <td>
                         <?= $order->getCollectedStatusIcon() ?>
                     </td>
-                    <?php if ($this->hasAccessTo('admin.kit-orders.process')): ?>
-                        <td>
-                            <?php if (!$order->is_arrived): ?>
-                                <?= $this->Form->postLink(__('Ordered'), ['action' => 'ordered', $order->id]) ?>
-                            <?php endif ?>
-                        </td>
-                    <?php endif; ?>
-                    <?php if ($this->hasAccessTo('admin.kit-orders.process')): ?>
-                        <td>
-                            <?php if (!$order->is_arrived): ?>
-                                <?php if ($order->is_ordered) : ?>
-                                    <a href="#" onclick="$('#arrivedID').val(<?= $order->id ?>); $('#arriveConfirmation').modal()">Arrived</a>
-                                <?php else: ?>
-                                    <span class="text-muted">Arrived</span>
-                                <?php endif; ?>
-                            <?php endif; ?>
-                        </td>
-                    <?php endif; ?>
                     <?php if ($this->hasAccessTo('admin.kit-orders.view')): ?>
                         <td><?= $this->Html->link('View', ['action' => 'processed-orders', $order->id]) ?></td>
                         <td><?= $this->Html->link('Download', ['action' => 'download', $order->id]) ?></td>
@@ -94,34 +76,10 @@ $this->assign('title', 'Processed Orders');
         <ul class="pagination">
             <?= $this->Paginator->first('<< ' . __('first')) ?>
             <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
+            <?= $this->Paginator->numbers(['before' => null, 'after' => null]) ?>
             <?= $this->Paginator->next(__('next') . ' >') ?>
             <?= $this->Paginator->last(__('last') . ' >>') ?>
         </ul>
         <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
-    </div>
-</div>
-
-<div class="modal fade" id="arriveConfirmation" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <?= $this->Form->create(null, ['id' => 'arriveForm', 'url' => ['action' => 'arrived']]) ?>
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Are you sure you want to mark this batch as arrived?</h4>
-            </div>
-            <div class="modal-body">
-                If you mark this order as arrived, users with items in this batch will be notified via email that their items are available for collection.<br/>
-                In addition, after setting a batch as arrived, you cannot revert the status.
-
-                <?= $this->Form->hidden('id', ['id' => 'arrivedID']); ?>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <?= $this->Form->button('Confirm', ['class' => ['btn', 'btn-primary']]) ?>
-            </div>
-            <?= $this->Form->end() ?>
-        </div>
     </div>
 </div>
