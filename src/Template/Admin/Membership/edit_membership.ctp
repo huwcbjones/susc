@@ -19,20 +19,21 @@ use SUSC\View\AppView;
  * @var MembershipType[] $membership_types
  * @var AppView $this
  */
-$this->assign('title', 'Edit Membership: ' . $membership->name);
+$this->assign('title', 'Edit Membership: ' . $membership->full_name);
 ?>
 
 <div class="row">
     <div class="col-xs-12">
         <div class="panel panel-default">
-            <div class="panel-heading"><h3 style="display:inline"><?= $membership->name ?> - Membership: <?= $membership->membership_type->title ?></h3>
+            <div class="panel-heading"><h3 style="display:inline"><?= $membership->full_name ?> - Membership: <?= $membership->membership_type->title ?></h3>
             </div>
             <div class="panel-body">
                 <?= $this->Form->create($membership, ['id' => 'editForm']) ?>
                 <div class="row">
                     <div class="col-sm-6">
                         <h2 class="h3">Their Details</h2>
-                        <p><strong>Name:</strong> <?= $membership->name ?></p>
+                        <p><strong>First Name:</strong> <?= $membership->first_name ?></p>
+                        <p><strong>Last Name:</strong> <?= $membership->last_name ?></p>
                         <p><strong>Student ID:</strong> <?= $membership->student_id ?></p>
                         <p><strong>Southampton ID:</strong> <?= $membership->soton_id ?></p>
                         <p><strong>Date of Birth:</strong> <?= $membership->date_of_birth ?></p>

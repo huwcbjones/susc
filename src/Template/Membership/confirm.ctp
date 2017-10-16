@@ -30,9 +30,15 @@ $this->assign('title', 'Confirm Membership');
     <div class="panel-body">
         <form class="form-horizontal">
             <div class="form-group-lg">
-                <label class="col-sm-3 control-label">Name</label>
+                <label class="col-sm-3 control-label">First Name</label>
                 <div class="col-sm-9">
-                    <p class="form-control-static"><?= $membership->name ?></p>
+                    <p class="form-control-static"><?= $membership->first_name ?></p>
+                </div>
+            </div>
+            <div class="form-group-lg">
+                <label class="col-sm-3 control-label">Last Name</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static"><?= $membership->last_name ?></p>
                 </div>
             </div>
             <div class="form-group-lg">
