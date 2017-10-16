@@ -10,12 +10,14 @@
 namespace SUSC\Controller\Admin;
 
 use Cake\HTTP\Response;
+use Cake\I18n\FrozenTime;
 use Cake\I18n\Time;
 use Cake\Mailer\Email;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Text;
 use DateTime;
 use SUSC\Controller\AppController;
+use SUSC\Controller\Component\MembershipProcessComponent;
 use SUSC\Model\Entity\Membership;
 use SUSC\Model\Entity\MembershipType;
 use SUSC\Model\Table\MembershipsTable;
@@ -25,6 +27,7 @@ use SUSC\Model\Table\MembershipTypesTable;
  * Author: Huw
  * Since: 07/10/2017
  *
+ * @property MembershipProcessComponent $MembershipProcess
  * @property MembershipTypesTable $MembershipTypes
  * @property MembershipsTable $Memberships
  */
@@ -288,11 +291,21 @@ class MembershipController extends AppController
     {
         if (!$this->request->is(['patch', 'post', 'put'])) return;
 
+        $this->loadComponent('MembershipProcess');
+
+
+        $date = new FrozenTime($this->request->getData('date'));
+        if(!$this->MembershipProcess->isDownloadExist($date)){
+            $this->MembershipProcess->createDownload($date);
+        }
+
+
+
         // Send the download
         $response = $this->response
             ->withType('application/zip')
-            ->withDownload($this->KitProcess->getZipFileName())
-            ->withFile($this->KitProcess->getZipFilePath());
+            ->withDownload($this->MembershipProcess->getZipFileName($date))
+            ->withFile($this->MembershipProcess->getZipFilePath($date));
         return $response;
     }
 }

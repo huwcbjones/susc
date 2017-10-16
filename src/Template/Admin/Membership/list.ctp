@@ -32,12 +32,12 @@ $this->end();
 <div class="form-group">
     <label for="date" class="col-sm-3 control-label">Membership as of</label>
     <div class="col-sm-9">
-        <div class="input-group date form_valid_from" data-date="<?= $now ?>">
+        <div class="input-group date form_as_of" data-date="<?= $now ?>">
             <?= $this->Form->text('date', ['value' => $now_string, 'readonly' => true]) ?>
             <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
             <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
         </div>
-        <input name="valid_from" id="valid_from" type="hidden"/>
+        <input name="as_of" id="as_of" type="hidden"/>
     </div>
 </div>
 <?= $this->Form->submit('Download'); ?>
@@ -49,16 +49,10 @@ echo $this->fetch('postscript');
 echo $this->Html->script('bootstrap-datetimepicker');
 ?>
 <script type="text/javascript">
-    $(".form_valid_from").datetimepicker({
+    $(".form_as_of").datetimepicker({
         format: "dd MM yyyy",
         minView: 2,
-        linkField: 'valid_from',
-        linkFormat: 'yyyy-mm-dd'
-    });
-    $(".form_valid_to").datetimepicker({
-        format: "dd MM yyyy",
-        minView: 2,
-        linkField: 'valid_to',
+        linkField: 'as_of',
         linkFormat: 'yyyy-mm-dd'
     });
 </script>
