@@ -7,8 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= $this->fetch('title') ?></title>
-    <?= $this->Html->css('bootstrap.min.css') ?>
-    <?= $this->Html->css('styling.css') ?>
+    <?= $this->Html->css('bootstrap.min.css', ['fullBase' => true]) ?>
+    <?= $this->Html->css('styling.css', ['fullBase' => true]) ?>
 </head>
 <body>
 <header class="main-masthead">

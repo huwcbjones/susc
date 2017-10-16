@@ -27,7 +27,9 @@ Hi <?= $user->first_name ?>,
 This email is to let you know that your SUSC membership has been cancelled.
 
 ** <?= $membership->name ?> - Membership: <?= $membership->membership_type->title ?> **
-Name: <?= $membership->name ?>
+First Name: <?= $membership->first_name ?>
+
+Last Name: <?= $membership->last_name ?>
 
 
 Registered: <?= $membership->created ?>

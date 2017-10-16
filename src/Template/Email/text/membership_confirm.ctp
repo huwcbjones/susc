@@ -27,7 +27,9 @@ Hi <?= $user->first_name ?>,
 This email is to confirm your SUSC membership. Your membership is as follows:
 
 ** <?= $membership->name ?> - Membership: <?= $membership->membership_type->title ?> **
-Name: <?= $membership->name ?>
+First Name: <?= $membership->first_name ?>
+
+Last Name: <?= $membership->last_name ?>
 
 Student ID: <?= $membership->student_id ?>
 

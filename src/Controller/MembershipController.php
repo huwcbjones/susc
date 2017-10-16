@@ -74,7 +74,8 @@ class MembershipController extends AppController
         }
 
         // If name hasn't been set, set name from current user's details
-        if ($membership->name == null) $membership->name = $this->currentUser->full_name;
+        if ($membership->first_name == null) $membership->first_name = $this->currentUser->first_name;
+        if ($membership->last_name == null) $membership->last_name = $this->currentUser->last_name;
 
 
         // Check for previous memberships and load the details if they haven't been set
@@ -84,7 +85,8 @@ class MembershipController extends AppController
         if ($prior_membership !== null) {
             if ($membership->student_id == null) $membership->student_id = $prior_membership->student_id;
             if ($membership->soton_id == null) $membership->soton_id = $prior_membership->soton_id;
-            if ($membership->name == null) $membership->name = $prior_membership->name;
+            if ($membership->first_name == null) $membership->first_name = $prior_membership->first_name;
+            if ($membership->last_name == null) $membership->last_name = $prior_membership->last_name;
             if ($membership->date_of_birth == null) $membership->date_of_birth = $prior_membership->date_of_birth;
         } else if ($membership->soton_id === null && strpos($email, 'soton.ac.uk') !== false) {
             $membership->soton_id = explode('@', $email)[0];

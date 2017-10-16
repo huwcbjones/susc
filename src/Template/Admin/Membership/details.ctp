@@ -17,13 +17,13 @@ use SUSC\View\AppView;
  * @var Membership $membership
  * @var AppView $this
  */
-$this->assign('title', $membership->name . ' - Membership');
+$this->assign('title', $membership->full_name . ' - Membership');
 ?>
 
 <div class="row">
     <div class="col-xs-12">
         <div class="panel panel-default">
-            <div class="panel-heading"><h3 style="display:inline"><?= $membership->name ?> - Membership: <?= $membership->membership_type->title ?></h3>
+            <div class="panel-heading"><h3 style="display:inline"><?= $membership->full_name ?> - Membership: <?= $membership->membership_type->title ?></h3>
                 <?php if(!$membership->is_cancelled): ?>
                 <div style="display:inline" class="pull-right">
                     <div class="btn-group">
@@ -42,7 +42,8 @@ $this->assign('title', $membership->name . ' - Membership');
                 <div class="row">
                     <div class="col-sm-6">
                         <h2 class="h3">Their Details</h2>
-                        <p><strong>Name:</strong> <?= $membership->name ?></p>
+                        <p><strong>First Name:</strong> <?= $membership->first_name ?></p>
+                        <p><strong>Last Name:</strong> <?= $membership->last_name ?></p>
                         <p><strong>Student ID:</strong> <?= $membership->student_id ?></p>
                         <p><strong>Southampton ID:</strong> <?= $membership->soton_id ?></p>
                         <p><strong>Date of Birth:</strong> <?= $membership->date_of_birth ?></p>
@@ -82,12 +83,13 @@ $this->assign('title', $membership->name . ' - Membership');
             <?= $this->Form->hidden('id', ['value' => $membership->id]); ?>
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Are you sure you want to cancel this membership?</h4>
+                <h4 class="modal-title" id="myModalLabel">Are you sure you want to cancel <?= $membership->name?>'s membership?</h4>
             </div>
             <div class="modal-body">
                 <?php if($membership->is_paid): ?>
-                    As the user has paid for this membership, the money may need to be reimbursed.<br/>
+                    As <?= $membership->user->first_name?> has paid for this membership, the money may need to be reimbursed.<br/>
                 <?php endif ?>
+                <?= $membership->user->first_name?> will receive an email confirming the membership has been cancelled.<br/>
                 This action cannot be reversed.
 
             </div>
@@ -108,10 +110,10 @@ $this->assign('title', $membership->name . ' - Membership');
             <?= $this->Form->hidden('id', ['value' => $membership->id]); ?>
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Are you sure you want to mark this membership as paid?</h4>
+                <h4 class="modal-title" id="myModalLabel">Are you sure you want to mark <?= $membership->name?>'s membership as paid?</h4>
             </div>
             <div class="modal-body">
-                The user will receive an email confirming the membership has been paid.<br/>
+                <?= $membership->user->first_name?> will receive an email confirming the membership has been paid.<br/>
                 This action cannot be reversed.
 
             </div>
