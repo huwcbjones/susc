@@ -28,9 +28,22 @@ $this->assign('title', 'View Order #' . $order->id);
             <div class="panel-heading">
                 <div>
                     <h3 style="display:inline">Order #<?= $order->id ?></h3>
-                    <?php if ($order->ordered_left == count($order->items) && !$order->is_cancelled): ?>
+                    <?php if (!$order->is_cancelled && $order->ordered_left == count($order->items) && $this->hasAccessTo('admin.kit-orders.status')): ?>
                         <div style="display:inline" class="pull-right">
-                            <a href="#" onclick="$('#cancelConfirmation').modal()" class="btn btn-danger btn-sm">Cancel Order</a>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">Options <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <?php if (!$order->is_paid): ?>
+                                        <li><a href="#" onclick="$('#paymentConfirmation').modal()">Mark Paid</a></li>
+                                    <?php endif ?>
+                                    <?php if ($order->ordered_left == count($order->items)): ?>
+                                        <?php /* <li><?= $this->Html->link('Edit Order', ['action' => 'edit', $order->id]) ?></li>
+                                        <li role="separator" class="divider"></li> */ ?>
+                                        <li><a href="#" onclick="$('#cancelConfirmation').modal()">Cancel Order</a></li>
+                                    <?php endif ?>
+                                </ul>
+                            </div>
                         </div>
                     <?php endif ?>
                 </div>
@@ -40,7 +53,7 @@ $this->assign('title', 'View Order #' . $order->id);
                 <p><strong>Ordered:</strong> <?= $order->placed_date ?></p>
                 <p><strong>Payment Method:</strong> <?= $order->paymentMethod ?></p>
 
-                <p><strong>Payment:</strong> <?= $order->paid_date  ?></p>
+                <p><strong>Payment:</strong> <?= $order->paid_date ?></p>
 
                 <p><strong>Status:</strong> <?= $order->status ?></p>
             </div>
@@ -106,6 +119,30 @@ $this->assign('title', 'View Order #' . $order->id);
         </div>
     </div>
 </div>
+<div class="modal fade" id="paymentConfirmation" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <?= $this->Form->create(null, ['id' => 'paymentForm', 'url' => ['action' => 'paid']]) ?>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Are you sure you want to mark Order #<?= $order->id ?> as paid?</h4>
+            </div>
+            <div class="modal-body">
+                If you mark this order as paid, <?= $order->user->first_name ?> will receive an email letting them know that their payment has been
+                received.<br/>
+                This action cannot be reversed.
+
+                <?= $this->Form->hidden('id', ['value' => $order->id]); ?>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <?= $this->Form->button('Confirm Payment', ['class' => ['btn', 'btn-primary']]) ?>
+            </div>
+            <?= $this->Form->end() ?>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="cancelConfirmation" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -113,12 +150,13 @@ $this->assign('title', 'View Order #' . $order->id);
             <?= $this->Form->hidden('id', ['value' => $order->id]); ?>
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Are you sure you want to cancel this order?</h4>
+                <h4 class="modal-title" id="myModalLabel">Are you sure you want to cancel Order #<?= $order->id ?>?</h4>
             </div>
             <div class="modal-body">
-                <?php if($order->is_paid): ?>
-                As the user has paid for this order, the money will need to be returned.<br/>
+                <?php if ($order->is_paid): ?>
+                    As <?= $order->user->first_name ?> has paid for this order, their money will need to be returned.<br/>
                 <?php endif ?>
+                <?= $order->user->first_name ?> will receive an email letting them know that their order has been cancelled.<br/>
                 This action cannot be reversed.
 
             </div>
@@ -140,7 +178,7 @@ $this->assign('title', 'View Order #' . $order->id);
                 <h4 class="modal-title" id="myModalLabel">Are you sure you want to mark this item as collected?</h4>
             </div>
             <div class="modal-body">
-                The user will receive an email confirming the item has been collected.<br/>
+                <?= $order->user->first_name ?> will receive an email confirming that the item has been collected.<br/>
                 This action cannot be reversed.
 
             </div>

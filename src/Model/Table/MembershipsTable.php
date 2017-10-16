@@ -63,7 +63,10 @@ class MembershipsTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->requirePresence('name');
+            ->requirePresence('first_name');
+
+        $validator
+            ->requirePresence('last_name');
 
         $validator
             ->date('date_of_birth')
@@ -82,7 +85,6 @@ class MembershipsTable extends Table
 
         $validator
             ->requirePresence('payment_method');
-
 
 
         return $validator;
@@ -119,5 +121,19 @@ class MembershipsTable extends Table
     public function findUser(Query $query, $options = [])
     {
         return $query->where(['user_id' => $options['user_id']]);
+    }
+
+    public function findDate(Query $query, $options = [])
+    {
+        $date = $options['date'];
+        return $query->matching('MembershipTypes', function (Query $q) use ($date) {
+            return $q
+                ->where([
+                    'OR' => ['valid_from IS ' => null, 'valid_from <' => $date],
+                    'AND' => ['OR' => [
+                        'valid_to IS ' => null, 'valid_to >' => $date
+                    ]]
+                ]);
+        });
     }
 }

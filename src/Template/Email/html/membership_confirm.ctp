@@ -31,7 +31,8 @@ use SUSC\View\AppView;
     <div class="panel-heading"><?= $membership->name ?> - Membership: <?= $membership->membership_type->title ?></div>
     <div class="panel-body">
         <h2 class="h3">Your Details</h2>
-        <p><strong>Name:</strong> <?= $membership->name ?></p>
+        <p><strong>First Name:</strong> <?= $membership->first_name ?></p>
+        <p><strong>Last Name:</strong> <?= $membership->last_name ?></p>
         <p><strong>Student ID:</strong> <?= $membership->student_id ?></p>
         <p><strong>Southampton ID:</strong> <?= $membership->soton_id ?></p>
         <p><strong>Date of Birth:</strong> <?= $membership->date_of_birth ?></p>
