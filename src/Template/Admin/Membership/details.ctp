@@ -82,12 +82,13 @@ $this->assign('title', $membership->name . ' - Membership');
             <?= $this->Form->hidden('id', ['value' => $membership->id]); ?>
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Are you sure you want to cancel this membership?</h4>
+                <h4 class="modal-title" id="myModalLabel">Are you sure you want to cancel <?= $membership->name?>'s membership?</h4>
             </div>
             <div class="modal-body">
                 <?php if($membership->is_paid): ?>
-                    As the user has paid for this membership, the money may need to be reimbursed.<br/>
+                    As <?= $membership->user->first_name?> has paid for this membership, the money may need to be reimbursed.<br/>
                 <?php endif ?>
+                <?= $membership->user->first_name?> will receive an email confirming the membership has been cancelled.<br/>
                 This action cannot be reversed.
 
             </div>
@@ -108,10 +109,10 @@ $this->assign('title', $membership->name . ' - Membership');
             <?= $this->Form->hidden('id', ['value' => $membership->id]); ?>
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Are you sure you want to mark this membership as paid?</h4>
+                <h4 class="modal-title" id="myModalLabel">Are you sure you want to mark <?= $membership->name?>'s membership as paid?</h4>
             </div>
             <div class="modal-body">
-                The user will receive an email confirming the membership has been paid.<br/>
+                <?= $membership->user->first_name?> will receive an email confirming the membership has been paid.<br/>
                 This action cannot be reversed.
 
             </div>
