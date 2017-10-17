@@ -115,6 +115,9 @@ $links['membership_list'] = $currentUrl === Router::url(['prefix' => 'admin', 'c
             <?php if ($this->hasAccessTo('admin.kit-orders.process')): ?>
                 <li<?= $links['kit-orders_process'] ? ' class="active"' : '' ?>><?= $this->Html->link('Process Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'process']) ?></li>
             <?php endif; ?>
+            <?php if ($this->hasAccessTo('admin.kit-orders.remind')): ?>
+                <li><?= $this->Form->postLink('Send Reminders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'sendReminderEmails']) ?></li>
+            <?php endif; ?>
             <?php if ($this->hasAccessTo('admin.kit-orders.config')): ?>
                 <li<?= $links['kit-orders_config'] ? ' class="active"' : '' ?>><?= $this->Html->link('Configure', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'config']) ?></li>
             <?php endif; ?>
@@ -136,6 +139,9 @@ $links['membership_list'] = $currentUrl === Router::url(['prefix' => 'admin', 'c
             <?php endif; ?>
             <?php if ($this->hasAccessTo('admin.membership.list')): ?>
                 <li<?= $links['membership_list'] ? ' class="active"' : '' ?>><?= $this->Html->link('Membership List', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'list']) ?></li>
+            <?php endif; ?>
+            <?php if ($this->hasAccessTo('admin.membership.remind')): ?>
+                <li><?= $this->Form->postLink('Send Reminders', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'sendReminderEmails']) ?></li>
             <?php endif; ?>
             <?php if ($this->hasAccessTo('admin.membership.config')): ?>
                 <li<?= $links['membership_config'] ? ' class="active"' : '' ?>><?= $this->Html->link('Configure', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'config']) ?></li>
