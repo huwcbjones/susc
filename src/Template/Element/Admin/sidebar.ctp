@@ -137,6 +137,9 @@ $links['membership_list'] = $currentUrl === Router::url(['prefix' => 'admin', 'c
             <?php if ($this->hasAccessTo('admin.membership.list')): ?>
                 <li<?= $links['membership_list'] ? ' class="active"' : '' ?>><?= $this->Html->link('Membership List', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'list']) ?></li>
             <?php endif; ?>
+            <?php if ($this->hasAccessTo('admin.membership.remind')): ?>
+                <li><?= $this->Form->postLink('Send Reminders', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'sendReminderEmails']) ?></li>
+            <?php endif; ?>
             <?php if ($this->hasAccessTo('admin.membership.config')): ?>
                 <li<?= $links['membership_config'] ? ' class="active"' : '' ?>><?= $this->Html->link('Configure', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'config']) ?></li>
             <?php endif; ?>
