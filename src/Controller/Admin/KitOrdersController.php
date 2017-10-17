@@ -45,6 +45,7 @@ class KitOrdersController extends AppController
     public function getACL()
     {
         if ($this->request->getParam('action') == 'index') return 'admin.kit-orders.*';
+        if ($this->request->getParam('action') == 'sendReminderEmails') return 'admin.kit-orders.remind';
         if (in_array($this->request->getParam('action'), ['paid', 'ordered', 'arrived', 'collected'])) {
             return 'admin.kit-orders.status';
         }
@@ -187,7 +188,7 @@ class KitOrdersController extends AppController
         $order = $this->ProcessedOrders->get($id);
 
         // If the order has already arrived, don't do anything
-        if($order->is_arrived) return $this->redirect($this->referer());
+        if ($order->is_arrived) return $this->redirect($this->referer());
         $order->arrived = new DateTime();
 
         if ($this->ProcessedOrders->save($order)) {
@@ -196,7 +197,7 @@ class KitOrdersController extends AppController
             $orders = $this->Orders->find('batchID', ['id' => $order->id])->toArray();
 
             // Email out each order
-            foreach($orders as $order){
+            foreach ($orders as $order) {
                 $email = new Email();
                 $email
                     ->setTo($order->user->email_address, $order->user->full_name)
@@ -359,5 +360,42 @@ class KitOrdersController extends AppController
             ->withDownload($this->KitProcess->getZipFileName())
             ->withFile($this->KitProcess->getZipFilePath());
         return $response;
+    }
+
+    public function sendReminderEmails()
+    {
+        if (!$this->request->is(['patch', 'post', 'put'])) return $this->redirect($this->referer());
+
+        $orders = $this->Orders->find()
+            ->contain(['Users'])
+            ->where([
+                'Orders.placed <' => new DateTime('-3 days'),
+                'OR' => [
+                    'Orders.last_reminder <' => new DateTime('-3 days'),
+                    'Orders.last_reminder IS ' => null
+                ],
+                'is_cancelled' => false,
+                'paid IS' => null
+            ])->toArray();
+
+        $email = new Email();
+        $email
+            ->setSubject('SUSC Kit Order Reminder')
+            ->setTemplate('order_reminder');
+
+        $now = new DateTime();
+        foreach ($orders as &$order) {
+            $order->last_reminder = $now;
+            $email
+                ->setTo($order->user->email_address, $order->user->full_name)
+                ->setViewVars(['order' => $order, 'user' => $order->user])
+                ->send();
+        }
+
+        $this->Orders->saveMany($orders);
+
+        $this->Flash->success('Sent ' . count($orders) . ' reminder emails.');
+        return $this->redirect($this->referer());
+
     }
 }

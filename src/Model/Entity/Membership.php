@@ -20,6 +20,7 @@ use Cake\ORM\Entity;
  * @property string $membership_type_id
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime $paid
+ * @property \Cake\I18n\FrozenTime $last_reminder
  * @property string $payment_method
  * @property string $payment
  * @property boolean $is_paid

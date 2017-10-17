@@ -45,6 +45,7 @@ class MembershipController extends AppController
     {
         if ($this->request->getParam('action') == 'index') return 'admin.membership.*';
         if ($this->request->getParam('action') == 'editMembership') return 'admin.membership.edit';
+        if ($this->request->getParam('action') == 'sendReminderEmails') return 'admin.membership.remind';
         if (in_array($this->request->getParam('action'), ['paid', 'ordered', 'arrived', 'collected'])) {
             return 'admin.membership.status';
         }
@@ -289,16 +290,15 @@ class MembershipController extends AppController
 
     public function list()
     {
-        if (!$this->request->is(['patch', 'post', 'put'])) return;
+        if (!$this->request->is(['patch', 'post', 'put'])) return $this->redirect($this->referer());
 
         $this->loadComponent('MembershipProcess');
 
 
         $date = new FrozenTime($this->request->getData('date'));
-        if(!$this->MembershipProcess->isDownloadExist($date)){
+        if (!$this->MembershipProcess->isDownloadExist($date)) {
             $this->MembershipProcess->createDownload($date);
         }
-
 
 
         // Send the download
@@ -307,5 +307,40 @@ class MembershipController extends AppController
             ->withDownload($this->MembershipProcess->getZipFileName($date))
             ->withFile($this->MembershipProcess->getZipFilePath($date));
         return $response;
+    }
+
+    public function sendReminderEmails()
+    {
+        if (!$this->request->is(['patch', 'post', 'put'])) return $this->redirect($this->referer());
+
+        $members = $this->Memberships->find()->where([
+            'Memberships.created <' => new DateTime('-3 days'),
+            'OR' => [
+                'Memberships.last_reminder < ' => new DateTime('-3 days'),
+                'Memberships.last_reminder IS ' => null
+            ],
+            'is_cancelled' => false,
+            'paid IS' => null
+        ])->toArray();
+
+        $email = new Email();
+        $email
+            ->setSubject('SUSC Membership Reminder')
+            ->setTemplate('membership_reminder');
+
+        $now = new DateTime();
+        foreach($members as &$member){
+            $member->last_reminder = $now;
+            $email
+                ->setTo($member->user->email_address, $member->user->full_name)
+                ->setViewVars(['membership' => $member, 'user' => $member->user])
+                ->send();
+        }
+
+        $this->Memberships->saveMany($members);
+
+        $this->Flash->success('Sent ' . count($members) . ' reminder emails.');
+        return $this->redirect($this->referer());
+
     }
 }
