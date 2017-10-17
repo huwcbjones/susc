@@ -18,6 +18,7 @@ use Cake\ORM\Entity;
  * @property string $order_date
  * @property FrozenTime $placed
  * @property FrozenTime $paid
+ * @property FrozenTime $last_reminder
  * @property string $paid_date
  * @property int $ordered_left
  * @property int $arrived_left
