@@ -290,7 +290,7 @@ class MembershipController extends AppController
 
     public function list()
     {
-        if (!$this->request->is(['patch', 'post', 'put'])) return $this->redirect($this->referer());
+        if (!$this->request->is(['patch', 'post', 'put'])) return;
 
         $this->loadComponent('MembershipProcess');
 
