@@ -58,6 +58,7 @@ $kitBagForm = new KitBagForm();
                 </div>
                 <button type="button" class="btn btn-primary btn-block" onclick="onSubmit()">Add to basket <span class="glyphicon glyphicon-shopping-cart"></span></button>
                 <?= $this->Form->end() ?>
+                <br class="visible-xs" />
             </div>
         </div>
     </div>
