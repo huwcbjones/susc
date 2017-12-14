@@ -57,7 +57,19 @@ class KitOrdersController extends AppController
 
     public function index()
     {
-        $orders = $this->paginate($this->Orders, ['order' => ['id' => 'DESC'], 'contain' => ['Users', 'ItemsOrders' => 'ProcessedOrders']]);
+        if (($user_id = $this->request->getQuery('user_id')) !== null) {
+            $orders = $this->paginate(
+                $this->Orders,
+                [
+                    'order' => ['id' => 'DESC'],
+                    'contain' => ['Users', 'ItemsOrders' => 'ProcessedOrders'],
+                    'finder' => [
+                        'user' => ['user_id' => $user_id]
+                    ]
+                ]);
+        } else {
+            $orders = $this->paginate($this->Orders, ['order' => ['id' => 'DESC'], 'contain' => ['Users', 'ItemsOrders' => 'ProcessedOrders']]);
+        }
 
         $this->set('orders', $orders);
     }
