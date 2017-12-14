@@ -28,7 +28,7 @@ $this->assign('title', 'View Order #' . $order->id);
             <div class="panel-heading">
                 <div>
                     <h3 style="display:inline">Order #<?= $order->id ?></h3>
-                    <?php if (!$order->is_cancelled && $order->ordered_left == count($order->items) && $this->hasAccessTo('admin.kit-orders.status')): ?>
+                    <?php if ((!$order->is_paid && !$order->is_cancelled || $order->ordered_left == count($order->items)) && $this->hasAccessTo('admin.kit-orders.status')): ?>
                         <div style="display:inline" class="pull-right">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">Options <span class="caret"></span>
