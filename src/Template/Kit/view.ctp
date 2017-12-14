@@ -56,7 +56,11 @@ $kitBagForm = new KitBagForm();
                         <?php endfor; ?>
                     </select>
                 </div>
+                <?php if($kit->additional_info): ?>
                 <button type="button" class="btn btn-primary btn-block" onclick="onSubmit()">Add to basket <span class="glyphicon glyphicon-shopping-cart"></span></button>
+                <?php else: ?>
+                    <button type="submit" class="btn btn-primary btn-block">Add to basket <span class="glyphicon glyphicon-shopping-cart"></span></button>
+                <?php endif ?>
                 <?= $this->Form->end() ?>
                 <br class="visible-xs" />
             </div>
