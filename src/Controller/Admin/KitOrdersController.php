@@ -36,6 +36,7 @@ class KitOrdersController extends AppController
     public function initialize()
     {
         parent::initialize();
+        $this->loadComponent('Paginator');
         $this->Orders = TableRegistry::get('Orders');
         $this->ItemsOrders = TableRegistry::get('ItemsOrders');
         $this->ProcessedOrders = TableRegistry::get('ProcessedOrders');
@@ -277,8 +278,21 @@ class KitOrdersController extends AppController
             return;
         }
 
+        /** @var ProcessedOrder $order */
         $order = $this->ProcessedOrders->find('assoc')->where(['id' => $id])->firstOrFail();
+        $this->Paginator->setConfig('maxLimit', $order->item_count);
+        $this->Paginator->setConfig('limit', $order->item_count);
+        $options = [
+            'order' => ['order_id' => 'ASC'],
+            'finder' => [
+                'batch' => ['id' => $id]
+            ],
+            'maxLimit' => $order->item_count,
+            'limit' => $order->item_count
+        ];
+        $items = $this->Paginator->paginate($this->ItemsOrders, $options);
         $this->set('order', $order);
+        $this->set('items', $items);
         $this->viewBuilder()->setTemplate('view_processed_orders');
     }
 
