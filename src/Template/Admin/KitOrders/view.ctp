@@ -62,6 +62,7 @@ $this->assign('title', 'View Order #' . $order->id);
                     <thead>
                     <tr>
                         <th>Item</th>
+                        <th>Batch</th>
                         <th class="text-center">Additional Info</th>
                         <th class="text-center">Size</th>
                         <th class="text-center">Price</th>
@@ -86,6 +87,7 @@ $this->assign('title', 'View Order #' . $order->id);
                                     'action' => 'view',
                                     'slug' => $item->item->slug
                                 ]) ?></th>
+                            <td><?= $item->processed_order_id !== null? $this->Html->link($item->processed_order_id, ['action' => 'processedOrders', $item->processed_order_id, 'highlight' => $item->id]): '-' ?></td>
                             <td data-th="Additional Info"
                                 class="text-center"><?= h($item->item->displayAdditionalInformation($item->additional_info)) ?></td>
                             <td data-th="Size" class="text-center"><?= $item->size ?></td>
@@ -106,7 +108,7 @@ $this->assign('title', 'View Order #' . $order->id);
                     </tbody>
                     <tfoot>
                     <tr>
-                        <td colspan="4"></td>
+                        <td colspan="5"></td>
                         <td class="text-center"><h3 class="h4">Total:</h3></td>
                         <td class="text-center" style="vertical-align: middle"><?= $order->formattedTotal ?> </td>
                         <?php if ($this->hasAccessTo('admin.kit-orders.status')) : ?>
