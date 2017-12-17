@@ -3,6 +3,7 @@
 namespace SUSC\Model\Entity;
 
 use Cake\Collection\CollectionInterface;
+use Cake\I18n\Time;
 use Cake\ORM\Entity;
 use huwcbjones\markdown\GithubMarkdownExtended;
 
@@ -19,13 +20,16 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  * @property string $description
  * @property string $sizes
  * @property string[] $sizeList
- * @property ItemsOrder $_joinData;
+ * @property ItemsOrder $_joinData
  * @property ItemsOrder[]|CollectionInterface $items_orders
- * @property boolean $status
+ * @property boolean $status Enabled or Disabled
+ * @property boolean $instock In-Stock or Out of Stock
  * @property boolean $additional_info
  * @property string $additional_info_description
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
+ * @property Time $from Display From
+ * @property Time $until Display Until
+ * @property Time $created Date created
+ * @property Time $modified Date last modified
  */
 class Item extends Entity
 {

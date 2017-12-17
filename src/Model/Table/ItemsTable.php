@@ -109,7 +109,19 @@ class ItemsTable extends Table
 
     public function findPublished(Query $query)
     {
-        return $query->where(['status' => 1]);
+        return $query->where([
+            'status' => 1,
+            'OR' => [
+                '`from` IS ' => null,
+                '`from` >= NOW()'
+            ],
+            'AND' => [
+                'OR' => [
+                    '`until` IS ' => null,
+                    '`until` < NOW()'
+                ]
+            ]
+        ]);
     }
 
     public function findSlug(Query $query, $options = [])
