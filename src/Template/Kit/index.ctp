@@ -33,13 +33,12 @@ $this->end();
 <div class="row">
     <?php foreach ($kit as $item): ?>
         <div class="col-xs-6 col-sm-4 col-md-3">
-
             <div class="image"><?= $this->Html->link(
                 $this->Html->image(
                     $item->imagePath,
                     [
                         'alt' => h($item->title),
-                        'class' => ['img-responsive', 'center-block']
+                        'class' => ['img-responsive', 'center-block', $item->instock ? '': 'kit-out-of-stock-img']
                     ]
                 ),
                 [
@@ -55,7 +54,7 @@ $this->end();
                 'action' => 'view',
                 'slug' => $item->slug
             ], ['class' => ['btn', 'btn-primary', 'btn-block']]) ?>
-            <h3 class="h4 text-center"><?= $this->Html->link(h($item->title), [
+            <h3 class="h4 text-center<?= $item->instock ? '': ' kit-out-of-stock' ?>"><?= $this->Html->link(h($item->title), [
                     'controller' => 'kit',
                     'action' => 'view',
                     'slug' => $item->slug
