@@ -56,8 +56,13 @@ $kitBagForm = new KitBagForm();
                         <?php endfor; ?>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Add to basket <span class="glyphicon glyphicon-shopping-cart"></span></button>
+                <?php if($kit->additional_info): ?>
+                <button type="button" class="btn btn-primary btn-block" onclick="onSubmit()">Add to basket <span class="glyphicon glyphicon-shopping-cart"></span></button>
+                <?php else: ?>
+                    <button type="submit" class="btn btn-primary btn-block">Add to basket <span class="glyphicon glyphicon-shopping-cart"></span></button>
+                <?php endif ?>
                 <?= $this->Form->end() ?>
+                <br class="visible-xs" />
             </div>
         </div>
     </div>
@@ -65,3 +70,20 @@ $kitBagForm = new KitBagForm();
         <img src="<?= $kit->imagePath ?>" alt="<?= h($kit->title) ?>" class="img-responsive center-block"/>
     </div>
 </div>
+
+<?php if($kit->additional_info): ?>
+<?php $this->start('postscript'); ?>
+<?= $this->get('postscript') ?>
+<script type="text/javascript">
+    additional_info = $("[name=additional_info]");
+    form = $("form")[0];
+    function onSubmit(e){
+        if(additional_info.val().length === 0 && !confirm("Are you sure you wish to add this item to your basket without personalising it?")){
+            e.preventDefault()
+        } else {
+            form.submit()
+        }
+    }
+</script>
+<?php $this->end() ?>
+<?php endif; ?>

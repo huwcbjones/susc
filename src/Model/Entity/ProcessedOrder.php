@@ -15,6 +15,7 @@ use Cake\ORM\Entity;
  * @property string $order_date
  * @property string $formatted_total
  * @property integer $item_count
+ * @property string $status
  * @property \Cake\I18n\FrozenTime $ordered
  * @property \Cake\I18n\FrozenTime $arrived
  * @property \Cake\I18n\FrozenTime $created

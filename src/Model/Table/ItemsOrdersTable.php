@@ -154,8 +154,14 @@ class ItemsOrdersTable extends Table
 
     public function findBatch(Query $query, $options = [])
     {
+        if(array_key_exists('processed_order_id', $options)){
+            $id = $options['processed_order_id'];
+        } else {
+            $id = $options['id'];
+        }
+
         return $query
-            ->contain(['ProcessedOrders', 'Orders' => 'Users'])
-            ->where(['processed_order_id' => $options['processed_order_id']]);
+            ->contain(['ProcessedOrders', 'Orders' => 'Users', 'Items'])
+            ->where(['processed_order_id' => $id]);
     }
 }

@@ -62,6 +62,7 @@ namespace SUSC\Controller {
             parent::initialize();
             $this->loadComponent('Flash');
             $this->loadComponent('RequestHandler');
+            $this->loadComponent('Security');
             $this->loadComponent('Csrf');
             $this->request->addDetector(
                 'crawler',
@@ -179,6 +180,9 @@ namespace SUSC\Controller {
         public function beforeFilter(Event $event)
         {
             parent::beforeFilter($event);
+
+            $this->Security->setConfig('blackHoleCallback', 'blackhole');
+
             // TODO: Enable cache in production
             $this->response->withDisabledCache();
             Cache::disable();
@@ -232,6 +236,10 @@ namespace SUSC\Controller {
             if ($this->request->getParam('prefix') == 'admin' || strtolower($this->request->getParam('controller')) == 'admin') {
                 $this->viewBuilder()->setLayout('admin');
             }
+        }
+
+        public function blackhole($type){
+            $this->redirect($this->referer());
         }
     }
 }

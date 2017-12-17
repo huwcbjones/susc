@@ -1,4 +1,9 @@
 <?php
+/**
+ * @var AppView $this
+ */
+
+use SUSC\View\AppView;
 
 $this->assign('title', 'My Basket');
 $this->layout('clean');
@@ -90,8 +95,10 @@ $this->layout('clean');
                 </div>
             </div>
         <?php else: ?>
-            <div><p>Your basket is currently empty. To add kit, select an item, choose your size, then click &ldquo;Add
-                    to basket&rdquo;</p></div>
+            <div><h2 class="h4">Your basket is currently empty. To add kit, select an item, choose your size, then click &ldquo;Add
+                    to basket&rdquo;</h2>
+            <?= $this->Html->link('View Kit', ['_name' => 'kit'],  ['class' => ['btn', 'btn-lg', 'btn-primary']]) ?></div>
+
         <?php endif; ?>
     </div>
 </div>
