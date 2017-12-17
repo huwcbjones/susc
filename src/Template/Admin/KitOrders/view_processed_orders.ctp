@@ -53,14 +53,14 @@ $this->assign('title', 'View Batch # ' . $order->id);
                 <table class="table table-bordered">
                     <thead>
                     <tr>
-                        <th>Order #</th>
+                        <th><?= $this->Paginator->sort('order_id', 'Order #') ?></th>
                         <th>Name</th>
-                        <th>Item</th>
+                        <th><?= $this->Paginator->sort('item_id', 'Item') ?></th>
                         <th class="text-center">Additional Info</th>
-                        <th class="text-center">Size</th>
-                        <th class="text-center">Price</th>
-                        <th class="text-center">Quantity</th>
-                        <th class="text-center">Subtotal</th>
+                        <th class="text-center"><?= $this->Paginator->sort('size') ?></th>
+                        <th class="text-center"><?= $this->Paginator->sort('price') ?></th>
+                        <th class="text-center"><?= $this->Paginator->sort('quantity') ?></th>
+                        <th class="text-center"><?= $this->Paginator->sort('subtotal') ?></th>
                         <?php if ($this->hasAccessTo('admin.kit-orders.status')) : ?>
                             <th scope="col">
                                 <attr title="Ordered">O?</attr>
@@ -68,20 +68,24 @@ $this->assign('title', 'View Batch # ' . $order->id);
                             <th scope="col">
                                 <attr title="Arrived">A?</attr>
                             </th>
-                            <th scope="col"><?= ($order->is_all_collected || !$order->is_all_arrived ? '<attr title="Collected">C?</attr>' : 'Collected?') ?></th>
+                            <th scope="col">
+                                <?php if ($order->is_all_collected || !$order->is_all_arrived): ?>
+                                    <?= $this->Paginator->sort('collected', '<attr title="Collected">C?</attr>', ['escape' => false]) ?>
+                                <?php else: ?>
+                                    Collected
+                                <?php endif; ?>
+                            </th>
                         <?php endif ?>
                     </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($order->items_orders as $item): ?>
-                        <tr>
-                            <th><?= $this->Html->link($item->order->id, ['action' => 'view', $item->order->id]) ?></th>
-                            <td><?= $item->order->user->full_name ?></td>
-                            <td data-th="Item"><?= $this->Html->link(h($item->item->title), [
-                                    '_name' => 'kit_item',
-                                    'action' => 'view',
-                                    'slug' => $item->item->slug
-                                ]) ?></td>
+                    <?php foreach ($items as $item): ?>
+                        <tr<?= $this->request->getQuery('highlight') === $item->id
+                        || $this->request->getQuery('user_id') === $item->order->user_id
+                        || $this->request->getQuery('item_id') === $item->item_id ? ' class="info"' : '' ?>>
+                            <th id="<?= $item->id ?>"><?= $this->Html->link($item->order->id, ['action' => 'view', $item->order->id]) ?></th>
+                            <td><?= $this->Html->link($item->order->user->full_name, [$order->id, 'user_id' => $item->order->user->id]) ?></td>
+                            <td data-th="Item"><?= $this->Html->link(h($item->item->title), [$order->id, 'item_id' => $item->item_id]) ?></td>
                             <td data-th="Additional Info"
                                 class="text-center"><?= h($item->item->displayAdditionalInformation($item->additional_info)) ?></td>
                             <td data-th="Size" class="text-center"><?= $item->size ?></td>
@@ -156,7 +160,7 @@ $this->assign('title', 'View Batch # ' . $order->id);
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <?= $this->Form->button('Mark as Arrived', ['class' => ['btn', 'btn-primary']]) ?>
+                <?= $this->Form->button('Mark as Collected', ['class' => ['btn', 'btn-primary']]) ?>
             </div>
             <?= $this->Form->end() ?>
         </div>

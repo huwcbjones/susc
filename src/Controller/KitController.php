@@ -130,6 +130,9 @@ class KitController extends AppController
 
     public function pay()
     {
+        $this->Security->setConfig('CsrfUseOnce', true);
+        if(empty($this->BasketData)) return $this->redirect(['_name' => 'kit']);
+
         /** @var StaticContent $terms */
         $terms = $this->Static->find('KitTerms')->firstOrFail();
         $terms = (new GithubMarkdownExtended())->parse($terms->value);

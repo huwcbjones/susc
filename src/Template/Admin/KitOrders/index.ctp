@@ -17,15 +17,15 @@ $this->assign('title', 'Kit Orders');
             <thead>
             <tr>
                 <th scope="col"><?= $this->Paginator->sort('id', 'Order #') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('user.full_name', 'Name') ?></th>
+                <th scope="col">Name</th>
                 <th scope="col"><?= $this->Paginator->sort('placed', 'Order Date') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('total') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('payment', 'Payment Method') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('status') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('is_paid', '<attr title="Paid">P?</attr>', ['escape' => false]) ?></th>
-                <th scope="col"><?= $this->Paginator->sort('is_ordered', '<attr title="Ordered">O?</attr>', ['escape' => false]) ?></th>
-                <th scope="col"><?= $this->Paginator->sort('is_arrived', '<attr title="Arrived">A?</attr>', ['escape' => false]) ?></th>
-                <th scope="col"><?= $this->Paginator->sort('is_collected', '<attr title="Collected">C?</attr>', ['escape' => false]) ?></th>
+                <th scope="col">Status</th>
+                <th scope="col"><?= $this->Paginator->sort('paid', '<attr title="Paid">P?</attr>', ['escape' => false]) ?></th>
+                <th scope="col"><attr title="Ordered">O?</attr></th>
+                <th scope="col"><attr title="Arrived">A?</attr></th>
+                <th scope="col"><attr title="Collected">C?</attr></th>
                 <?php if ($this->hasAccessTo('admin.kit-orders.view')): ?>
                     <th scope="col" class="actions"></th>
                 <?php endif; ?>
@@ -35,7 +35,7 @@ $this->assign('title', 'Kit Orders');
             <?php foreach ($orders as $order): ?>
                 <tr>
                     <td><?= h($order->id) . ($order->is_cancelled ? '*' : '') ?></td>
-                    <td><?= ($this->hasAccessTo('admin.users.view')) ? $this->Html->link(h($order->user->full_name), ['controller' => 'Users', 'action' => 'view', $order->user_id]) : h($order->user->full_name) ?></td>
+                    <td><?= $this->Html->link(h($order->user->full_name), ['controller' => 'KitOrders', 'action' => 'index', 'user_id' => $order->user_id]) ?></td>
                     <td><?= $this->Time->format($order->placed, null, null, 'Europe/London') ?></td>
                     <td><?= $order->is_cancelled ? '-' : $order->formattedTotal ?></td>
                     <td><?= $order->is_cancelled ? '-' : h($order->paymentMethod) ?></td>
