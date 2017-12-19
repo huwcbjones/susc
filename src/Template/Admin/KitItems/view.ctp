@@ -51,6 +51,38 @@ $this->end();
         </div>
     </div>
     <div class="form-group">
+        <label for="description" class="col-sm-2 control-label">Description</label>
+        <div class="col-sm-10">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <?= $item->renderedDescription ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="status" class="col-sm-2 control-label">Requires Additional Info?</label>
+        <div class="col-sm-10">
+            <p class="form-control-static">
+                <?php if ($item->additional_info): ?>
+                    <span class="text-success"><span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;&nbsp;Yes</span>
+                <?php else: ?>
+                    <span class="text-danger"><span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;&nbsp;No</span>
+                <?php endif; ?>
+            </p>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="additional_info_description" class="col-sm-2 control-label">Additional Information</label>
+        <div class="col-sm-10">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <?= $item->renderedAdditionalDescription ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="description" class="col-sm-2 control-label">Image</label>
         <div class="col-sm-10">
             <div class="panel panel-default">
@@ -62,15 +94,44 @@ $this->end();
         </div>
     </div>
     <div class="form-group">
-        <label for="description" class="col-sm-2 control-label">Description</label>
+        <label for="is_enabled" class="col-sm-2 control-label">Is Accepting Orders?</label>
         <div class="col-sm-10">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <?= $item->description ?>
-                </div>
-            </div>
+            <p class="form-control-static">
+                <?php if ($item->isAvailableToOrder): ?>
+                    <span class="text-success"><span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;&nbsp;Yes</span>
+                <?php else: ?>
+                    <span class="text-danger"><span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;&nbsp;No</span>
+                <?php endif; ?>
+            </p>
         </div>
     </div>
+    <div class="form-group">
+        <label for="is_enabled" class="col-sm-2 control-label">Is Available to Order?</label>
+        <div class="col-sm-10">
+            <p class="form-control-static">
+                <?php if ($item->instock): ?>
+                    <span class="text-success"><span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;&nbsp;Yes</span>
+                <?php else: ?>
+                    <span class="text-danger"><span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;&nbsp;No</span>
+                <?php endif; ?>
+            </p>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="created" class="col-sm-2 control-label">Available From</label>
+        <div class="col-sm-10">
+            <input type="text" name="created" class="form-control" readonly="readonly"
+                   value="<?= $this->Time->i18nFormat($item->from, null, null, 'Europe/London') ?>"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="modified" class="col-sm-2 control-label">Available Until</label>
+        <div class="col-sm-10">
+            <input type="text" name="modified" class="form-control" readonly="readonly"
+                   value="<?= $this->Time->i18nFormat($item->until, null, null, 'Europe/London') ?>"/>
+        </div>
+    </div>
+
     <div class="form-group">
         <label for="is_enabled" class="col-sm-2 control-label">Is Enabled?</label>
         <div class="col-sm-10">
