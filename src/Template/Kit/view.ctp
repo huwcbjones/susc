@@ -14,13 +14,12 @@ $this->assign('description', $kit->description);
 
 $this->element('Kit/basket');
 $kitBagForm = new KitBagForm();
-
 ?>
-<?php if (!$kit->instock): ?>
+<?php if (!$kit->isAvailableToOrder): ?>
     <div class="row">
         <div class="col-xs-12">
             <div class="alert alert-danger">
-                This item is <strong>not</strong> currently available to order!
+                <?= $kit->orderString ?>
             </div>
         </div>
     </div>
@@ -44,7 +43,7 @@ $kitBagForm = new KitBagForm();
             <div class="row">
                 <div class="col-xs-12">
                     <h3 class="h4">Options</h3>
-                    <?php if (!$kit->instock): ?>
+                    <?php if (!$kit->isAvailableToOrder): ?>
                         <?php if ($kit->additional_info): ?>
                             <div class="form-group">
                                 <label for="additionalInfo">Additional Information</label>

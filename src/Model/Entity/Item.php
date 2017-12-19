@@ -5,6 +5,7 @@ namespace SUSC\Model\Entity;
 use Cake\Collection\CollectionInterface;
 use Cake\I18n\Time;
 use Cake\ORM\Entity;
+use DateTime;
 use huwcbjones\markdown\GithubMarkdownExtended;
 
 /**
@@ -23,6 +24,7 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  * @property ItemsOrder $_joinData
  * @property ItemsOrder[]|CollectionInterface $items_orders
  * @property boolean $status Enabled or Disabled
+ * @property boolean $isAvailableToOrder
  * @property boolean $instock In-Stock or Out of Stock
  * @property boolean $additional_info
  * @property string $additional_info_description
@@ -57,7 +59,8 @@ class Item extends Entity
         return $parser->parse($this->description);
     }
 
-    protected function _getRenderedAdditionalDescription(){
+    protected function _getRenderedAdditionalDescription()
+    {
         $parser = new GithubMarkdownExtended();
         return $parser->parse($this->additional_info_description);
     }
@@ -78,7 +81,7 @@ class Item extends Entity
 
         $sizes = str_getcsv($this->sizes);
         $size_array = [];
-        foreach($sizes as $size){
+        foreach ($sizes as $size) {
             $size_array[$size] = $size;
         }
         return $size_array;
@@ -98,5 +101,46 @@ class Item extends Entity
         } else {
             return $additionalInfo;
         }
+    }
+
+    protected function _getOrderString()
+    {
+        if (!$this->instock) {
+            return 'This item is <strong>not</strong> currently available to order!';
+        }
+        $now = new DateTime();
+
+        if ($this->from !== null && $this->from > $now) {
+            return 'This item is will be available to order <strong>after</strong> ' . $now->format('d/m/Y') . '.';
+        } else if ($this->from === null && $this->until !== null && $this->until <= $now) {
+            return 'This item is <strong>not</strong> currently available to order!';
+        } else if ($this->until <= $now || $this->from > $now) {
+            return 'This item is <strong>not</strong> currently available to order!';
+        }
+        return 'This item is available to order!';
+    }
+
+    protected function _getIsAvailableToOrder()
+    {
+        $now = new DateTime();
+        if ($this->from === null && $this->until === null) {
+            return $this->instock;
+        } else if ($this->from === null && $this->until !== null) {
+            return $this->until > $now;
+        } else if ($this->from !== null && $this->until === null) {
+            return $this->from <= $now;
+        } else {
+            return $this->until >= $now && $this->from < $now;
+        }
+    }
+
+    protected function _getFrom()
+    {
+        return $this->FROM;
+    }
+
+    protected function _getUntil()
+    {
+        return $this->UNTIL;
     }
 }

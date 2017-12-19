@@ -110,7 +110,7 @@ class ItemsTable extends Table
     public function findPublished(Query $query)
     {
         return $query->where([
-            'status' => 1,
+            'status' => 1/*,
             'OR' => [
                 '`from` IS ' => null,
                 '`from` >= NOW()'
@@ -120,7 +120,7 @@ class ItemsTable extends Table
                     '`until` IS ' => null,
                     '`until` < NOW()'
                 ]
-            ]
+            ]*/
         ]);
     }
 

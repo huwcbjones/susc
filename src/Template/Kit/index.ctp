@@ -1,6 +1,11 @@
 <?php
-
+/**
+ * @var AppView $this
+ * @var Item[] $kit
+ */
 use SUSC\Form\KitBagForm;
+use SUSC\Model\Entity\Item;
+use SUSC\View\AppView;
 
 $this->assign('description', 'Southampton University Swimming Club (SUSC) offers a variety of branded kit available for purchase.');
 $this->layout('kit');
@@ -38,7 +43,7 @@ $this->end();
                     $item->imagePath,
                     [
                         'alt' => h($item->title),
-                        'class' => ['img-responsive', 'center-block', $item->instock ? '': 'kit-out-of-stock-img']
+                        'class' => ['img-responsive', 'center-block', $item->isAvailableToOrder ? '': 'kit-out-of-stock-img']
                     ]
                 ),
                 [
@@ -54,7 +59,7 @@ $this->end();
                 'action' => 'view',
                 'slug' => $item->slug
             ], ['class' => ['btn', 'btn-primary', 'btn-block']]) ?>
-            <h3 class="h4 text-center<?= $item->instock ? '': ' kit-out-of-stock' ?>"><?= $this->Html->link(h($item->title), [
+            <h3 class="h4 text-center<?= $item->isAvailableToOrder ? '': ' kit-out-of-stock' ?>"><?= $this->Html->link(h($item->title), [
                     'controller' => 'kit',
                     'action' => 'view',
                     'slug' => $item->slug
