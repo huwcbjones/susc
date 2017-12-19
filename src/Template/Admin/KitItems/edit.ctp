@@ -51,6 +51,12 @@ $this->end();
         </div>
     </div>
     <div class="form-group">
+        <label for="description" class="col-sm-2 control-label">Description</label>
+        <div class="col-sm-10">
+            <?= $this->Form->textarea('description') ?>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="status" class="col-sm-2 control-label">Requires Additional Info?</label>
         <div class="col-sm-10">
             <div class="btn-group" data-toggle="buttons">
@@ -70,12 +76,6 @@ $this->end();
         </div>
     </div>
     <div class="form-group">
-        <label for="description" class="col-sm-2 control-label">Description</label>
-        <div class="col-sm-10">
-            <?= $this->Form->textarea('description') ?>
-        </div>
-    </div>
-    <div class="form-group">
         <label for="image" class="col-sm-2 control-label">Image</label>
         <div class="col-sm-10">
             <div class="panel panel-default">
@@ -86,6 +86,32 @@ $this->end();
             </div>
         </div>
     </div>
+    <div class="form-group">
+        <label for="is_enabled" class="col-sm-2 control-label">Is Available to Order?</label>
+        <div class="col-sm-10">
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-<?php if ($item->instock): ?>success active<?php else: ?>default<?php endif ?>" id="btn-isInStockY">
+                    <input type="radio" name="instock" id="isInStockY" value="1"<?php if ($item->instock): ?> checked="checked"<?php endif ?> /> Yes
+                </label>
+                <label class="btn btn-<?php if (!$item->instock): ?>danger active<?php else: ?>default<?php endif ?>" id="btn-isInStockN">
+                    <input type="radio" name="instock" id="isInStockN" value="0"<?php if (!$item->instock): ?> checked="checked"<?php endif ?> /> No
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="from" class="col-sm-2 control-label">Available From</label>
+        <div class="col-sm-10">
+            <input type="datetime" name="from" class="form-control" value="<?= $this->Time->i18nFormat($item->from, null, null, 'Europe/London') ?>"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="until" class="col-sm-2 control-label">Available Until</label>
+        <div class="col-sm-10">
+            <input type="datetime" name="until" class="form-control" value="<?= $this->Time->i18nFormat($item->until, null, null, 'Europe/London') ?>"/>
+        </div>
+    </div>
+
     <div class="form-group">
         <label for="status" class="col-sm-2 control-label">Is Enabled?</label>
         <div class="col-sm-10">
@@ -146,6 +172,14 @@ echo $this->fetch('postscript');
         $("#btn-isEnableN").click(function () {
             $("#btn-isEnableY").addClass("btn-default").removeClass("btn-success");
             $("#btn-isEnableN").addClass("btn-danger").removeClass("btn-default");
+        });
+        $("#btn-isInStockY").click(function () {
+            $("#btn-isInStockY").addClass("btn-success").removeClass("btn-default");
+            $("#btn-isInStockN").addClass("btn-default").removeClass("btn-danger");
+        });
+        $("#btn-isInStockN").click(function () {
+            $("#btn-isInStockY").addClass("btn-default").removeClass("btn-success");
+            $("#btn-isInStockN").addClass("btn-danger").removeClass("btn-default");
         });
     </script>
 <?php $this->end() ?>
