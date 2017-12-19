@@ -16,10 +16,12 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  * @property string $slug
  * @property boolean $image
  * @property string $imagePath
- * @property string $formatted_price
+ * @property string $formattedPrice
  * @property float $price
  * @property string $description
+ * @property string $renderedDescription
  * @property string $sizes
+ * @property string $orderString
  * @property string[] $sizeList
  * @property ItemsOrder $_joinData
  * @property ItemsOrder[]|CollectionInterface $items_orders
@@ -28,6 +30,7 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  * @property boolean $instock In-Stock or Out of Stock
  * @property boolean $additional_info
  * @property string $additional_info_description
+ * @property string $renderedAdditionalDescription
  * @property Time $from Display From
  * @property Time $until Display Until
  * @property Time $created Date created
