@@ -27,6 +27,7 @@ $this->start('css');
 echo $this->fetch('css');
 echo $this->Html->css('bootstrap-datetimepicker');
 $this->end();
+$this->Form->unlockField('payment_method');
 ?>
 
 <?= $this->Form->create($membership, ['class' => ['form-horizontal']]) ?>
