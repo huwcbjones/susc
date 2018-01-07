@@ -18,6 +18,9 @@ namespace SUSC\Controller {
     use Cake\Cache\Cache;
     use Cake\Controller\Component\AuthComponent;
     use Cake\Controller\Controller as BaseController;
+    use Cake\Controller\Exception\AuthSecurityException;
+    use Cake\Core\Configure;
+    use Cake\Core\Exception\Exception;
     use Cake\Datasource\Exception\RecordNotFoundException;
     use Cake\Event\Event;
     use Cake\Network\Request;
@@ -238,7 +241,13 @@ namespace SUSC\Controller {
             }
         }
 
-        public function blackhole($type){
+        public function blackhole($type, Exception $e){
+            if(Configure::read('debug')) {
+                $this->Flash->set($e->getMessage(), ['element' => 'error']);
+            } else {
+                $this->Flash->set('Something strange happened with this request.', ['element' => 'warning']);
+            }
+
             $this->redirect($this->referer());
         }
     }

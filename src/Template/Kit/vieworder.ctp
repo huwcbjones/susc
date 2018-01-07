@@ -29,6 +29,7 @@ $this->layout('profile');
                     <tr>
                         <th>Item</th>
                         <th class="text-center">Additional Info</th>
+                        <th class="text-center">Colour</th>
                         <th class="text-center">Size</th>
                         <th class="text-center">Price</th>
                         <th class="text-center">Quantity</th>
@@ -47,6 +48,7 @@ $this->layout('profile');
                                     'slug' => $item->item->slug
                                 ]) ?></th>
                             <td data-th="Additional Info" class="text-center"><?= h($item->item->displayAdditionalInformation($item->additional_info)) ?></td>
+                            <td data-th="Colour" class="text-center"><?= h($item->item->displayColour($item->colour)) ?></td>
                             <td data-th="Size" class="text-center"><?= $item->size ?></td>
                             <td data-th="Price" class="text-center"><?= $item->formattedPrice ?></td>
                             <td data-th="Quantity" class="text-center"><?= $item->quantity ?></td>
@@ -59,7 +61,7 @@ $this->layout('profile');
                     </tbody>
                     <tfoot>
                     <tr>
-                        <td colspan="4"></td>
+                        <td colspan="5"></td>
                         <td class="text-center"><h3 class="h4">Total:</h3></td>
                         <td class="text-center" style="vertical-align: middle"><?= $order->formattedTotal ?> </td>
                         <td colspan="3"></td>

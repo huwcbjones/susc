@@ -45,6 +45,12 @@ $this->end();
         </div>
     </div>
     <div class="form-group">
+        <label for="colours" class="col-sm-2 control-label">Colours</label>
+        <div class="col-sm-10">
+            <input type="text" name="colours" class="form-control" readonly="readonly" value="<?= h($item->colours) ?>"/>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="size" class="col-sm-2 control-label">Sizes</label>
         <div class="col-sm-10">
             <input type="text" name="size" class="form-control" readonly="readonly" value="<?= h($item->sizes) ?>"/>
@@ -105,10 +111,25 @@ $this->end();
     <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-0 col-lg-4">
         <?= $this->Html->link('<span class="glyphicon glyphicon-chevron-left"></span> Back', ['action' => 'index'], ['class' => ['btn', 'btn-default', 'btn-block'], 'escape' => false]) ?>
     </div>
-    <?php if ($this->hasAccessTo('admin.kit-items.edit')): ?>
+    <?php if ($this->hasAccessTo('admin.kit-items.edit') || $this->hasAccessTo('admin.kit-items.delete')): ?>
         <div class="col-xs-12 visible-xs-block"><br/></div>
         <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-2 col-lg-4 col-lg-offset-4">
-            <?= $this->Html->link('Edit <span class="glyphicon glyphicon-pencil"></span>', ['action' => 'edit', $item->id], ['class' => ['btn', 'btn-primary', 'btn-block'], 'escape' => false]) ?>
+            <?php if ($this->hasAccessTo('admin.kit-items.edit') && $this->hasAccessTo('admin.kit-items.delete')): ?>
+                <div class="btn-group btn-block">
+                    <?= $this->Html->link('Edit <span class="glyphicon glyphicon-pencil"></span>', ['action' => 'edit', $item->id], ['class' => ['btn', 'btn-primary', 'col-sm-10', 'col-md-11'], 'escape' => false]) ?>
+                    <a href="#" class="btn btn-primary col-sm-2 col-md-1 dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu btn-block">
+                        <li><?= $this->Form->postLink('Delete&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-remove"></span>', ['action' => 'delete', $item->id], ['escape' => false, 'confirm' => __('Are you sure you want to delete {0}?', $item->title)]) ?></li>
+                    </ul>
+                </div>
+            <?php elseif ($this->hasAccessTo('admin.kit-items.edit')): ?>
+                <?= $this->Html->link('Edit <span class="glyphicon glyphicon-pencil"></span>', ['action' => 'edit', $item->id], ['class' => ['btn', 'btn-primary', 'btn-block'], 'escape' => false]) ?>
+            <?php else: ?>
+                <?= $this->Form->postLink('Delete&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-remove"></span>', ['action' => 'delete', $item->id], ['escape' => false, 'class' => ['btn', 'btn-primary', 'btn-block'], 'confirm' => __('Are you sure you want to delete {0}?', $item->title)]) ?>
+            <?php endif; ?>
+
         </div>
     <?php endif ?>
 </div>
