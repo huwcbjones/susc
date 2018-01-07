@@ -60,7 +60,6 @@ class KitController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Network\Response|null
      */
     public function index()
     {
@@ -90,9 +89,15 @@ class KitController extends AppController
 
             $id = $request->getData('id');
             $size = $request->getData('size');
+            $colour = $request->getData('colour');
             $quantity = $request->getData('quantity');
             $additionalInfo = $request->getData('additional_info');
             $item = $this->Kit->get($id);
+
+            if ($this->request->getData('colour') == '' && $item->colourList != null) {
+                $this->Flash->error('Please select a colour!');
+                return;
+            }
 
             if ($this->request->getData('size') == '' && $item->sizeList != null) {
                 $this->Flash->error('Please select a size!');
@@ -103,11 +108,12 @@ class KitController extends AppController
             $data = [
                 'id' => $id,
                 'item' => $item,
+                'colour' => $colour,
                 'size' => $size,
                 'quantity' => $quantity,
                 'additional_info' => $additionalInfo
             ];
-            $hash = md5($id . $size . $quantity . $additionalInfo);
+            $hash = md5($id . $colour . $size . $quantity . $additionalInfo);
             $this->BasketData[$hash] = $data;
             $this->Flash->success('Successfully added item to basket.');
 
@@ -160,9 +166,12 @@ class KitController extends AppController
 
         foreach ($this->BasketData as $hash => $d) {
             $additional_info = trim($d['additional_info']);
+            $colour = trim($d['colour']);
             if($additional_info == '') $additional_info = null;
+            if($colour == '') $colour = null;
             $item_data = [
                 'item_id' => $d['id'],
+                'colour' => $colour,
                 'size' => $d['size'],
                 'quantity' => $d['quantity'],
                 'additional_info' => $additional_info,

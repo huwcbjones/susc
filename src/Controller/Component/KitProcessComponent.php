@@ -50,6 +50,9 @@ class KitProcessComponent extends Component
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
         $this->_saveDir = WWW_ROOT . 'docs' . DS . 'kit-orders' . DS;
+        if(!file_exists($this->_saveDir)){
+            mkdir($this->_saveDir, 0755, true);
+        }
         parent::__construct($registry, $config);
     }
 
@@ -164,8 +167,12 @@ class KitProcessComponent extends Component
             'Size',
             'Quantity'
         ];
-        if ($items[0]->additional_info) {
+
+        if ($items[0]->item->additional_info) {
             array_splice($header, 2, 0, 'Initials');
+        }
+        if ($items[0]->item->hasColour) {
+            $header[] = 'Colour';
         }
         fwrite($file, $this->csvgetstr($header) . "\r\n");
 
@@ -179,6 +186,9 @@ class KitProcessComponent extends Component
             ];
             if ($order->item->additional_info) {
                 array_splice($data, 2, 0, [$order->additional_info]);
+            }
+            if ($order->item->hasColour) {
+                $data[] = $order->colour;
             }
             fwrite($file, $this->csvgetstr($data) . "\r\n");
         }

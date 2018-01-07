@@ -15,6 +15,8 @@ echo $this->fetch('css');
     </style>
 <?php
 $this->end();
+$this->Form->unlockField('additional_info');
+$this->Form->unlockField('status');
 ?>
 <?= $this->Form->create($item, ['class' => ['form-horizontal'], 'type' => 'file']) ?>
     <div class="form-group">
@@ -45,7 +47,13 @@ $this->end();
         </div>
     </div>
     <div class="form-group">
-        <label for="size" class="col-sm-2 control-label">Sizes</label>
+        <label for="colours" class="col-sm-2 control-label">Colours</label>
+        <div class="col-sm-10">
+            <?= $this->Form->text('colours'); ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="sizes" class="col-sm-2 control-label">Sizes</label>
         <div class="col-sm-10">
             <?= $this->Form->text('sizes'); ?>
         </div>

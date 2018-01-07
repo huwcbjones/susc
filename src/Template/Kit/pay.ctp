@@ -1,5 +1,6 @@
 <?php
 $this->assign('title', 'Select Payment');
+$this->Form->unlockField('payment');
 ?>
 
 <div class="row">

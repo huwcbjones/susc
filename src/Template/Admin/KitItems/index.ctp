@@ -10,20 +10,18 @@ $this->assign('title', 'Kit Items');
         <table class="table table-hover table-striped table-condensed">
             <thead>
             <tr>
-                <th scope="col"><?= $this->Paginator->sort('id', 'Item ID') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('title') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('price') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('sizes') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('is_enable', 'Enabled') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('created') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
-                <th scope="col" class="actions" colspan="3"><?= __('Actions') ?></th>
+                <th scope="col" class="actions"></th>
             </tr>
             </thead>
             <tbody>
             <?php foreach ($items as $item): ?>
                 <tr>
-                    <td><?= h($item->slug) ?></td>
                     <td><?= h($item->title) ?></td>
                     <td><?= h($item->formatted_price) ?></td>
                     <td><?= h(implode(', ', explode(',',$item->sizes))) ?></td>
@@ -38,12 +36,6 @@ $this->assign('title', 'Kit Items');
                             <?= $this->Html->link(__('View'), ['action' => 'view', $item->id]) ?>
                         </td>
                     <?php endif; ?>
-                    <?php if ($this->hasAccessTo('admin.kit-items.delete')): ?>
-                        <td class="actions">
-                            <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $item->id], ['confirm' => __('Are you sure you want to delete {0}?', $item->title)]) ?>
-                        </td>
-                    <?php endif ?>
-                    </td>
                 </tr>
             <?php endforeach; ?>
             </tbody>

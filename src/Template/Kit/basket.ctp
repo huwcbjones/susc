@@ -27,6 +27,7 @@ $this->layout('clean');
                     <tr>
                         <th>Item</th>
                         <th class="text-center">Additional Info</th>
+                        <th class="text-center">Colour</th>
                         <th class="text-center">Size</th>
                         <th class="text-center">Price</th>
                         <th class="text-center">Quantity</th>
@@ -47,13 +48,8 @@ $this->layout('clean');
                                         'action' => 'view',
                                         'slug' => $kit->slug
                                     ]) ?></h3></th>
-                            <td data-th="Additional Info" class="text-center"><?php if (!$data['item']->additional_info) {
-                                    echo '[None Required]';
-                                } elseif ($data['additional_info'] == '') {
-                                    echo '[None Provided]';
-                                } else {
-                                    echo $data['additional_info'];
-                                } ?></td>
+                            <td data-th="Additional Info" class="text-center"><?= $data['item']->displayAdditionalInformation($data['additional_info']) ?></td>
+                            <td data-th="Colour" class="text-center"><?= $data['item']->displayColour($data['colour']) ?></td>
                             <td data-th="Size" class="text-center"><?= $size ?></td>
                             <td data-th="Price" class="text-center"><?= $kit->formattedPrice ?></td>
                             <td data-th="Quantity" class="text-center"><?= $quantity ?></td>

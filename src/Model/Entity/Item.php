@@ -19,6 +19,9 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  * @property string $description
  * @property string $sizes
  * @property string[] $sizeList
+ * @property boolean $hasColour
+ * @property string $colours
+ * @property string[] $colourList
  * @property ItemsOrder $_joinData;
  * @property ItemsOrder[]|CollectionInterface $items_orders
  * @property boolean $status
@@ -75,9 +78,28 @@ class Item extends Entity
         $sizes = str_getcsv($this->sizes);
         $size_array = [];
         foreach($sizes as $size){
-            $size_array[$size] = $size;
+            $size_array[$size] = trim($size);
         }
         return $size_array;
+    }
+
+    protected function _getColourList()
+    {
+        if (trim($this->colours) == '') {
+            return null;
+        }
+
+        $colours = str_getcsv($this->colours);
+        $colour_array = [];
+        foreach($colours as $colour){
+            $colour_array[$colour] = trim($colour);
+        }
+        return $colour_array;
+    }
+
+
+    protected function _getHasColour(){
+        return trim($this->colours) != '';
     }
 
     protected function _getFormattedPrice()
@@ -93,6 +115,15 @@ class Item extends Entity
             return '[None Provided]';
         } else {
             return $additionalInfo;
+        }
+    }
+
+    public function displayColour($colour)
+    {
+        if ($this->colourList === null) {
+            return '[None Required]';
+        } else {
+            return $colour;
         }
     }
 }

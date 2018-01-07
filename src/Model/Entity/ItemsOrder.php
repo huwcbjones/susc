@@ -12,6 +12,7 @@ use Cake\ORM\Entity;
  * @property int $order_id
  * @property string $item_id
  * @property string $size
+ * @property string colour
  * @property int $quantity
  * @property string $additional_info
  * @property float $price
