@@ -15,6 +15,7 @@ echo $this->fetch('css');
     </style>
 <?php
 $this->end();
+$this->Form->unlockField('additional_info');
 ?>
 <?= $this->Form->create($item, ['class' => ['form-horizontal'], 'type' => 'file']) ?>
     <div class="form-group">
@@ -30,6 +31,12 @@ $this->end();
                 <span class="input-group-addon">&pound;</span>
                 <?= $this->Form->number('price', ['step' => '0.01']); ?>
             </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="size" class="col-sm-2 control-label">Colours</label>
+        <div class="col-sm-10">
+            <?= $this->Form->text('colours'); ?>
         </div>
     </div>
     <div class="form-group">
