@@ -111,7 +111,7 @@ class KitItemsController extends AppController
             }
             if ($this->Items->save($item)) {
                 $this->Flash->success(__('The item has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'view', $id]);
             }
             $this->Flash->error(__('The item could not be saved. Please, try again.'));
         }
