@@ -12,10 +12,13 @@
                                 'action' => 'view',
                                 'slug' => $data['item']->slug
                             ]) ?></h3>
+                        <?php if ($data['colour']): ?>
+                            Colour: <?= $data['colour'] ?><br/>
+                        <?php endif; ?>
                         Size: <?= $data['size'] ?><br/>
                         Quantity: <?= $data['quantity'] ?><br/>
                         <?php if ($data['item']->additional_info): ?>
-                            Additional Info: <?= h(($data['additional_info'] == '') ? '[None Provided]': $data['additional_info']) ?><br/>
+                            Additional Info: <?= h(($data['additional_info'] == '') ? '[None Provided]' : $data['additional_info']) ?><br/>
                         <?php endif; ?>
                         Subtotal: <?= sprintf("£%.2f", $data['quantity'] * $data['item']->price) ?><br/>
                         <?= $this->Form->postLink(
@@ -38,7 +41,7 @@
     <div class="row">
         <div class="col-xs-12">
             <h4>Total: <?= sprintf("£%.2f", $basketTotal) ?></h4>
-            <hr />
+            <hr/>
         </div>
     </div>
     <div class="row">
