@@ -52,32 +52,23 @@ class KitItemsController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $item = $this->Items->patchEntity($item, $this->request->getData());
             $item->slug = Text::slug(strtolower($item->title));
-
-
-            $result = $this->Items->getConnection()->transactional(function () use ($item) {
-                if (!$this->Items->save($item)) {
-                    return false;
-                }
-
-                if (!array_key_exists('image', $this->request->getUploadedFiles())) {
-                    return true;
-                }
-
+            $item->image = false;
+            if (count($this->request->getUploadedFiles()) == 1) {
                 /** @var UploadedFile $image */
                 $image = $this->request->getUploadedFiles()['image'];
                 if ($image->getError() == UPLOAD_ERR_OK) {
                     $image->moveTo(WWW_ROOT . DS . 'images' . DS . 'store' . DS . 'kit' . DS . $item->id . '.jpg');
                     $item->image = true;
                 }
-
-                return $this->Items->save($item);
-
-            });
-            if ($result) {
+            }
+            if ($this->Items->save($item)) {
                 $this->Flash->success(__('The item has been saved.'));
                 return $this->redirect(['action' => 'index']);
             } else {
                 $this->Flash->error(__('The item could not be saved. Please, try again.'));
+                if (file_exists($item->imagePath)) {
+                    unlink($item->imagePath);
+                }
             }
         }
 
@@ -126,10 +117,10 @@ class KitItemsController extends AppController
 
         $item = $this->Items->get($id);
         $this->Items->loadInto($item, ['ItemsOrders']);
-        if(count($item->items_orders) != 0) {
+        if (count($item->items_orders) != 0) {
             $item->status = false;
-            if($this->Items->save($item)) {
-                $this->Flash->set(__('Cannot delete item as there are orders attached to this item. Item has been disabled instead.'),['element' => 'warn']);
+            if ($this->Items->save($item)) {
+                $this->Flash->set(__('Cannot delete item as there are orders attached to this item. Item has been disabled instead.'), ['element' => 'warn']);
             } else {
                 $this->Flash->error(__('Cannot delete item as there are orders attached to this item. Failed to disable item!'));
             }
