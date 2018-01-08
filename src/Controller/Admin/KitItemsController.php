@@ -8,6 +8,8 @@ namespace SUSC\Controller\Admin;
 
 
 use Cake\Controller\Component\AuthComponent;
+use Cake\I18n\FrozenTime;
+use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Text;
 use SUSC\Controller\AppController;
@@ -100,7 +102,19 @@ class KitItemsController extends AppController
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $item->setAccess('image', false);
+            $item->setAccess('from', false);
+            $item->setAccess('until', false);
             $item = $this->Users->patchEntity($item, $this->request->getData());
+            if($this->request->getData('from') == ''){
+                $item->from = null;
+            } else {
+                $item->from = new FrozenTime($this->request->getData('from'));
+            }
+            if($this->request->getData('until') == ''){
+                $item->until = null;
+            } else {
+                $item->until = new FrozenTime($this->request->getData('until'));
+            }
             if (count($this->request->getUploadedFiles()) == 1) {
                 /** @var UploadedFile $image */
                 $image = $this->request->getUploadedFiles()['image'];
@@ -111,7 +125,7 @@ class KitItemsController extends AppController
             }
             if ($this->Items->save($item)) {
                 $this->Flash->success(__('The item has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'view', $id]);
             }
             $this->Flash->error(__('The item could not be saved. Please, try again.'));
         }
