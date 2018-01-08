@@ -136,14 +136,4 @@ class Item extends Entity
             return $this->until >= $now && $this->from < $now;
         }
     }
-
-    protected function _getFrom()
-    {
-        return $this->FROM;
-    }
-
-    protected function _getUntil()
-    {
-        return $this->UNTIL;
-    }
 }
