@@ -53,4 +53,10 @@ class Article extends Entity
             return $this->user->full_name;
         }
     }
+
+    public function incrementHits(){
+        $lastModified = $this->modified;
+        $this->hits++;
+        $this->modified = $lastModified;
+    }
 }

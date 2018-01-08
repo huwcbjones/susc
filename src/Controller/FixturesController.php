@@ -82,16 +82,17 @@ class FixturesController extends AppController
             ->find('published')
             ->find('article', $options)
             ->first();
+        if (empty($fixture)) {
+            throw new NotFoundException(__('Fixture not found'));
+        }
+
         if (
             !$this->request->is('crawler')
             && $this->Session->read('read_fixture_' . $fixture->slug) != true
         ) {
-            $fixture->hits++;
+            $fixture->incrementHits();
             $this->Articles->save($fixture);
             $this->Session->write('read_fixture_' . $fixture->slug, true);
-        }
-        if (empty($fixture)) {
-            throw new NotFoundException(__('Fixture not found'));
         }
         $this->set('fixture', $fixture);
     }
