@@ -32,6 +32,7 @@ $this->end();
 
 $this->layout('clean');
 $this->assign('title', 'Home');
+$this->assign('title_string', 'Southampton University Swimming Club &mdash; SUSC');
 ?>
 
 <?php $this->start('precontent') ?>

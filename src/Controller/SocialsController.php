@@ -84,7 +84,7 @@ class SocialsController extends AppController
             !$this->request->is('crawler')
             && $this->Session->read('read_social_' . $article->slug) != true
         ) {
-            $article->hits++;
+            $article->incrementHits();
             $this->Socials->save($article);
             $this->Session->write('read_social_' . $article->slug, true);
         }
