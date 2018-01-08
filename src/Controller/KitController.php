@@ -60,7 +60,6 @@ class KitController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Network\Response|null
      */
     public function index()
     {
@@ -91,11 +90,17 @@ class KitController extends AppController
             $id = $request->getData('id');
             $size = h($request->getData('size'));
             $quantity = h($request->getData('quantity'));
+            $colour = h($request->getData('colour'));
             $additionalInfo = h($request->getData('additional_info'));
             $item = $this->Kit->get($id);
-
+          
             if(!$item->isAvailableToOrder){
                 $this->Flash->error($item->orderString, ['escape' => false]);
+                return;
+            }
+          
+            if ($this->request->getData('colour') == '' && $item->colourList != null) {
+                $this->Flash->error('Please select a colour!');
                 return;
             }
 
@@ -108,11 +113,12 @@ class KitController extends AppController
             $data = [
                 'id' => $id,
                 'item' => $item,
+                'colour' => $colour,
                 'size' => $size,
                 'quantity' => $quantity,
                 'additional_info' => $additionalInfo
             ];
-            $hash = md5($id . $size . $quantity . $additionalInfo);
+            $hash = md5($id . $colour . $size . $quantity . $additionalInfo);
             $this->BasketData[$hash] = $data;
             $this->Flash->success('Successfully added item to basket.');
 
@@ -169,8 +175,15 @@ class KitController extends AppController
                 $additional_info = trim($d['additional_info']);
                 if ($additional_info == '') $additional_info = null;
             }
+
+            $colour = null;
+            if($d['item']->hasColour) {
+                $colour = trim($d['colour']);
+                if($colour == '') $colour = null;
+            }
             $item_data = [
                 'item_id' => $d['id'],
+                'colour' => $colour,
                 'size' => $d['size'],
                 'quantity' => $d['quantity'],
                 'additional_info' => $additional_info,

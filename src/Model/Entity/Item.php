@@ -24,7 +24,10 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  * @property string $sizes
  * @property string $orderString
  * @property string[] $sizeList
- * @property ItemsOrder $_joinData
+ * @property boolean $hasColour
+ * @property string $colours
+ * @property string[] $colourList
+ * @property ItemsOrder $_joinData;
  * @property ItemsOrder[]|CollectionInterface $items_orders
  * @property boolean $status Enabled or Disabled
  * @property boolean $isAvailableToOrder
@@ -92,10 +95,29 @@ class Item extends Entity
 
         $sizes = str_getcsv($this->sizes);
         $size_array = [];
-        foreach ($sizes as $size) {
-            $size_array[$size] = $size;
+        foreach($sizes as $size){
+            $size_array[$size] = trim($size);
         }
         return $size_array;
+    }
+
+    protected function _getColourList()
+    {
+        if (trim($this->colours) == '') {
+            return null;
+        }
+
+        $colours = str_getcsv($this->colours);
+        $colour_array = [];
+        foreach($colours as $colour){
+            $colour_array[$colour] = trim($colour);
+        }
+        return $colour_array;
+    }
+
+
+    protected function _getHasColour(){
+        return trim($this->colours) != '';
     }
 
     protected function _getFormattedPrice()
@@ -142,6 +164,15 @@ class Item extends Entity
             return $this->from <= $now;
         } else {
             return $this->until >= $now && $this->from < $now;
+        }
+    }
+
+    public function displayColour($colour)
+    {
+        if ($this->colourList === null) {
+            return '[None Required]';
+        } else {
+            return $colour;
         }
     }
 }

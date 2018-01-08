@@ -14,6 +14,7 @@ class KitBagForm extends Form
         return $schema
             ->addField('id', 'string')
             ->addField('size', 'string')
+            ->addField('colour', 'string')
             ->addField('quantity', 'number')
             ->addField('isRemove', 'number')
             ->addField('additionalInfo', 'string');
@@ -42,6 +43,7 @@ class KitBagForm extends Form
             ])
             ->naturalNumber('quantity')
             ->allowEmpty('size')
+            ->allowEmpty('colour')
             ->allowEmpty('isRemove');
     }
 

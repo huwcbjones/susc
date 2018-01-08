@@ -66,6 +66,7 @@ class KitItemsController extends AppController
                 $item->until = new FrozenTime($this->request->getData('until'));
             }
 
+            $item->image = false;
             if (count($this->request->getUploadedFiles()) == 1) {
                 /** @var UploadedFile $image */
                 $image = $this->request->getUploadedFiles()['image'];
@@ -80,6 +81,9 @@ class KitItemsController extends AppController
                 return $this->redirect(['action' => 'view', $item->id]);
             } else {
                 $this->Flash->error(__('The item could not be saved. Please, try again.'));
+                if (file_exists($item->imagePath)) {
+                    unlink($item->imagePath);
+                }
             }
         }
 
@@ -137,10 +141,10 @@ class KitItemsController extends AppController
 
         $item = $this->Items->get($id);
         $this->Items->loadInto($item, ['ItemsOrders']);
-        if(count($item->items_orders) != 0) {
+        if (count($item->items_orders) != 0) {
             $item->status = false;
-            if($this->Items->save($item)) {
-                $this->Flash->set(__('Cannot delete item as there are orders attached to this item. Item has been disabled instead.'),['element' => 'warn']);
+            if ($this->Items->save($item)) {
+                $this->Flash->set(__('Cannot delete item as there are orders attached to this item. Item has been disabled instead.'), ['element' => 'warn']);
             } else {
                 $this->Flash->error(__('Cannot delete item as there are orders attached to this item. Failed to disable item!'));
             }

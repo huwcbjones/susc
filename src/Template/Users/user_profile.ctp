@@ -4,7 +4,7 @@ use SUSC\Model\Entity\User;
 
 /** @var User $user */
 
-$this->assign('title', 'My Profile');
+$this->assign('title', 'My Details');
 $this->layout('profile');
 ?>
 

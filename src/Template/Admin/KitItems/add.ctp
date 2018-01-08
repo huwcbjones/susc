@@ -36,6 +36,12 @@ $this->Form->unlockField('additional_info');
         </div>
     </div>
     <div class="form-group">
+        <label for="size" class="col-sm-2 control-label">Colours</label>
+        <div class="col-sm-10">
+            <?= $this->Form->text('colours'); ?>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="size" class="col-sm-2 control-label">Sizes</label>
         <div class="col-sm-10">
             <?= $this->Form->text('sizes'); ?>

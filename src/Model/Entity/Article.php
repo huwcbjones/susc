@@ -1,6 +1,7 @@
 <?php
 namespace SUSC\Model\Entity;
 
+use Cake\I18n\FrozenTime;
 use Cake\I18n\Time;
 use Cake\ORM\Entity;
 use huwcbjones\markdown\GithubMarkdownExtended;
@@ -14,12 +15,15 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  * @property int $author
  * @property User $user
  * @property string $content
- * @property Time $created
+ * @property FrozenTime $created
  * @property Time $modified
  * @property Time $start
  * @property Time $end
  * @property int $hits
  * @property bool $status
+ * @property bool $isEdited
+ * @property int $year
+ * @property int $month
  */
 class Article extends Entity
 {
@@ -52,5 +56,15 @@ class Article extends Entity
         } else {
             return $this->user->full_name;
         }
+    }
+
+    public function incrementHits(){
+        $lastModified = $this->modified;
+        $this->hits++;
+        $this->modified = $lastModified;
+    }
+
+    protected function _getIsEdited(){
+        return $this->modified->toUnixString() == $this->created->toUnixString();
     }
 }

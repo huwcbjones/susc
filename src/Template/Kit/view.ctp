@@ -14,6 +14,7 @@ $this->assign('description', $kit->description);
 
 $this->element('Kit/basket');
 $kitBagForm = new KitBagForm();
+$this->Form->unlockField('quantity');
 ?>
 <?php if (!$kit->isAvailableToOrder): ?>
     <div class="row">
@@ -38,7 +39,7 @@ $kitBagForm = new KitBagForm();
                     <h3 class="h4">Price</h3>
                     <?= $kit->formattedPrice ?>
                     <hr />
-                </div>
+                </div
             </div>
             <div class="row">
                 <div class="col-xs-12">
@@ -50,6 +51,12 @@ $kitBagForm = new KitBagForm();
                                 <p class="help-block"><?= $kit->additional_info_description ?></p>
                             </div>
                         <?php endif; ?>
+                         <?php if ($kit->sizeList !== null): ?>
+                            <div class="form-group">
+                                <label class="control-label" for="colourCombo">Colours</label>
+                                <p class="form-control-static"><?= implode(', ', $kit->colourList) ?></p>
+                            </div>
+                        <?php endif ?>
                         <?php if ($kit->sizeList !== null): ?>
                             <div class="form-group">
                                 <label class="control-label" for="sizeCombo">Sizes</label>
@@ -67,6 +74,10 @@ $kitBagForm = new KitBagForm();
                                 <p class="help-block"><?= $kit->additional_info_description ?></p>
                             </div>
                         <?php endif; ?>
+                        <div class="form-group<?php if ($kit->colourList == null): ?> hidden<?php endif; ?>">
+                            <label for="colour">Colour</label>
+                            <?= $this->Form->select('colour', $kit->colourList, ['empty' => 'Select Colour']) ?>
+                        </div>
                         <div class="form-group<?php if ($kit->sizeList == null): ?> hidden<?php endif; ?>">
                             <label for="sizeCombo">Size</label>
                             <?= $this->Form->select('size', $kit->sizeList, ['empty' => 'Select Size']) ?>
