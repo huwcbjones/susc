@@ -18,6 +18,7 @@ echo '<script src=\'https://www.google.com/recaptcha/api.js\'></script>';
 $this->end();
 
 $this->assign('title', 'Reset Password');
+$this->Form->unlockField('g-recaptcha-response');
 ?>
 
 <?= $this->Form->create($resetForm, ['class' => ['form-layout'], 'id' => 'reset-form']) ?>
