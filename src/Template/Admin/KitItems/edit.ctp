@@ -7,6 +7,7 @@
 $this->assign('title', 'Edit Item: ' . $item->title);
 $this->start('css');
 echo $this->fetch('css');
+echo $this->Html->css('bootstrap-datetimepicker');
 ?>
     <style>
         .panel {
@@ -15,6 +16,10 @@ echo $this->fetch('css');
     </style>
 <?php
 $this->end();
+
+$this->Form->unlockField('instock');
+$this->Form->unlockField('additional_info');
+$this->Form->unlockField('status');
 ?>
 <?= $this->Form->create($item, ['class' => ['form-horizontal'], 'type' => 'file']) ?>
     <div class="form-group">
@@ -100,15 +105,33 @@ $this->end();
         </div>
     </div>
     <div class="form-group">
-        <label for="from" class="col-sm-2 control-label">Available From</label>
+        <label for="status" class="col-sm-2 control-label">Available From</label>
         <div class="col-sm-10">
-            <input type="datetime" name="from" class="form-control" value="<?= $this->Time->i18nFormat($item->from, null, null, 'Europe/London') ?>"/>
+            <div class="input-group date form_from_date"
+                 data-date="<?= $item->from == null ? '' : $item->from->i18nformat('yyyy-MM-dd HH:mm:ss') ?>">
+                <?= $this->Form->text('from_string', ['value' => $item->from == null ? '' : $item->from->i18nformat('dd/MM/yyyy HH:mm'), 'readonly' => true]) ?>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+            </div>
+            <?= $this->Form->hidden('from', [
+                'id' => 'from',
+                'value' => $item->from == null ? '' : $item->from->i18nformat('yyyy-MM-dd HH:mm:ss')
+            ]) ?>
         </div>
     </div>
     <div class="form-group">
-        <label for="until" class="col-sm-2 control-label">Available Until</label>
+        <label for="status" class="col-sm-2 control-label">Available Until</label>
         <div class="col-sm-10">
-            <input type="datetime" name="until" class="form-control" value="<?= $this->Time->i18nFormat($item->until, null, null, 'Europe/London') ?>"/>
+            <div class="input-group date form_until_date"
+                 data-date="<?= $item->until == null ? '' : $item->until->i18nformat('yyyy-MM-dd HH:mm:ss') ?>">
+                <?= $this->Form->text('until_string', ['value' => $item->until == null ? '' : $item->until->i18nformat('dd/MM/yyyy HH:mm'), 'readonly' => true]) ?>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+            </div>
+            <?= $this->Form->hidden('until', [
+                'id' => 'until',
+                'value' => $item->until == null ? '' : $item->until->i18nformat('yyyy-MM-dd HH:mm:ss')
+            ]) ?>
         </div>
     </div>
 
@@ -155,6 +178,7 @@ $this->end();
 <?php
 $this->start('postscript');
 echo $this->fetch('postscript');
+echo $this->Html->script('bootstrap-datetimepicker');
 ?>
     <script type="text/javascript">
         $("#btn-additional_infoY").click(function () {
@@ -180,6 +204,18 @@ echo $this->fetch('postscript');
         $("#btn-isInStockN").click(function () {
             $("#btn-isInStockY").addClass("btn-default").removeClass("btn-success");
             $("#btn-isInStockN").addClass("btn-danger").removeClass("btn-default");
+        });
+        $(".form_from_date").datetimepicker({
+            format: "dd/mm/yyyy hh:ii",
+            minView: 0,
+            linkField: 'from',
+            linkFormat: 'yyyy-mm-dd hh:ii'
+        });
+        $(".form_until_date").datetimepicker({
+            format: "dd/mm/yyyy hh:ii",
+            minView: 0,
+            linkField: 'until',
+            linkFormat: 'yyyy-mm-dd hh:ii'
         });
     </script>
 <?php $this->end() ?>
