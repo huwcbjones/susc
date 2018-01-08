@@ -7,6 +7,7 @@
 $this->assign('title', 'Add Item');
 $this->start('css');
 echo $this->fetch('css');
+echo $this->Html->css('bootstrap-datetimepicker');
 ?>
     <style>
         .panel {
@@ -15,6 +16,8 @@ echo $this->fetch('css');
     </style>
 <?php
 $this->end();
+$this->Form->unlockField('instock');
+$this->Form->unlockField('additional_info');
 ?>
 <?= $this->Form->create($item, ['class' => ['form-horizontal'], 'type' => 'file']) ?>
     <div class="form-group">
@@ -75,6 +78,49 @@ $this->end();
         </div>
     </div>
 
+    <div class="form-group">
+        <label for="is_enabled" class="col-sm-2 control-label">Is Available to Order?</label>
+        <div class="col-sm-10">
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-<?php if ($item->instock): ?>success active<?php else: ?>default<?php endif ?>" id="btn-isInStockY">
+                    <input type="radio" name="instock" id="isInStockY" value="1"<?php if ($item->instock): ?> checked="checked"<?php endif ?> /> Yes
+                </label>
+                <label class="btn btn-<?php if (!$item->instock): ?>danger active<?php else: ?>default<?php endif ?>" id="btn-isInStockN">
+                    <input type="radio" name="instock" id="isInStockN" value="0"<?php if (!$item->instock): ?> checked="checked"<?php endif ?> /> No
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="status" class="col-sm-2 control-label">Available From</label>
+        <div class="col-sm-10">
+            <div class="input-group date form_from_date"
+                 data-date="<?= $item->from == null ? '' : $item->from->i18nformat('yyyy-MM-dd HH:mm:ss') ?>">
+                <?= $this->Form->text('from_string', ['value' => $item->from == null ? '' : $item->from->i18nformat('dd/MM/yyyy HH:mm'), 'readonly' => true]) ?>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+            </div>
+            <?= $this->Form->hidden('from', [
+                'id' => 'from',
+                'value' => $item->from == null ? '' : $item->from->i18nformat('yyyy-MM-dd HH:mm:ss')
+            ]) ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="status" class="col-sm-2 control-label">Available Until</label>
+        <div class="col-sm-10">
+            <div class="input-group date form_until_date"
+                 data-date="<?= $item->until == null ? '' : $item->until->i18nformat('yyyy-MM-dd HH:mm:ss') ?>">
+                <?= $this->Form->text('until_string', ['value' => $item->until == null ? '' : $item->until->i18nformat('dd/MM/yyyy HH:mm'), 'readonly' => true]) ?>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+            </div>
+            <?= $this->Form->hidden('until', [
+                'id' => 'until',
+                'value' => $item->until == null ? '' : $item->until->i18nformat('yyyy-MM-dd HH:mm:ss')
+            ]) ?>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-0 col-lg-4">
@@ -90,6 +136,7 @@ $this->end();
 <?php
 $this->start('postscript');
 echo $this->fetch('postscript');
+echo $this->Html->script('bootstrap-datetimepicker');
 ?>
     <script type="text/javascript">
         $("#btn-additional_infoY").click(function () {
@@ -99,6 +146,26 @@ echo $this->fetch('postscript');
         $("#btn-additional_infoN").click(function () {
             $("#btn-additional_infoY").addClass("btn-default").removeClass("btn-success");
             $("#btn-additional_infoN").addClass("btn-danger").removeClass("btn-default");
+        });
+        $("#btn-isInStockY").click(function () {
+            $("#btn-isInStockY").addClass("btn-success").removeClass("btn-default");
+            $("#btn-isInStockN").addClass("btn-default").removeClass("btn-danger");
+        });
+        $("#btn-isInStockN").click(function () {
+            $("#btn-isInStockY").addClass("btn-default").removeClass("btn-success");
+            $("#btn-isInStockN").addClass("btn-danger").removeClass("btn-default");
+        });
+        $(".form_from_date").datetimepicker({
+            format: "dd/mm/yyyy hh:ii",
+            minView: 0,
+            linkField: 'from',
+            linkFormat: 'yyyy-mm-dd hh:ii'
+        });
+        $(".form_until_date").datetimepicker({
+            format: "dd/mm/yyyy hh:ii",
+            minView: 0,
+            linkField: 'until',
+            linkFormat: 'yyyy-mm-dd hh:ii'
         });
     </script>
 <?php $this->end() ?>

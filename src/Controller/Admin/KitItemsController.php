@@ -55,29 +55,29 @@ class KitItemsController extends AppController
             $item = $this->Items->patchEntity($item, $this->request->getData());
             $item->slug = Text::slug(strtolower($item->title));
 
+            if($this->request->getData('from') == ''){
+                $item->from = null;
+            } else {
+                $item->from = new FrozenTime($this->request->getData('from'));
+            }
+            if($this->request->getData('until') == ''){
+                $item->until = null;
+            } else {
+                $item->until = new FrozenTime($this->request->getData('until'));
+            }
 
-            $result = $this->Items->getConnection()->transactional(function () use ($item) {
-                if (!$this->Items->save($item)) {
-                    return false;
-                }
-
-                if (!array_key_exists('image', $this->request->getUploadedFiles())) {
-                    return true;
-                }
-
+            if (count($this->request->getUploadedFiles()) == 1) {
                 /** @var UploadedFile $image */
                 $image = $this->request->getUploadedFiles()['image'];
                 if ($image->getError() == UPLOAD_ERR_OK) {
                     $image->moveTo(WWW_ROOT . DS . 'images' . DS . 'store' . DS . 'kit' . DS . $item->id . '.jpg');
                     $item->image = true;
                 }
+            }
 
-                return $this->Items->save($item);
-
-            });
-            if ($result) {
+            if ($this->Items->save($item)) {
                 $this->Flash->success(__('The item has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'view', $item->id]);
             } else {
                 $this->Flash->error(__('The item could not be saved. Please, try again.'));
             }
@@ -101,9 +101,6 @@ class KitItemsController extends AppController
         $item = $this->Items->get($id);
 
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $item->setAccess('image', false);
-            $item->setAccess('from', false);
-            $item->setAccess('until', false);
             $item = $this->Users->patchEntity($item, $this->request->getData());
             if($this->request->getData('from') == ''){
                 $item->from = null;
