@@ -14,6 +14,7 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  * @property string $id
  * @property string $title
  * @property string $slug
+ * @property string $crc
  * @property boolean $image
  * @property string $imagePath
  * @property string $formattedPrice
@@ -53,8 +54,15 @@ class Item extends Entity
         'created' => false,
         'modified' => false,
         'slug' => false,
-        'id' => false
+        'id' => false,
+        'image' => false,
+        'from' => false,
+        'until' => false
     ];
+
+    protected function _getCrc(){
+        return dechex(crc32($this->id));
+    }
 
     protected function _getRenderedDescription()
     {

@@ -41,12 +41,13 @@ $this->layout('profile');
                     <tbody>
                     <?php foreach ($order->items as $item): ?>
                         <tr>
-                            <th data-th="Item"><?= $this->Html->link(h($item->item->title), [
+                            <th data-th="Item"><?= $this->Html->link($item->item->title, [
                                     'controller' => 'kit',
                                     'action' => 'view',
-                                    'slug' => $item->item->slug
+                                    'slug' => $item->item->slug,
+                                    'crc' => $item->item->crc
                                 ]) ?></th>
-                            <td data-th="Additional Info" class="text-center"><?= h($item->item->displayAdditionalInformation($item->additional_info)) ?></td>
+                            <td data-th="Additional Info" class="text-center"><?= $item->item->displayAdditionalInformation($item->additional_info) ?></td>
                             <td data-th="Size" class="text-center"><?= $item->size ?></td>
                             <td data-th="Price" class="text-center"><?= $item->formattedPrice ?></td>
                             <td data-th="Quantity" class="text-center"><?= $item->quantity ?></td>

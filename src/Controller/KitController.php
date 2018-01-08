@@ -89,10 +89,15 @@ class KitController extends AppController
             }
 
             $id = $request->getData('id');
-            $size = $request->getData('size');
-            $quantity = $request->getData('quantity');
-            $additionalInfo = $request->getData('additional_info');
+            $size = h($request->getData('size'));
+            $quantity = h($request->getData('quantity'));
+            $additionalInfo = h($request->getData('additional_info'));
             $item = $this->Kit->get($id);
+
+            if(!$item->isAvailableToOrder){
+                $this->Flash->error($item->orderString, ['escape' => false]);
+                return;
+            }
 
             if ($this->request->getData('size') == '' && $item->sizeList != null) {
                 $this->Flash->error('Please select a size!');
@@ -159,8 +164,11 @@ class KitController extends AppController
         ];
 
         foreach ($this->BasketData as $hash => $d) {
-            $additional_info = trim($d['additional_info']);
-            if($additional_info == '') $additional_info = null;
+            $additional_info = null;
+            if($d['item']->additional_info) {
+                $additional_info = trim($d['additional_info']);
+                if ($additional_info == '') $additional_info = null;
+            }
             $item_data = [
                 'item_id' => $d['id'],
                 'size' => $d['size'],
@@ -221,9 +229,9 @@ class KitController extends AppController
         $this->set('orderNumber', $this->request->getQuery('order_number'));
     }
 
-    public function view($slug)
+    public function view($crc, $slug)
     {
-        $kit = $this->Kit->find('slug', ['slug' => $slug])->find('published')->first();
+        $kit = $this->Kit->find('slug', ['slug' => $slug, 'crc' => $crc])->find('published')->first();
         if (empty($kit)) {
             throw new NotFoundException("Item not found.");
         }
