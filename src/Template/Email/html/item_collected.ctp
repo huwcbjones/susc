@@ -28,8 +28,12 @@ use SUSC\Model\Entity\User;
         <td><?= $item->item->title ?></td>
     </tr>
     <tr>
+        <th>Colour</th>
+        <td><?= $item->item->displayColour($item->colour) ?></td>
+    </tr>
+    <tr>
         <th>Size</th>
-        <td><?= $item->size ?></td>
+        <td><?= $item->item->displaySize($item->size) ?></td>
     </tr>
     <tr>
         <th>Quantity</th>
@@ -37,6 +41,6 @@ use SUSC\Model\Entity\User;
     </tr>
     <tr>
         <th>Additional Information</th>
-        <td><?= $item->additional_info ?></td>
+        <td><?= $item->item->displayAdditionalInformation($item->additional_info) ?></td>
     </tr>
 </table>

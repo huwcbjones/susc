@@ -23,6 +23,7 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  * @property string $renderedDescription
  * @property string $sizes
  * @property string $orderString
+ * @property boolean $hasSize
  * @property string[] $sizeList
  * @property boolean $hasColour
  * @property string $colours
@@ -115,6 +116,9 @@ class Item extends Entity
         return $colour_array;
     }
 
+    protected function _getHasSize(){
+        return trim($this->sizes) != '';
+    }
 
     protected function _getHasColour(){
         return trim($this->colours) != '';
@@ -128,7 +132,7 @@ class Item extends Entity
     public function displayAdditionalInformation($additionalInfo)
     {
         if (!$this->additional_info) {
-            return '[None Required]';
+            return '-';
         } elseif ($additionalInfo == '') {
             return '[None Provided]';
         } else {
@@ -169,10 +173,19 @@ class Item extends Entity
 
     public function displayColour($colour)
     {
-        if ($this->colourList === null) {
-            return '[None Required]';
+        if (!$this->hasColour) {
+            return '-';
         } else {
             return $colour;
+        }
+    }
+
+    public function displaySize($size)
+    {
+        if (!$this->hasSize) {
+            return '-';
+        } else {
+            return $size;
         }
     }
 }

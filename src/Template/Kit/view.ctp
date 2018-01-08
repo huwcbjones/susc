@@ -31,15 +31,15 @@ $this->Form->unlockField('quantity');
                 <div class="col-xs-12">
                     <h3 class="h4">Description</h3>
                     <?= $kit->renderedDescription ?>
-                    <hr />
+                    <hr/>
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-12">
                     <h3 class="h4">Price</h3>
                     <?= $kit->formattedPrice ?>
-                    <hr />
-                </div
+                    <hr/>
+                </div>
             </div>
             <div class="row">
                 <div class="col-xs-12">
@@ -51,13 +51,13 @@ $this->Form->unlockField('quantity');
                                 <p class="help-block"><?= $kit->additional_info_description ?></p>
                             </div>
                         <?php endif; ?>
-                         <?php if ($kit->sizeList !== null): ?>
+                        <?php if ($kit->hasColour): ?>
                             <div class="form-group">
                                 <label class="control-label" for="colourCombo">Colours</label>
                                 <p class="form-control-static"><?= implode(', ', $kit->colourList) ?></p>
                             </div>
                         <?php endif ?>
-                        <?php if ($kit->sizeList !== null): ?>
+                        <?php if ($kit->hasSize): ?>
                             <div class="form-group">
                                 <label class="control-label" for="sizeCombo">Sizes</label>
                                 <p class="form-control-static"><?= implode(', ', $kit->sizeList) ?></p>
@@ -78,7 +78,7 @@ $this->Form->unlockField('quantity');
                             <label for="colour">Colour</label>
                             <?= $this->Form->select('colour', $kit->colourList, ['empty' => 'Select Colour']) ?>
                         </div>
-                        <div class="form-group<?php if ($kit->sizeList == null): ?> hidden<?php endif; ?>">
+                        <div class="form-group<?php if ($kit->hasSize): ?> hidden<?php endif; ?>">
                             <label for="sizeCombo">Size</label>
                             <?= $this->Form->select('size', $kit->sizeList, ['empty' => 'Select Size']) ?>
                         </div>

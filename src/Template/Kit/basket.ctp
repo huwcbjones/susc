@@ -41,6 +41,7 @@ $this->layout('clean');
                         $size = $data['size'];
                         $quantity = $data['quantity'];
                         $additionalInfo = $data['additional_info'];
+                        if($size == '') $size = '-';
                         ?>
                         <tr>
                             <th data-th="Item"><h3 class="h4"><?= $this->Html->link(h($kit->title), [

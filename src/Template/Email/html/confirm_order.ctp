@@ -33,6 +33,7 @@ use SUSC\View\AppView;
     <tr>
         <th>Item</th>
         <th>Additional Info</th>
+        <th>Colour</th>
         <th>Size</th>
         <th>Quantity</th>
         <th>Price</th>
@@ -42,11 +43,12 @@ use SUSC\View\AppView;
     <tbody>
     <?php foreach ($order->items as $item): ?>
         <tr>
-            <th><?= $this->Html->link($item->item->title, ['_name' => 'kit_item', 'slug' => $item->item->slug], ['fullBase' => true]) ?></th>
-            <td><?= $item->additional_info ?></td>
-            <td><?= $item->size ?></td>
+            <th><?= $this->Html->link($item->item->title, ['_name' => 'kit_item', 'slug' => $item->item->slug, 'crc'=> $item->item->crc], ['fullBase' => true]) ?></th>
+            <td><?= $item->item->displayAdditionalInformation($item->additional_info) ?></td>
+            <td><?= $item->item->displayColour($item->colour) ?></td>
+            <td><?= $item->item->displaySize($item->size) ?></td>
             <td><?= $item->quantity ?></td>
-            <td><?= $item->item->formatted_price ?></td>
+            <td><?= $item->formattedPrice ?></td>
             <td><?= $item->formattedSubtotal ?></td>
         </tr>
     <?php endforeach; ?>

@@ -29,7 +29,7 @@ This email is to confirm your SUSC kit order.
 Your order is as follows:
 
 <?php foreach($order->items as $item): ?>
- - <?= $item->quantity?> x <?= $item->item->title ?><?php if($item->item->additional_info): ?>, <?= $item->additional_info ?><?php endif ?><?php if($item->size !=null):?>, <?= $item->size ?><?php endif; ?> @ <?= $item->item->formatted_price ?> = <?= $item->formattedSubtotal ?>
+ - <?= $item->quantity?> x <?= $item->item->title ?><?php if($item->item->additional_info): ?>, <?= $item->additional_info ?><?php endif ?><?php if($item->size !=null):?>, <?= $item->size ?><?php endif; ?> @ <?= $item->item->formattedPrice ?> = <?= $item->formattedSubtotal ?>
 <?php endforeach; ?>
 
 Total: <?= $order->formattedTotal ?>

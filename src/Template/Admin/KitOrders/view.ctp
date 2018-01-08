@@ -86,13 +86,14 @@ $this->assign('title', 'View Order #' . $order->id);
                             <th data-th="Item"><?= $this->Html->link(h($item->item->title), [
                                     '_name' => 'kit_item',
                                     'action' => 'view',
-                                    'slug' => $item->item->slug
+                                    'slug' => $item->item->slug,
+                                    'crc' => $item->item->crc
                                 ]) ?></th>
                             <td><?= $item->processed_order_id !== null? $this->Html->link($item->processed_order_id, ['action' => 'processedOrders', $item->processed_order_id, 'highlight' => $item->id]): '-' ?></td>
                             <td data-th="Additional Info"
-                                class="text-center"><?= h($item->item->displayAdditionalInformation($item->additional_info)) ?></td>
-                            <td data-th="Colour" class="text-center"><?= h($item->item->displayColour($item->colour)) ?></td>
-                            <td data-th="Size" class="text-center"><?= $item->size ?></td>
+                                class="text-center"><?= $item->item->displayAdditionalInformation($item->additional_info) ?></td>
+                            <td data-th="Colour" class="text-center"><?= $item->item->displayColour($item->colour) ?></td>
+                            <td data-th="Size" class="text-center"><?= $item->item->displaySize($item->size) ?></td>
                             <td data-th="Price" class="text-center"><?= $item->formattedPrice ?></td>
                             <td data-th="Quantity" class="text-center"><?= $item->quantity ?></td>
                             <td data-th="Quantity" class="text-center"><?= $item->formattedSubtotal ?></td>

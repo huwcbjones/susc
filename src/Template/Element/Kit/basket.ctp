@@ -16,7 +16,9 @@
                         <?php if ($data['item']->hasColour): ?>
                             Colour: <?= $data['colour'] ?><br/>
                         <?php endif; ?>
+                        <?php if ($data['size']): ?>
                         Size: <?= $data['size'] ?><br/>
+                        <?php endif; ?>
                         Quantity: <?= $data['quantity'] ?><br/>
                         <?php if ($data['item']->additional_info): ?>
                             Additional Info: <?= $data['item']->displayAdditionalInformation($data['additional_info']) ?><br/>
