@@ -128,13 +128,13 @@ class KitItemsExtras extends AbstractMigration
                 'length' => null,
                 'null' => true,
             ])
-            ->addColumn('UNTIL', 'datetime', [
+            ->addColumn('until', 'datetime', [
                 'after' => 'additional_info_description',
                 'default' => null,
                 'length' => null,
                 'null' => true,
             ])
-            ->addColumn('FROM', 'datetime', [
+            ->addColumn('from', 'datetime', [
                 'after' => 'modified',
                 'default' => null,
                 'length' => null,
@@ -281,8 +281,8 @@ class KitItemsExtras extends AbstractMigration
                 'null' => false,
             ])
              ->removeColumn('instock')
-            ->removeColumn('UNTIL')
-            ->removeColumn('FROM')
+            ->removeColumn('until')
+            ->removeColumn('from')
             ->addIndex(
                 [
                     'slug',
