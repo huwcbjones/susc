@@ -159,7 +159,7 @@
 }
 
 .kit-out-of-stock > a {
-    text-decoration: line-through;
+    color: #aaa;
 }
 
 .kit-out-of-stock-img {

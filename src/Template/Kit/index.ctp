@@ -58,7 +58,7 @@ $this->end();
                 'controller' => 'kit',
                 'action' => 'view',
                 'slug' => $item->slug
-            ], ['class' => ['btn', 'btn-primary', 'btn-block']]) ?>
+            ], ['class' => ['btn', $item->isAvailableToOrder ? 'btn-primary': 'btn-default', 'btn-block']]) ?>
             <h3 class="h4 text-center<?= $item->isAvailableToOrder ? '': ' kit-out-of-stock' ?>"><?= $this->Html->link(h($item->title), [
                     'controller' => 'kit',
                     'action' => 'view',
