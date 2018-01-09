@@ -271,10 +271,10 @@ class MembershipController extends AppController
                 $this->Memberships->loadInto($membership, ['MembershipTypes']);
                 $email = new Email();
                 $email
-                    ->setTo($this->currentUser->email_address, $this->currentUser->full_name)
+                    ->setTo($membership->user->email_address, $membership->user->full_name)
                     ->setSubject('SUSC Membership Confirmation')
                     ->setTemplate('membership_confirm')
-                    ->setViewVars(['membership' => $membership, 'user' => $this->currentUser])
+                    ->setViewVars(['membership' => $membership, 'user' => $membership->user])
                     ->send();
 
                 return $this->redirect(['action' => 'details', $membership->id]);

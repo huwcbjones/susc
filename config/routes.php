@@ -218,10 +218,11 @@ Router::scope('/', function (RouteBuilder $routes) {
                 'slug' => '[0-9]+'
             ]
         );
-        $routes->connect('/item/:slug',
+        $routes->connect('/item/:crc/:slug',
             ['action' => 'view'],
             [
-                'pass' => ['slug'],
+                'pass' => ['crc', 'slug'],
+                'crc' => '[a-f0-9]+',
                 'slug' => '[A-z0-9\-]+',
                 '_name' => 'kit_item'
             ]

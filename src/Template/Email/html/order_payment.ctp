@@ -22,6 +22,6 @@ use SUSC\Model\Entity\User;
 ?>
 <p>Hi <?= $user->first_name ?>,</p>
 
-<p>This email is to confirm your payment for your kit order #<?= $order->id ?> has been received.</p>
+<p>This email is to confirm your payment for your kit order #<code><?= $order->id ?></code> has been received.</p>
 
 <p>You will receive another email when your item(s) are ready for collection.</p>

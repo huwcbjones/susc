@@ -12,8 +12,11 @@ $this->assign('title', 'Kit Items');
             <tr>
                 <th scope="col"><?= $this->Paginator->sort('title') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('price') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('sizes') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('is_enable', 'Enabled') ?></th>
+                <th scope="col"><attr title="Accepting Orders">A?</attr></th>
+                <th scope="col"><?= $this->Paginator->sort('instock', '<attr title="Can Order">O?</attr>', ['escape' => false]) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('status', '<attr title="Enabled?">E?</attr>', ['escape' => false]) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('from', 'From') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('until', 'Until') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('created') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
                 <th scope="col" class="actions"></th>
@@ -24,11 +27,17 @@ $this->assign('title', 'Kit Items');
                 <tr>
                     <td><?= h($item->title) ?></td>
                     <td><?= h($item->formatted_price) ?></td>
-                    <td><?= h(implode(', ', explode(',',$item->sizes))) ?></td>
-
+                    <td>
+                        <span class="text-<?= ($item->isAvailableToOrder) ? 'success' : 'danger' ?> glyphicon glyphicon-<?= ($item->isAvailableToOrder) ? 'ok' : 'remove' ?>-sign"></span>
+                    </td>
+                    <td>
+                        <span class="text-<?= ($item->instock) ? 'success' : 'danger' ?> glyphicon glyphicon-<?= ($item->instock) ? 'ok' : 'remove' ?>-sign"></span>
+                    </td>
                     <td>
                         <span class="text-<?= ($item->status) ? 'success' : 'danger' ?> glyphicon glyphicon-<?= ($item->status) ? 'ok' : 'remove' ?>-sign"></span>
                     </td>
+                    <td><?= $this->Time->format($item->from, null, null, 'Europe/London') ?></td>
+                    <td><?= $this->Time->format($item->until, null, null, 'Europe/London') ?></td>
                     <td><?= $this->Time->format($item->created, null, null, 'Europe/London') ?></td>
                     <td><?= $this->Time->format($item->modified, null, null, 'Europe/London') ?></td>
                     <?php if ($this->hasAccessTo('admin.kit-items.view')): ?>

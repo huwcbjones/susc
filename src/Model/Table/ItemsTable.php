@@ -64,8 +64,7 @@ class ItemsTable extends Table
 
         $validator
             ->requirePresence('slug', 'create')
-            ->notEmpty('slug')
-            ->add('slug', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+            ->notEmpty('slug');
 
         $validator
             ->allowEmpty('image');
@@ -96,8 +95,6 @@ class ItemsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->isUnique(['slug']));
-
         return $rules;
     }
 
@@ -109,12 +106,20 @@ class ItemsTable extends Table
 
     public function findPublished(Query $query)
     {
-        return $query->where(['status' => 1]);
+        return $query->where([
+            'status' => 1
+        ]);
     }
 
     public function findSlug(Query $query, $options = [])
     {
-        return $query->where(['slug' => $options['slug']]);
+        if(preg_match('/[a-f0-9]+/', $options['crc'])){
+            $options['crc'] = hexdec($options['crc']);
+        }
+        return $query->where([
+            '`slug` LIKE ' => '%' . $options['slug'] . '%',
+            'CRC32(`id`)' => $options['crc']
+        ]);
     }
 
     public function findId(Query $query, $options = [])

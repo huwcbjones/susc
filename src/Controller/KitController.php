@@ -41,7 +41,7 @@ class KitController extends AppController
         foreach ($this->BasketData as $hash => $data) {
             try {
                 $this->BasketData[$hash]['item'] = $this->Kit->get($data['id']);
-            } catch(RecordNotFoundException $ex){
+            } catch (RecordNotFoundException $ex) {
                 unset($this->BasketData[$hash]);
             }
         }
@@ -88,18 +88,31 @@ class KitController extends AppController
             }
 
             $id = $request->getData('id');
-            $size = $request->getData('size');
-            $colour = $request->getData('colour');
-            $quantity = $request->getData('quantity');
-            $additionalInfo = $request->getData('additional_info');
+            $size = h($request->getData('size'));
+            $quantity = h($request->getData('quantity'));
+            $colour = h($request->getData('colour'));
+            $additionalInfo = h($request->getData('additional_info'));
             $item = $this->Kit->get($id);
 
-            if ($this->request->getData('colour') == '' && $item->colourList != null) {
+            if (!$item->isAvailableToOrder) {
+                $this->Flash->error($item->orderString, ['escape' => false]);
+                return;
+            }
+
+            if ($item->hasColour && (
+                    $colour == ''
+                    || !in_array($colour, $item->colourList)
+                )
+            ) {
                 $this->Flash->error('Please select a colour!');
                 return;
             }
 
-            if ($this->request->getData('size') == '' && $item->sizeList != null) {
+            if ($item->hasSize && (
+                    !in_array($size, $item->sizeList)
+                    || $size === ''
+                )
+            ) {
                 $this->Flash->error('Please select a size!');
                 return;
             }
@@ -137,7 +150,7 @@ class KitController extends AppController
     public function pay()
     {
         $this->Security->setConfig('CsrfUseOnce', true);
-        if(empty($this->BasketData)) return $this->redirect(['_name' => 'kit']);
+        if (empty($this->BasketData)) return $this->redirect(['_name' => 'kit']);
 
         /** @var StaticContent $terms */
         $terms = $this->Static->find('KitTerms')->firstOrFail();
@@ -145,11 +158,6 @@ class KitController extends AppController
         $this->set('terms', $terms);
 
         if (!$this->request->is('post')) return;
-        if ($this->request->session()->read('Kit.Basket.Pay') === true) {
-            $this->Flash->set('Order is already being processed...', ['element' => 'warn']);
-            return;
-        }
-
 
         if (!in_array($this->request->getData('payment'), ['bat', 'cash'])) {
             $this->Flash->error('Please select a payment method.');
@@ -165,10 +173,17 @@ class KitController extends AppController
         ];
 
         foreach ($this->BasketData as $hash => $d) {
-            $additional_info = trim($d['additional_info']);
-            $colour = trim($d['colour']);
-            if($additional_info == '') $additional_info = null;
-            if($colour == '') $colour = null;
+            $additional_info = null;
+            if ($d['item']->additional_info) {
+                $additional_info = trim($d['additional_info']);
+                if ($additional_info == '') $additional_info = null;
+            }
+
+            $colour = null;
+            if ($d['item']->hasColour) {
+                $colour = trim($d['colour']);
+                if ($colour == '') $colour = null;
+            }
             $item_data = [
                 'item_id' => $d['id'],
                 'colour' => $colour,
@@ -186,7 +201,6 @@ class KitController extends AppController
         }
         $order = $this->Orders->newEntity($data);
 
-        $this->request->session()->write('Kit.Basket.Pay', true);
         ignore_user_abort(true);
         set_time_limit(0);
         if ($this->Orders->save($order, ['associated' => ['ItemsOrders']])) {
@@ -200,8 +214,8 @@ class KitController extends AppController
                 ->setTemplate('confirm_order')
                 ->setViewVars(['order' => $order, 'user' => $this->currentUser])
                 ->send();
-            $this->request->session()->delete('Kit.Basket.Pay');
-            return $this->redirect(['_name' => 'order_complete', 'order_number' => $order->id]);
+            $this->request->session()->write('Kit.Order.Number', $order->id);
+            return $this->redirect(['_name' => 'order_complete']);
         } else {
             $this->request->session()->delete('Kit.Basket.Pay');
             $this->Flash->error('There was an error whilst processing your order.');
@@ -221,18 +235,24 @@ class KitController extends AppController
 
     public function viewOrder($id = null)
     {
-        $order = $this->Orders->find('ID', ['id' => $id])->firstOrFail();
+        $order = $this->Orders->find('ID', ['id' => $id, 'userID' => $this->currentUser->id])->firstOrFail();
         $this->set('order', $order);
     }
 
     public function orderComplete()
     {
-        $this->set('orderNumber', $this->request->getQuery('order_number'));
+        $order_number = $this->request->session()->read('Kit.Order.Number');
+        if ($order_number === null) {
+            return $this->redirect(['_name' => 'kit']);
+        } else {
+            $this->request->session()->delete('Kit.Order.Number');
+        }
+        $this->set('orderNumber', $order_number);
     }
 
-    public function view($slug)
+    public function view($crc, $slug)
     {
-        $kit = $this->Kit->find('slug', ['slug' => $slug])->find('published')->first();
+        $kit = $this->Kit->find('slug', ['slug' => $slug, 'crc' => $crc])->find('published')->first();
         if (empty($kit)) {
             throw new NotFoundException("Item not found.");
         }

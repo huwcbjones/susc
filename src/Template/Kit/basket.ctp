@@ -41,12 +41,14 @@ $this->layout('clean');
                         $size = $data['size'];
                         $quantity = $data['quantity'];
                         $additionalInfo = $data['additional_info'];
+                        if($size == '') $size = '-';
                         ?>
                         <tr>
                             <th data-th="Item"><h3 class="h4"><?= $this->Html->link(h($kit->title), [
                                         'controller' => 'kit',
                                         'action' => 'view',
-                                        'slug' => $kit->slug
+                                        'slug' => $kit->slug,
+                                        'crc' => $kit->crc
                                     ]) ?></h3></th>
                             <td data-th="Additional Info" class="text-center"><?= $data['item']->displayAdditionalInformation($data['additional_info']) ?></td>
                             <td data-th="Colour" class="text-center"><?= $data['item']->displayColour($data['colour']) ?></td>
@@ -93,7 +95,7 @@ $this->layout('clean');
         <?php else: ?>
             <div><h2 class="h4">Your basket is currently empty. To add kit, select an item, choose your size, then click &ldquo;Add
                     to basket&rdquo;</h2>
-            <?= $this->Html->link('View Kit', ['_name' => 'kit'],  ['class' => ['btn', 'btn-lg', 'btn-primary']]) ?></div>
+                <?= $this->Html->link('View Kit', ['_name' => 'kit'], ['class' => ['btn', 'btn-lg', 'btn-primary']]) ?></div>
 
         <?php endif; ?>
     </div>
