@@ -41,7 +41,7 @@ class KitController extends AppController
         foreach ($this->BasketData as $hash => $data) {
             try {
                 $this->BasketData[$hash]['item'] = $this->Kit->get($data['id']);
-            } catch(RecordNotFoundException $ex){
+            } catch (RecordNotFoundException $ex) {
                 unset($this->BasketData[$hash]);
             }
         }
@@ -93,18 +93,26 @@ class KitController extends AppController
             $colour = h($request->getData('colour'));
             $additionalInfo = h($request->getData('additional_info'));
             $item = $this->Kit->get($id);
-          
-            if(!$item->isAvailableToOrder){
+
+            if (!$item->isAvailableToOrder) {
                 $this->Flash->error($item->orderString, ['escape' => false]);
                 return;
             }
-          
-            if ($this->request->getData('colour') == '' && $item->colourList != null) {
+
+            if ($item->hasColour && (
+                    $colour == ''
+                    || !in_array($colour, $item->colourList)
+                )
+            ) {
                 $this->Flash->error('Please select a colour!');
                 return;
             }
 
-            if ($this->request->getData('size') == '' && $item->sizeList != null) {
+            if ($item->hasSize && (
+                    !in_array($size, $item->sizeList)
+                    || $size === ''
+                )
+            ) {
                 $this->Flash->error('Please select a size!');
                 return;
             }
@@ -142,7 +150,7 @@ class KitController extends AppController
     public function pay()
     {
         $this->Security->setConfig('CsrfUseOnce', true);
-        if(empty($this->BasketData)) return $this->redirect(['_name' => 'kit']);
+        if (empty($this->BasketData)) return $this->redirect(['_name' => 'kit']);
 
         /** @var StaticContent $terms */
         $terms = $this->Static->find('KitTerms')->firstOrFail();
@@ -166,15 +174,15 @@ class KitController extends AppController
 
         foreach ($this->BasketData as $hash => $d) {
             $additional_info = null;
-            if($d['item']->additional_info) {
+            if ($d['item']->additional_info) {
                 $additional_info = trim($d['additional_info']);
                 if ($additional_info == '') $additional_info = null;
             }
 
             $colour = null;
-            if($d['item']->hasColour) {
+            if ($d['item']->hasColour) {
                 $colour = trim($d['colour']);
-                if($colour == '') $colour = null;
+                if ($colour == '') $colour = null;
             }
             $item_data = [
                 'item_id' => $d['id'],
@@ -234,7 +242,7 @@ class KitController extends AppController
     public function orderComplete()
     {
         $order_number = $this->request->session()->read('Kit.Order.Number');
-        if($order_number === null){
+        if ($order_number === null) {
             return $this->redirect(['_name' => 'kit']);
         } else {
             $this->request->session()->delete('Kit.Order.Number');
