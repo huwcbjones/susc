@@ -74,11 +74,11 @@ $this->Form->unlockField('quantity');
                                 <p class="help-block"><?= $kit->additional_info_description ?></p>
                             </div>
                         <?php endif; ?>
-                        <div class="form-group<?php if ($kit->colourList == null): ?> hidden<?php endif; ?>">
+                        <div class="form-group<?php if (!$kit->hasColour): ?> hidden<?php endif; ?>">
                             <label for="colour">Colour</label>
                             <?= $this->Form->select('colour', $kit->colourList, ['empty' => 'Select Colour']) ?>
                         </div>
-                        <div class="form-group<?php if ($kit->hasSize): ?> hidden<?php endif; ?>">
+                        <div class="form-group<?php if (!$kit->hasSize): ?> hidden<?php endif; ?>">
                             <label for="sizeCombo">Size</label>
                             <?= $this->Form->select('size', $kit->sizeList, ['empty' => 'Select Size']) ?>
                         </div>
