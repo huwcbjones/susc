@@ -25,8 +25,15 @@ use SUSC\View\AppView;
 
 <p>Hi <?= $user->first_name ?>,</p>
 
-<p>This email is to confirm your SUSC kit order.
-    Your order is as follows:</p>
+<p>This email is to confirm your SUSC kit order number #<code><?= $order->id ?></code>.
+    You can view your order on the SUSC website
+    at <?= $this->Html->link($this->Url->build(['controller' => 'Kit', 'action' => 'vieworder', $order->id], ['fullBase' => true])) ?>.</p>
+
+<p>Your selected payment method is: <?= $order->paymentMethod ?>.<br/>
+    <small>Please note your order will not be accepted until payment is received.</small>
+</p>
+
+<p>You can find out how to pay at <?= $this->Html->link($this->Url->build(['_name' => 'faq'], ['fullBase' => true])) ?>.</p>
 
 <table class="table">
     <thead>
@@ -43,7 +50,7 @@ use SUSC\View\AppView;
     <tbody>
     <?php foreach ($order->items as $item): ?>
         <tr>
-            <th><?= $this->Html->link($item->item->title, ['_name' => 'kit_item', 'slug' => $item->item->slug, 'crc'=> $item->item->crc], ['fullBase' => true]) ?></th>
+            <th><?= $this->Html->link($item->item->title, ['_name' => 'kit_item', 'slug' => $item->item->slug, 'crc' => $item->item->crc], ['fullBase' => true]) ?></th>
             <td><?= $item->item->displayAdditionalInformation($item->additional_info) ?></td>
             <td><?= $item->item->displayColour($item->colour) ?></td>
             <td><?= $item->item->displaySize($item->size) ?></td>
@@ -55,15 +62,9 @@ use SUSC\View\AppView;
     </tbody>
     <tfoot>
     <tr>
-        <td colspan="4"></td>
+        <td colspan="5"></td>
         <th>Total</th>
         <th><?= $order->formattedTotal ?></th>
     </tr>
     </tfoot>
 </table>
-
-
-<p>Your selected payment method is: <?= $order->paymentMethod ?>.
-    Please note your order will not be accepted until payment is received.</p>
-
-<p>You can find out how to pay at <?= $this->Html->link($this->Url->build(['_name' => 'faq'], ['fullBase' => true])) ?>.</p>
