@@ -36,12 +36,12 @@ You can find out how to pay at <?= $this->Url->build('faq', ['fullBase' => true]
 
 <?= str_repeat('=', 60) ?>
 
-=<?= str_pad('Your Order', 58, ' ', STR_PAD_BOTH) ?>=
+=<?= mb_str_pad('Your Order', 58, ' ', STR_PAD_BOTH) ?>=
 <?= str_repeat('=', 60) ?>
 
 =<?= str_repeat(' ', 58) ?>=
 <?php foreach ($order->items as $item) {
-    $line = ' ' . str_pad($item->quantity, 2, ' ', STR_PAD_LEFT) . ' x ';
+    $line = ' ' . mb_str_pad($item->quantity, 2, ' ', STR_PAD_LEFT) . ' x '; // 7
 
     $itemLine = '';
     if ($item->item->hasColour) {
@@ -49,19 +49,19 @@ You can find out how to pay at <?= $this->Url->build('faq', ['fullBase' => true]
     }
 
     $itemLine .= $item->item->title;
-    $itemLine = substr($itemLine, 0, 31 - (strlen($item->size) + 3));
+    $itemLine = substr($itemLine, 0, 30 - (strlen($item->size) + 3)); // 60 - 2 - 7 - 22 = 29
 
     if ($item->item->hasSize) {
         $itemLine .= ' (' . $item->size . ')';
     }
 
-    $line .= str_pad($itemLine, 31, ' ');
+    $line .= mb_str_pad($itemLine, 29, ' '); // 29
 
-    $line .= ' @ ' . str_pad($item->formattedPrice, 8, ' ', STR_PAD_LEFT) . '  ' . str_pad($item->formattedSubtotal, 9, ' ', STR_PAD_LEFT);
-    echo '=' . str_pad($line, 60, ' ') . "=\r\n";
+    $line .= ' @ ' . mb_str_pad($item->formattedPrice, 9, ' ', STR_PAD_LEFT) . ' ' . mb_str_pad($item->formattedSubtotal, 9, ' ', STR_PAD_LEFT); // 22
+    echo '=' . mb_str_pad($line, 58, ' ') . "=\r\n"; // 2 + 29 + 22
 
     if ($item->item->additional_info) {
-        echo str_pad('=      Additional Info: ' . substr($item->additional_info, 0, 35), 59, ' ') . "=\r\n";
+        echo mb_str_pad('=      Additional Info: ' . substr($item->additional_info, 0, 35), 59, ' ', STR_PAD_RIGHT) . "=\r\n";
     }
 
 }

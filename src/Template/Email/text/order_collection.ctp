@@ -23,9 +23,37 @@ Hi <?= $user->first_name ?>,
 
 This email is to let you know that some of the items you ordered are ready for collection.
 
-These items are:
+<?= str_repeat('=', 60) ?>
 
-<?php foreach($order->items as $item): ?>
-- <?= $item->quantity?> x <?= $item->item->title ?><?php if($item->size !=null):?> (<?= $item->size ?>)<?php endif; ?><?php if($item->item->additional_info): ?>, <?= $item->additional_info ?><?php endif ?>
+=<?= str_pad('Your Items', 58, ' ', STR_PAD_BOTH) ?>=
+<?= str_repeat('=', 60) ?>
 
-<?php endforeach; ?>
+=<?= str_repeat(' ', 58) ?>=
+<?php foreach ($order->items as $item) {
+    $line = ' ' . str_pad($item->quantity, 2, ' ', STR_PAD_LEFT) . ' x ';
+
+    $itemLine = '';
+    if ($item->item->hasColour) {
+        $itemLine .= $item->colour . ' ';
+    }
+
+    $itemLine .= $item->item->title;
+    $itemLine = substr($itemLine, 0, 52 - (strlen($item->size) + 3));
+
+    if ($item->item->hasSize) {
+        $itemLine .= ' (' . $item->size . ')';
+    }
+
+    $line .= str_pad($itemLine, 52, ' ');
+
+    echo '=' . str_pad($line, 58, ' ') . "=\r\n";
+
+    if ($item->item->additional_info) {
+        echo str_pad('=      Additional Info: ' . substr($item->additional_info, 0, 35), 59, ' ') . "=\r\n";
+    }
+
+}
+?>
+=<?= str_repeat(' ', 58) ?>=
+<?= str_repeat('=', 60) ?>
+
