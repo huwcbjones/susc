@@ -112,11 +112,15 @@ class OrdersTable extends Table
 
     public function findID(Query $query, array $options = [])
     {
-        return $query
-            ->where([
-                'Orders.id' => $options['id'],
+        $query = $query->where([
+            'Orders.id' => $options['id']
+        ]);
+        if (array_key_exists('userID', $options)) {
+            $query = $query->where([
                 'Users.id' => $options['userID']
-            ])
+            ]);
+        }
+        return $query
             ->contain([
                 'ItemsOrders' => [
                     'ProcessedOrders',
