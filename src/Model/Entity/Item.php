@@ -97,7 +97,7 @@ class Item extends Entity
         $sizes = str_getcsv($this->sizes);
         $size_array = [];
         foreach($sizes as $size){
-            $size_array[$size] = trim($size);
+            $size_array[trim($size)] = trim($size);
         }
         return $size_array;
     }
@@ -111,7 +111,7 @@ class Item extends Entity
         $colours = str_getcsv($this->colours);
         $colour_array = [];
         foreach($colours as $colour){
-            $colour_array[$colour] = trim($colour);
+            $colour_array[trim($colour)] = trim($colour);
         }
         return $colour_array;
     }
