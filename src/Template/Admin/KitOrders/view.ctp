@@ -82,7 +82,7 @@ $this->assign('title', 'View Order #' . $order->id);
                     </thead>
                     <tbody>
                     <?php foreach ($order->items as $item): ?>
-                        <tr>
+                        <tr<?= $this->request->getQuery('highlight') === $item->id ? ' class="info"' : '' ?>>
                             <th data-th="Item"><?= $this->Html->link(h($item->item->title), [
                                     '_name' => 'kit_item',
                                     'action' => 'view',
