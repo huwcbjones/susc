@@ -20,7 +20,7 @@ $this->assign('title', 'Kit Orders');
                 <th scope="col">Name</th>
                 <th scope="col"><?= $this->Paginator->sort('placed', 'Order Date') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('total') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('payment', 'Payment Method') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('payment', 'Payment') ?></th>
                 <th scope="col">Status</th>
                 <th scope="col"><?= $this->Paginator->sort('paid', '<attr title="Paid">P?</attr>', ['escape' => false]) ?></th>
                 <th scope="col"><attr title="Ordered">O?</attr></th>
