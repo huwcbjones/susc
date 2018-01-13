@@ -31,7 +31,7 @@ $links['kit-orders'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'co
 $links['kit-orders_view'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index']);
 $links['kit-orders_config'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'config']);
 $links['kit-orders_process'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'process']);
-$links['kit-orders_processed'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'processedOrders']);
+$links['kit-orders_batches'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'batches'])) !== false;
 $links['kit-orders_collections'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'collections']);
 $links['membership'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'membership'])) !== false;
 $links['membership_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'membership', 'action' => 'add']);
@@ -114,7 +114,7 @@ $links['membership_list'] = $currentUrl === Router::url(['prefix' => 'admin', 'c
                 <li<?= $links['kit-orders_collections'] ? ' class="active"' : '' ?>><?= $this->Html->link('Collections', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'collections']) ?></li>
             <?php endif; ?>
             <?php if ($this->hasAccessTo('admin.kit-orders.process')): ?>
-                <li<?= $links['kit-orders_processed'] ? ' class="active"' : '' ?>><?= $this->Html->link('Batches', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'processedOrders']) ?></li>
+                <li<?= $links['kit-orders_batches'] ? ' class="active"' : '' ?>><?= $this->Html->link('Batches', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'batches']) ?></li>
             <?php endif; ?>
             <?php if ($this->hasAccessTo('admin.kit-orders.process')): ?>
                 <li<?= $links['kit-orders_process'] ? ' class="active"' : '' ?>><?= $this->Html->link('Process Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'process']) ?></li>

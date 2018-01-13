@@ -21,8 +21,8 @@ $this->assign('title', 'Item Collections');
                 <th scope="col"><?= $this->Paginator->sort('Orders.Users.last_name', 'Name') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('item_id', 'Item') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('size', 'Size') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('additional_info', 'Info') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('colour', 'Colour') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('additional_info', 'Info') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('Orders.paid', '<attr title="Paid">P?</attr>', ['escape' => false]) ?></th>
                 <?php if ($this->hasAccessTo('admin.kit-orders.view')): ?>
                     <th scope="col" class="actions"></th>
@@ -36,8 +36,8 @@ $this->assign('title', 'Item Collections');
                     <td><?= $this->Html->link(h($item->order->user->full_name), ['controller' => 'KitOrders', 'user_id' => $item->order->user_id]) ?></td>
                     <td><?= $this->Html->link($item->item->title, ['_name' => 'kit_item', 'slug' => $item->item->slug, 'crc' => $item->item->crc]) ?></td>
                     <td><?= $item->item->displaySize($item->size) ?></td>
-                    <td><?= $item->item->displayAdditionalInformation($item->additional_info) ?></td>
                     <td><?= $item->item->displayColour($item->colour) ?></td>
+                    <td><?= $item->item->displayAdditionalInformation($item->additional_info) ?></td>
                     <td><?= $item->order->getPaidStatusIcon() ?></td>
                     <?php if ($this->hasAccessTo('admin.kit-orders.view')): ?>
                         <td><?= $this->Html->link('View', ['action' => 'view', $item->order->id, 'highlight' => $item->id]) ?></td>

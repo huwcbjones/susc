@@ -21,7 +21,7 @@ use SUSC\Model\Entity\ProcessedOrder;
 use SUSC\Model\Entity\User;
 use SUSC\View\AppView;
 
-$this->assign('title', 'Processed Orders');
+$this->assign('title', 'Batches');
 ?>
 
 <div class="users index large-9 medium-8 columns content">
@@ -64,7 +64,7 @@ $this->assign('title', 'Processed Orders');
                         <?= $order->getCollectedStatusIcon() ?>
                     </td>
                     <?php if ($this->hasAccessTo('admin.kit-orders.view')): ?>
-                        <td><?= $this->Html->link('View', ['action' => 'processed-orders', $order->id]) ?></td>
+                        <td><?= $this->Html->link('View', ['action' => 'batches', $order->id]) ?></td>
                         <td><?= $this->Html->link('Download', ['action' => 'download', $order->id]) ?></td>
                     <?php endif ?>
                 </tr>
