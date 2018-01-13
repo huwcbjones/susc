@@ -58,19 +58,26 @@ class KitOrdersController extends AppController
 
     public function index()
     {
+        $options = [
+            'order' => ['id' => 'DESC'],
+            'contain' => ['Users', 'ItemsOrders' => 'ProcessedOrders'],
+            'sortWhitelist' => [
+                'id',
+                'Users.last_name',
+                'placed',
+                'total',
+                'payment',
+                'paid'
+            ]
+        ];
+
         if (($user_id = $this->request->getQuery('user_id')) !== null) {
-            $orders = $this->paginate(
-                $this->Orders,
-                [
-                    'order' => ['id' => 'DESC'],
-                    'contain' => ['Users', 'ItemsOrders' => 'ProcessedOrders'],
-                    'finder' => [
-                        'user' => ['user_id' => $user_id]
-                    ]
-                ]);
-        } else {
-            $orders = $this->paginate($this->Orders, ['order' => ['id' => 'DESC'], 'contain' => ['Users', 'ItemsOrders' => 'ProcessedOrders']]);
+            $options['finder'] = [
+                'user' => ['user_id' => $user_id]
+            ];
+
         }
+        $orders = $this->paginate($this->Orders, $options);
 
         $this->set('orders', $orders);
     }
@@ -89,7 +96,12 @@ class KitOrdersController extends AppController
         } else {
             $items = $this->paginate($this->ItemsOrders, [
                 'order' => ['created' => 'DESC'],
-                'finder' =>  'collections'
+                'finder' => 'collections',
+                'sortWhitelist' => [
+                    'Orders' => [
+                        'Users.last_name'
+                    ]
+                ]
             ]);
         }
 
