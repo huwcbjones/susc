@@ -58,16 +58,19 @@ if (!function_exists('print_acl')) {
                     <tbody>
                     <?php array_walk_recursive($t1_acls, 'print_acl', ['test' => $test, 'Form' => $Form, 'disabled' => $disabled, 'group' => $groupID . '-' . $tier1]) ?>
                     </tbody>
-                    <tfoot>
-                    <tr>
-                        <th><?= $this->Form->checkbox('select_all-' . $groupID . '-' . $tier1, ['id' => 'select_all-' . $groupID . '-' . $tier1]) ?></th>
-                        <th colspan="3">Select All</th>
-                    </tr>
-                    </tfoot>
+                    <?php if (!$disabled): ?>
+                        <tfoot>
+                        <tr>
+                            <th><?= $this->Form->checkbox('select_all-' . $groupID . '-' . $tier1, ['id' => 'select_all-' . $groupID . '-' . $tier1]) ?></th>
+                            <th colspan="3">Select All</th>
+                        </tr>
+                        </tfoot>
+                    <?php endif; ?>
                 </table>
             </div>
         </div>
     <?php
+    if (!$disabled):
     $this->start('postscript');
     echo $this->fetch('postscript');
     ?>
@@ -86,6 +89,7 @@ if (!function_exists('print_acl')) {
         </script>
         <?php
         $this->end();
+    endif;
         ?>
     <?php endforeach; ?>
 </div>
