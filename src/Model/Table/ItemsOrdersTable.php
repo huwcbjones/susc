@@ -137,11 +137,11 @@ class ItemsOrdersTable extends Table
 
     public function findUnprocessed(Query $query, $options = [])
     {
-        if(array_key_exists('itemIDs', $options)){
+        if (array_key_exists('itemIDs', $options)) {
             $query = $query->contain('Items')
                 ->where([
-               'Items.id IN' => $options['itemIDs']
-            ]);
+                    'Items.id IN' => $options['itemIDs']
+                ]);
         }
         return $query
             ->contain(['Orders'])
@@ -154,7 +154,7 @@ class ItemsOrdersTable extends Table
 
     public function findBatch(Query $query, $options = [])
     {
-        if(array_key_exists('processed_order_id', $options)){
+        if (array_key_exists('processed_order_id', $options)) {
             $id = $options['processed_order_id'];
         } else {
             $id = $options['id'];
@@ -163,5 +163,25 @@ class ItemsOrdersTable extends Table
         return $query
             ->contain(['ProcessedOrders', 'Orders' => 'Users', 'Items'])
             ->where(['processed_order_id' => $id]);
+    }
+
+    public function findCollections(Query $query, $options = [])
+    {
+        $query = $query
+            ->contain([
+                'Items',
+                'Orders' => ['Users'],
+                'ProcessedOrders'
+            ])
+            ->where([
+                '`collected` IS ' => null,
+                '`processed_order_id` IS NOT' => null,
+                'Orders.is_cancelled' => false
+            ]);
+        if (array_key_exists('user_id', $options)) {
+            $query = $query->where(['Orders.user_id' => $options['user_id']]);
+        }
+
+        return $query;
     }
 }
