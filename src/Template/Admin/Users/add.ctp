@@ -11,6 +11,8 @@ use SUSC\Model\Entity\Group;
 use SUSC\Model\Entity\User;
 
 $this->assign('title', 'Add User');
+$this->Form->unlockField('is_enable');
+$this->Form->unlockField('is_change_password');
 ?>
     <h2><?= __('Details') ?></h2>
 <?= $this->Form->create($user, ['class' => ['form-horizontal']]) ?>
