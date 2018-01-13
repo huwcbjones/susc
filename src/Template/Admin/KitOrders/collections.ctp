@@ -18,8 +18,8 @@ $this->assign('title', 'Item Collections');
             <thead>
             <tr>
                 <th scope="col"><?= $this->Paginator->sort('order_id', 'Order #') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('Orders.Users.last_name', 'Name') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('item_id', 'Item') ?></th>
+                <th scope="col">Name</th>
+                <th scope="col"><?= $this->Paginator->sort('Items.title', 'Item') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('size', 'Size') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('colour', 'Colour') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('additional_info', 'Info') ?></th>

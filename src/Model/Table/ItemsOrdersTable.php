@@ -175,7 +175,7 @@ class ItemsOrdersTable extends Table
             ])
             ->where([
                 '`collected` IS ' => null,
-                '`processed_order_id` IS NOT' => null,
+                'ProcessedOrders.arrived IS NOT' => null,
                 'Orders.is_cancelled' => false
             ]);
         if (array_key_exists('user_id', $options)) {
