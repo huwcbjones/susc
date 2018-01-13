@@ -55,7 +55,10 @@ class UsersController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Groups']
+            'contain' => ['Groups'],
+            'order' => [
+                'Users.created' => 'desc'
+            ]
         ];
         $users = $this->paginate($this->Users);
 
@@ -170,7 +173,7 @@ class UsersController extends AppController
      */
     public function delete($id = null)
     {
-        if($this->currentUser->id == $id){
+        if ($this->currentUser->id == $id) {
             $this->Flash->error(__('Failed to delete user. You cannot delete yourself (unfortunately)!'));
             return $this->redirect(['action' => 'index']);
         }
