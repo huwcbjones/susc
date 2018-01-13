@@ -128,6 +128,7 @@ $this->assign('title', 'View Order #' . $order->id);
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <?= $this->Form->create(null, ['id' => 'paymentForm', 'url' => ['action' => 'paid']]) ?>
+            <?php $this->Form->unlockField('id'); ?>
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">Are you sure you want to mark Order #<?= $order->id ?> as paid?</h4>
@@ -152,6 +153,7 @@ $this->assign('title', 'View Order #' . $order->id);
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <?= $this->Form->create(null, ['id' => 'cancelForm', 'url' => ['action' => 'cancel']]) ?>
+            <?php $this->Form->unlockField('id'); ?>
             <?= $this->Form->hidden('id', ['value' => $order->id]); ?>
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -177,6 +179,7 @@ $this->assign('title', 'View Order #' . $order->id);
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <?= $this->Form->create(null, ['id' => 'collectedForm', 'url' => ['action' => 'collected']]) ?>
+            <?php $this->Form->unlockField('id'); ?>
             <?= $this->Form->hidden('id', ['id' => 'collectedID']); ?>
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
