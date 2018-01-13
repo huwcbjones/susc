@@ -84,26 +84,26 @@ class KitOrdersController extends AppController
 
     public function collections()
     {
+        $options = [
+            'order' => ['created' => 'DESC'],
+            'finder' => 'collections',
+            'sortWhitelist' => [
+                'order_id',
+                'Items.title',
+                'size',
+                'colour',
+                'additional_info',
+                'Orders.paid'
+            ]
+        ];
+
         if (($user_id = $this->request->getQuery('user_id')) !== null) {
-            $items = $this->paginate($this->ItemsOrders, [
-                'order' => ['created' => 'DESC'],
-                'finder' => [
-                    'collections' => [
-                        'user_id' => $user_id
-                    ]
-                ]
-            ]);
-        } else {
-            $items = $this->paginate($this->ItemsOrders, [
-                'order' => ['created' => 'DESC'],
-                'finder' => 'collections',
-                'sortWhitelist' => [
-                    'Orders' => [
-                        'Users.last_name'
-                    ]
-                ]
-            ]);
+            $options['finder'] = [
+                'collections' => ['user_id' => $user_id]
+            ];
         }
+
+        $items = $this->paginate($this->ItemsOrders, $options);
 
         $this->set('items', $items);
     }
