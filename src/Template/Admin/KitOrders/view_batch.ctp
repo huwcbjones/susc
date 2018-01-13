@@ -105,7 +105,8 @@ $this->assign('title', 'View Batch # ' . $order->id);
                         <th class="text-center" colspan="2"><h3 class="h4">Total:</h3></th>
                         <th class="text-center" style="vertical-align: middle"><?= $order->item_count ?></th>
                         <?php if ($this->hasAccessTo('admin.kit-orders.status')) : ?>
-                            <th colspan="2"></th>
+                            <th style="vertical-align: middle"><?= $order->paid_left ?></th>
+                            <th style="vertical-align: middle"><?= $order->collected_left ?></th>
                         <?php endif ?>
                     </tr>
                     </tfoot>

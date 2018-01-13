@@ -24,6 +24,7 @@ use Cake\ORM\Entity;
  *
  * @property integer $collected_left
  * @property boolean $is_all_collected
+ * @property integer $paid_left
  *
  * @property \SUSC\Model\Entity\User $user
  * @property \SUSC\Model\Entity\ItemsOrder[] $items_orders
@@ -45,6 +46,7 @@ class ProcessedOrder extends Entity
         'id' => false
     ];
 
+    protected $paidCount = null;
     protected $collectedCount = null;
     protected $itemCount = null;
     protected $total = null;
@@ -119,13 +121,19 @@ class ProcessedOrder extends Entity
 
     protected function _countStats()
     {
+        $paid = [];
         $collected = 0;
         $total = 0;
 
         foreach ($this->items_orders as $item) {
             if ($item->is_collected) $collected++;
             $total += $item->subtotal;
+            if ($item->order->is_paid){
+                $paid[] = $item->order->id;
+            }
         }
+
+        $this->paidCount = count($paid);
         $this->collectedCount = $collected;
         $this->total = $total;
         $this->itemCount = count($this->items_orders);
@@ -140,6 +148,12 @@ class ProcessedOrder extends Entity
     protected function _getIsAllCollected()
     {
         return $this->collected_left == 0;
+    }
+
+    protected function _getPaidLeft()
+    {
+        if ($this->paidCount == null) $this->_countStats();
+        return $this->item_count - $this->paidCount;
     }
 
     protected function _getStatus()
