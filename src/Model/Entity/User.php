@@ -215,4 +215,21 @@ class User extends Entity
         if (is_string($password)) return $password;
         return stream_get_contents($password);
     }
+
+    public function getActivatedIcon()
+    {
+        if ($this->isActivated()) {
+            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
+        } else {
+            return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
+        }
+    }
+    public function getEnabledIcon()
+    {
+        if ($this->isEnabled()) {
+            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
+        } else {
+            return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
+        }
+    }
 }

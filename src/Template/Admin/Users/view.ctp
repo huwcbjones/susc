@@ -129,3 +129,30 @@ $this->assign('title', 'View User: ' . $user->full_name);
     </div>
 
 </form>
+
+<div class="row">
+    <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-0 col-lg-4">
+        <?= $this->Html->link('<span class="glyphicon glyphicon-chevron-left"></span> Back', ['action' => 'index'], ['class' => ['btn', 'btn-default', 'btn-block'], 'escape' => false]) ?>
+    </div>
+    <?php if ($this->hasAccessTo('admin.users.edit') || $this->hasAccessTo('admin.users.delete')): ?>
+        <div class="col-xs-12 visible-xs-block"><br/></div>
+        <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-2 col-lg-4 col-lg-offset-4">
+            <?php if ($this->hasAccessTo('admin.users.edit') && $this->hasAccessTo('admin.users.delete')): ?>
+                <div class="btn-group btn-block">
+                    <?= $this->Html->link('Edit <span class="glyphicon glyphicon-pencil"></span>', ['action' => 'edit', $user->id], ['class' => ['btn', 'btn-primary', 'col-sm-10', 'col-md-11'], 'escape' => false]) ?>
+                    <a href="#" class="btn btn-primary col-sm-2 col-md-1 dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu btn-block">
+                        <li><?= $this->Form->postLink('Delete&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-remove"></span>', ['action' => 'delete', $user->id], ['escape' => false, 'confirm' => __('Are you sure you want to delete {0}?', $user->full_name)]) ?></li>
+                    </ul>
+                </div>
+            <?php elseif ($this->hasAccessTo('admin.users.edit')): ?>
+                <?= $this->Html->link('Edit <span class="glyphicon glyphicon-pencil"></span>', ['action' => 'edit', $user->id], ['class' => ['btn', 'btn-primary', 'btn-block'], 'escape' => false]) ?>
+            <?php else: ?>
+                <?= $this->Form->postLink('Delete&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-remove"></span>', ['action' => 'delete', $user->id], ['escape' => false, 'class' => ['btn', 'btn-primary', 'btn-block'], 'confirm' => __('Are you sure you want to delete {0}?', $user->full_name)]) ?>
+            <?php endif; ?>
+
+        </div>
+    <?php endif ?>
+</div>
