@@ -67,6 +67,53 @@ $this->assign('title', 'View Group: ' . $group->name);
         <h2><?= __('Access Control Objects') ?></h2>
         <?= $this->element('Admin/ACL', ['acls' => $group->acls, 'all_acls' => $all_acls, 'disabled' => true]) ?>
     </div>
+    <?php if ($this->hasAccessTo('admin.users.*')): ?>
+        <div class="users">
+            <h2>Group Members</h2>
+            <div class="panel-group" id="accordion-userList" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-primary">
+                    <div class="panel-heading" role="tab" id="h-userList">
+                        <h4 class="panel-title">
+                            <a role="button" data-toggle="collapse" data-parent="#accordion-userList" href="#c-userList" aria-expanded="true"
+                               aria-controls="c-userList">
+                                Group Members
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="c-userList" class="panel-collapse collapse"
+                         role="tabpanel" aria-labelledby="h-userList">
+                        <div class="panel-body">
+
+                        </div>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Created</th>
+                                <?php if ($this->hasAccessTo('admin.users.view')): ?>
+                                    <th></th>
+                                <?php endif ?>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($group->users as $user): ?>
+                                <tr>
+                                    <td><?= $user->first_name ?></td>
+                                    <td><?= $user->last_name ?></td>
+                                    <td><?= $user->created ?></td>
+                                    <?php if ($this->hasAccessTo('admin.users.view')): ?>
+                                        <td class="actions"><?= $this->Html->link(__('View'), ['controller' => 'Users', 'action' => 'view', $user->id]) ?></td>
+                                    <?php endif ?>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif ?>
 </form>
 
 <div class="row">
