@@ -7,6 +7,7 @@
  * @link      http://susc.org.uk SUSC Website
  */
 
+use SUSC\Model\Entity\ItemsOrder;
 use SUSC\Model\Entity\ProcessedOrder;
 use SUSC\View\AppView;
 
@@ -15,6 +16,7 @@ use SUSC\View\AppView;
  * Since: 29/09/2017
  * @var AppView $this
  * @var ProcessedOrder $order
+ * @var ItemsOrder[] $items
  */
 
 $this->assign('title', 'View Batch # ' . $order->id);
@@ -34,7 +36,7 @@ $this->assign('title', 'View Batch # ' . $order->id);
                                     <?php if (!$order->is_ordered): ?>
                                         <li><?= $this->Form->postLink(__('Mark as Ordered'), ['action' => 'ordered', $order->id]) ?></li>
                                     <?php else: ?>
-                                        <li><?= $this->Form->postLink(__('Mark as not Ordered'), ['action' => 'ordered', $order->id]) ?></li>
+                                        <li><?= $this->Form->postLink('Mark as <strong>not</strong> Ordered', ['action' => 'ordered', $order->id], ['escape' => false]) ?></li>
                                     <?php endif; ?>
                                 <?php endif; ?>
                                 <?php if ($order->is_ordered && !$order->is_arrived) : ?>
@@ -46,7 +48,7 @@ $this->assign('title', 'View Batch # ' . $order->id);
                 <?php endif ?></div>
             <div class="panel-body">
                 <p><strong>Ordered:</strong> <?= $order->order_date ?></p>
-
+                <p><strong>Arrived:</strong> <?= $order->arrived_date ?></p>
                 <p><strong>Status:</strong> <?= $order->status ?></p>
             </div>
             <div class="table-responsive">
@@ -54,25 +56,19 @@ $this->assign('title', 'View Batch # ' . $order->id);
                     <thead>
                     <tr>
                         <th><?= $this->Paginator->sort('order_id', 'Order #') ?></th>
-                        <th>Name</th>
+                        <th><?= $this->Paginator->sort('Users.last_name', 'Name') ?></th>
                         <th><?= $this->Paginator->sort('item_id', 'Item') ?></th>
-                        <th class="text-center">Additional Info</th>
                         <th class="text-center"><?= $this->Paginator->sort('size') ?></th>
-                        <th class="text-center"><?= $this->Paginator->sort('price') ?></th>
+                        <th class="text-center"><?= $this->Paginator->sort('colour') ?></th>
+                        <th class="text-center"><?= $this->Paginator->sort('additional_info', 'Info') ?></th>
                         <th class="text-center"><?= $this->Paginator->sort('quantity') ?></th>
-                        <th class="text-center"><?= $this->Paginator->sort('subtotal') ?></th>
                         <?php if ($this->hasAccessTo('admin.kit-orders.status')) : ?>
+                            <th><?= $this->Paginator->sort('Orders.paid', '<attr title="Paid">P?</attr>', ['escape' => false]) ?></th>
                             <th scope="col">
-                                <attr title="Ordered">O?</attr>
-                            </th>
-                            <th scope="col">
-                                <attr title="Arrived">A?</attr>
-                            </th>
-                            <th scope="col">
-                                <?php if ($order->is_all_collected || !$order->is_all_arrived): ?>
+                                <?php if (!$order->is_all_collected): ?>
                                     <?= $this->Paginator->sort('collected', '<attr title="Collected">C?</attr>', ['escape' => false]) ?>
                                 <?php else: ?>
-                                    Collected
+                                    <attr title="Collected">C?</attr>
                                 <?php endif; ?>
                             </th>
                         <?php endif ?>
@@ -86,15 +82,14 @@ $this->assign('title', 'View Batch # ' . $order->id);
                             <th id="<?= $item->id ?>"><?= $this->Html->link($item->order->id, ['action' => 'view', $item->order->id]) ?></th>
                             <td><?= $this->Html->link($item->order->user->full_name, [$order->id, 'user_id' => $item->order->user->id]) ?></td>
                             <td data-th="Item"><?= $this->Html->link(h($item->item->title), [$order->id, 'item_id' => $item->item_id]) ?></td>
+                            <td data-th="Size" class="text-center"><?= $item->item->displaySize($item->size) ?></td>
+                            <td data-th="Colouor" class="text-center"><?= $item->item->displayColour($item->colour) ?></td>
                             <td data-th="Additional Info"
                                 class="text-center"><?= h($item->item->displayAdditionalInformation($item->additional_info)) ?></td>
-                            <td data-th="Size" class="text-center"><?= $item->size ?></td>
-                            <td data-th="Price" class="text-center"><?= $item->formattedPrice ?></td>
+
                             <td data-th="Quantity" class="text-center"><?= $item->quantity ?></td>
-                            <td data-th="Quantity" class="text-center"><?= $item->formattedSubtotal ?></td>
                             <?php if ($this->hasAccessTo('admin.kit-orders.status')) : ?>
-                                <td><?= $order->getOrderedStatusIcon() ?></td>
-                                <td><?= $order->getArrivedStatusIcon() ?></td>
+                                <td><?= $item->order->getPaidStatusIcon() ?></td>
                                 <td><?= $item->getCollectedStatusIcon() ?>
                                     <?php if (!$item->collected && $order->is_arrived): ?>&nbsp;&nbsp;&nbsp;
                                         <a href="#" onclick="$('#collectedID').val('<?= $item->id ?>');$('#collectedConfirmation').modal()">Collected</a>
@@ -109,9 +104,8 @@ $this->assign('title', 'View Batch # ' . $order->id);
                         <td colspan="4"></td>
                         <th class="text-center" colspan="2"><h3 class="h4">Total:</h3></th>
                         <th class="text-center" style="vertical-align: middle"><?= $order->item_count ?></th>
-                        <th class="text-center" style="vertical-align: middle"><?= $order->formatted_total ?></th>
                         <?php if ($this->hasAccessTo('admin.kit-orders.status')) : ?>
-                            <th colspan="3"></th>
+                            <th colspan="2"></th>
                         <?php endif ?>
                     </tr>
                     </tfoot>

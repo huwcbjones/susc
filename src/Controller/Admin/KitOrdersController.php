@@ -50,7 +50,7 @@ class KitOrdersController extends AppController
         if (in_array($this->request->getParam('action'), ['paid', 'ordered', 'arrived', 'collected'])) {
             return 'admin.kit-orders.status';
         }
-        if (in_array($this->request->getParam('action'), ['processedOrders'])) {
+        if (in_array($this->request->getParam('action'), ['batches'])) {
             return 'admin.kit-orders.process';
         }
         return parent::getACL();
@@ -302,7 +302,7 @@ class KitOrdersController extends AppController
      *
      * @param string|null $id ID of processed order to display
      */
-    public function processedOrders($id = null)
+    public function batches($id = null)
     {
         if ($id == null) {
             $orders = $this->paginate($this->ProcessedOrders, ['order' => ['created' => 'DESC'], 'contain' => ['Users', 'ItemsOrders' => ['Orders', 'Items']]]);
@@ -321,12 +321,24 @@ class KitOrdersController extends AppController
                 'batch' => ['id' => $id]
             ],
             'maxLimit' => $order->item_count,
-            'limit' => $order->item_count
+            'limit' => $order->item_count,
+            'sortWhitelist' => [
+                'id',
+                'Users.last_name',
+                'item_id',
+                'additional_info',
+                'size',
+                'price',
+                'quantity',
+                'subtotal',
+                'Orders.paid',
+                'collected'
+            ]
         ];
         $items = $this->Paginator->paginate($this->ItemsOrders, $options);
         $this->set('order', $order);
         $this->set('items', $items);
-        $this->viewBuilder()->setTemplate('view_processed_orders');
+        $this->viewBuilder()->setTemplate('view_batch');
     }
 
     /**

@@ -13,6 +13,7 @@ use Cake\ORM\Entity;
  * @property bool $is_arrived
  * @property float $total
  * @property string $order_date
+ * @property string $arrived_date
  * @property string $formatted_total
  * @property integer $item_count
  * @property string $status
@@ -64,7 +65,12 @@ class ProcessedOrder extends Entity
 
     protected function _getOrderDate(){
         if($this->ordered === null) return "-";
-        return $this->created->i18nFormat( null,  'Europe/London', 'en-GB');
+        return $this->ordered->i18nFormat( null,  'Europe/London', 'en-GB');
+    }
+
+    protected function _getArrivedDate(){
+        if($this->arrived === null) return "-";
+        return $this->arrived->i18nFormat( null,  'Europe/London', 'en-GB');
     }
 
     public function getOrderedStatusIcon()
