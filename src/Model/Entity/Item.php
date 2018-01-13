@@ -3,7 +3,9 @@
 namespace SUSC\Model\Entity;
 
 use Cake\Collection\CollectionInterface;
+use Cake\I18n\Time;
 use Cake\ORM\Entity;
+use DateTime;
 use huwcbjones\markdown\GithubMarkdownExtended;
 
 /**
@@ -12,23 +14,32 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  * @property string $id
  * @property string $title
  * @property string $slug
+ * @property string $crc
  * @property boolean $image
  * @property string $imagePath
- * @property string $formatted_price
+ * @property string $formattedPrice
  * @property float $price
  * @property string $description
+ * @property string $renderedDescription
  * @property string $sizes
+ * @property string $orderString
+ * @property boolean $hasSize
  * @property string[] $sizeList
  * @property boolean $hasColour
  * @property string $colours
  * @property string[] $colourList
  * @property ItemsOrder $_joinData;
  * @property ItemsOrder[]|CollectionInterface $items_orders
- * @property boolean $status
+ * @property boolean $status Enabled or Disabled
+ * @property boolean $isAvailableToOrder
+ * @property boolean $instock In-Stock or Out of Stock
  * @property boolean $additional_info
  * @property string $additional_info_description
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
+ * @property string $renderedAdditionalDescription
+ * @property Time $from Display From
+ * @property Time $until Display Until
+ * @property Time $created Date created
+ * @property Time $modified Date last modified
  */
 class Item extends Entity
 {
@@ -47,8 +58,15 @@ class Item extends Entity
         'created' => false,
         'modified' => false,
         'slug' => false,
-        'id' => false
+        'id' => false,
+        'image' => false,
+        'from' => false,
+        'until' => false
     ];
+
+    protected function _getCrc(){
+        return dechex(crc32($this->id));
+    }
 
     protected function _getRenderedDescription()
     {
@@ -56,7 +74,8 @@ class Item extends Entity
         return $parser->parse($this->description);
     }
 
-    protected function _getRenderedAdditionalDescription(){
+    protected function _getRenderedAdditionalDescription()
+    {
         $parser = new GithubMarkdownExtended();
         return $parser->parse($this->additional_info_description);
     }
@@ -78,7 +97,7 @@ class Item extends Entity
         $sizes = str_getcsv($this->sizes);
         $size_array = [];
         foreach($sizes as $size){
-            $size_array[$size] = trim($size);
+            $size_array[trim($size)] = trim($size);
         }
         return $size_array;
     }
@@ -92,11 +111,14 @@ class Item extends Entity
         $colours = str_getcsv($this->colours);
         $colour_array = [];
         foreach($colours as $colour){
-            $colour_array[$colour] = trim($colour);
+            $colour_array[trim($colour)] = trim($colour);
         }
         return $colour_array;
     }
 
+    protected function _getHasSize(){
+        return trim($this->sizes) != '';
+    }
 
     protected function _getHasColour(){
         return trim($this->colours) != '';
@@ -110,7 +132,7 @@ class Item extends Entity
     public function displayAdditionalInformation($additionalInfo)
     {
         if (!$this->additional_info) {
-            return '[None Required]';
+            return '-';
         } elseif ($additionalInfo == '') {
             return '[None Provided]';
         } else {
@@ -118,12 +140,52 @@ class Item extends Entity
         }
     }
 
+    protected function _getOrderString()
+    {
+        if (!$this->instock) {
+            return 'This item is <strong>not</strong> currently available to order!';
+        }
+        $now = new DateTime();
+
+        if ($this->from !== null && $this->from > $now) {
+            return 'This item is will be available to order <strong>after</strong> ' . $now->format('d/m/Y') . '.';
+        } else if ($this->from === null && $this->until !== null && $this->until <= $now) {
+            return 'This item is <strong>not</strong> currently available to order!';
+        } else if ($this->until <= $now || $this->from > $now) {
+            return 'This item is <strong>not</strong> currently available to order!';
+        }
+        return 'This item is available to order!';
+    }
+
+    protected function _getIsAvailableToOrder()
+    {
+        $now = new DateTime();
+        if ($this->from === null && $this->until === null) {
+            return $this->instock;
+        } else if ($this->from === null && $this->until !== null) {
+            return $this->until > $now;
+        } else if ($this->from !== null && $this->until === null) {
+            return $this->from <= $now;
+        } else {
+            return $this->until >= $now && $this->from < $now;
+        }
+    }
+
     public function displayColour($colour)
     {
-        if ($this->colourList === null) {
-            return '[None Required]';
+        if (!$this->hasColour) {
+            return '-';
         } else {
             return $colour;
+        }
+    }
+
+    public function displaySize($size)
+    {
+        if (!$this->hasSize) {
+            return '-';
+        } else {
+            return $size;
         }
     }
 }

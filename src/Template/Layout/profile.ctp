@@ -2,8 +2,8 @@
 $this->extend('clean')
 ?>
 <div class="row">
-    <div class="col-xs-12 col-md-3">
-        <h1 class="h2">&nbsp;</h1><br/>
+    <div class="col-xs-12 col-sm-4 col-md-3">
+        <span class="hidden-xs"><h1 class="h2">&nbsp;</h1><br/></span>
         <div class="btn-group-vertical btn-block" role="group">
             <?= $this->Html->link('My Details', ['_name' => 'profile'], ['class' => ['btn', 'btn-lg', 'btn-default', 'btn-block']]) ?>
             <?php if($this->hasAccessTo('kit.*')): ?>
@@ -21,7 +21,7 @@ $this->extend('clean')
             <?= $this->Html->link('Logout', ['_name' => 'logout'], ['class' => ['btn', 'btn-lg', 'btn-default', 'btn-block']]) ?>
         </div>
     </div>
-    <div class="col-xs-12 col-md-9">
+    <div class="col-xs-12 col-sm-8 col-md-9">
         <h1 class="h2"><?= h($this->fetch('title')) ?></h1><br/>
         <?= $this->fetch('content') ?>
     </div>

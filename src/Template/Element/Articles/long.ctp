@@ -6,7 +6,7 @@
             <span itemprop="name"><?= h($article->authorName) ?></span></span>, <span itemprop="datePublished"
                                                                                       content="<?= $article->created->format("Y-m-d H:i:s") ?>"> at
                     <?= $article->created->format('g:iA \o\n F j<\s\u\p>S</\s\u\p> Y') ?></span></p>
-            <?php if ($article->created != $article->modified) : ?>
+            <?php if ($article->isEdited) : ?>
                 <p class="blog-post-meta pull-right"> (Last
                     updated at <span itemprop="dateModified"
                                      content="<?= $article->modified->format("Y-m-d H:i:s") ?>"><?= $article->modified->format('g:iA F j<\s\u\p>S</\s\u\p> Y') ?></span>

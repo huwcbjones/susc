@@ -6,9 +6,9 @@ use SUSC\View\AppView;
 
 /** @var AppView $this */
 $description = $this->fetch('description');
-$description = $this->Text->truncate(strip_tags($description), 160, ['ellipsis' => '', 'exact' => false]);
+$description = strip_tags($this->Text->truncate($description, 160, ['ellipsis' => '', 'exact' => false, 'html' => true]));
 
-
+$title = $this->fetch('title_string', h($this->fetch('title')) . ' | ' . Configure::read('App.name'));
 ?>
 <?= $this->Html->charset() ?>
 
@@ -39,7 +39,7 @@ $description = $this->Text->truncate(strip_tags($description), 160, ['ellipsis' 
 <meta name="msapplication-square70x70logo" content="/img/icon/mstile-70x70.png"/>
 <meta name="msapplication-square150x150logo" content="/img/icon/mstile-150x150.png"/>
 <meta name="msapplication-wide310x150logo" content="/img/icon/mstile-310x150.png"/>
-<meta name="msapplication-square310x310logo" content="/img/icon/mstile-310x310.png"/>
+<meta name="msapplication-square310x310logo" content="/img/icon/mstile-310x310.png"/>`
 <meta name="COPYRIGHT"
       content="© <?= date('Y') ?>. All content, photos and text are the property of Southampton University Swimming Club. All Rights Reserved. Site conducted in accordance with the ASA &quot;Guidelines for Club Web Sites&quot;."/>
 <meta http-equiv="Content-Language" content="en-gb"/>
@@ -48,16 +48,16 @@ $description = $this->Text->truncate(strip_tags($description), 160, ['ellipsis' 
 <meta name="ROBOTS" content="INDEX"/>
 <meta property="fb:app_id" content="1103769579691459"/>
 <meta property="og:url" content="<?= Router::url($this->request->getRequestTarget(), true) ?>"/>
-<meta property="og:title" content="<?= h($this->fetch('title')) ?>"/>
+<meta property="og:title" content="<?= $title ?>"/>
 <meta property="og:type" content="website"/>
-<meta property="og:description" content="<?= h($this->fetch('description')) ?>"/>
+<meta property="og:description" content="<?= $description ?>"/>
 <meta property="og:image" content="<?= $this->Url->build('/img/logo.png', true) ?>"/>
 <?= $this->Html->meta(
     'description',
     $description
 ) ?>
 
-<title><?= h($this->fetch('title')) ?> | <?= Configure::read('App.name') ?></title>
+<title><?= $title ?></title>
 <meta itemprop="name" content="SUSC"/>
 <link rel="canonical" href="<?= Router::url($this->request->getRequestTarget(), true) ?>" itemprop="url">
 

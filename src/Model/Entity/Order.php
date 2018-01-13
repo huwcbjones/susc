@@ -116,7 +116,7 @@ class Order extends Entity
     {
         switch ($this->payment) {
             case 'bat':
-                return 'Bank Account Transfer';
+                return 'BACs';
             case 'cash':
                 return 'Cash';
         }

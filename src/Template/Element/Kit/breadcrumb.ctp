@@ -6,7 +6,7 @@ $currentUrl = Router::normalize($this->request->here);
 $links = array();
 $links['kit'] = $currentUrl === Router::url(['_name' => 'kit']);
 $links['basket'] = $currentUrl === Router::url(['_name' => 'basket']);
-$links['item'] = $currentUrl === Router::url(['_name' => 'kit_item', 'slug'=> $this->request->slug]);
+$links['item'] = $currentUrl === Router::url(['_name' => 'kit_item', 'slug'=> $this->request->slug, 'crc' => $this->request->crc]);
 ?>
 
 <ol class="breadcrumb">

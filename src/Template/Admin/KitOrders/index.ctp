@@ -20,7 +20,7 @@ $this->assign('title', 'Kit Orders');
                 <th scope="col">Name</th>
                 <th scope="col"><?= $this->Paginator->sort('placed', 'Order Date') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('total') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('payment', 'Payment Method') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('payment', 'Payment') ?></th>
                 <th scope="col">Status</th>
                 <th scope="col"><?= $this->Paginator->sort('paid', '<attr title="Paid">P?</attr>', ['escape' => false]) ?></th>
                 <th scope="col"><attr title="Ordered">O?</attr></th>
@@ -59,16 +59,5 @@ $this->assign('title', 'Kit Orders');
             <small>* Cancelled order</small>
         </p>
     </div>
-    <div class="paginator">
-        <nav>
-            <ul class="pagination">
-                <?= $this->Paginator->first('<< ' . __('first')) ?>
-                <?= $this->Paginator->prev('< ' . __('previous')) ?>
-                <?= $this->Paginator->numbers(['before' => null, 'after' => null]) ?>
-                <?= $this->Paginator->next(__('next') . ' >') ?>
-                <?= $this->Paginator->last(__('last') . ' >>') ?>
-            </ul>
-        </nav>
-        <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
-    </div>
+    <?= $this->element('paginator') ?>
 </div>

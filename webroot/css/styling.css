@@ -158,6 +158,15 @@
     margin-right: 10px !important;
 }
 
+.kit-out-of-stock > a {
+    color: #aaa;
+}
+
+.kit-out-of-stock-img {
+    -webkit-filter: saturate(0%) opacity(50%);
+    filter: saturate(0%) opacity(50%);
+}
+
 .btn-dark {
     color: #ffffff;
     background-color: #222;

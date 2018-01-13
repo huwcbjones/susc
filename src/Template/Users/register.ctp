@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @var \Cake\View\View $this
+ */
 
 use Cake\Core\Configure;
 use SUSC\Form\RegisterForm;
@@ -19,7 +21,7 @@ $this->end();
 
 $this->assign('title', 'Register');
 
-/** @var \Cake\View\View $this */
+$this->Form->unlockField('g-recaptcha-response');
 ?>
 
 <?= $this->Form->create($register, ['class' => ['form-layout'], 'id' => 'registration-form']) ?>

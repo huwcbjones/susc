@@ -10,15 +10,18 @@
                         <h3 class="h4"><?= $this->Html->link(h($data['item']->title), [
                                 'controller' => 'kit',
                                 'action' => 'view',
+                                'crc' => $data['item']->crc,
                                 'slug' => $data['item']->slug
                             ]) ?></h3>
-                        <?php if ($data['colour']): ?>
+                        <?php if ($data['item']->hasColour): ?>
                             Colour: <?= $data['colour'] ?><br/>
                         <?php endif; ?>
+                        <?php if ($data['size']): ?>
                         Size: <?= $data['size'] ?><br/>
+                        <?php endif; ?>
                         Quantity: <?= $data['quantity'] ?><br/>
                         <?php if ($data['item']->additional_info): ?>
-                            Additional Info: <?= h(($data['additional_info'] == '') ? '[None Provided]' : $data['additional_info']) ?><br/>
+                            Additional Info: <?= $data['item']->displayAdditionalInformation($data['additional_info']) ?><br/>
                         <?php endif; ?>
                         Subtotal: <?= sprintf("£%.2f", $data['quantity'] * $data['item']->price) ?><br/>
                         <?= $this->Form->postLink(

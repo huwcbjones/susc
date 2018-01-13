@@ -86,8 +86,9 @@ class NewsController extends AppController
             !$this->request->is('crawler')
             && $this->Session->read('read_article_' . $article->slug) != true
         ) {
-            $article->hits++;
+            $article->incrementHits();
             $this->News->save($article);
+            $this->Session->write('read_article_' . $article->slug, true);
         }
         $this->set('article', $article);
     }

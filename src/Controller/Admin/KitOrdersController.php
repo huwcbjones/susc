@@ -50,7 +50,7 @@ class KitOrdersController extends AppController
         if (in_array($this->request->getParam('action'), ['paid', 'ordered', 'arrived', 'collected'])) {
             return 'admin.kit-orders.status';
         }
-        if (in_array($this->request->getParam('action'), ['processedOrders'])) {
+        if (in_array($this->request->getParam('action'), ['batches'])) {
             return 'admin.kit-orders.process';
         }
         return parent::getACL();
@@ -58,21 +58,54 @@ class KitOrdersController extends AppController
 
     public function index()
     {
+        $options = [
+            'order' => ['id' => 'DESC'],
+            'contain' => ['Users', 'ItemsOrders' => 'ProcessedOrders'],
+            'sortWhitelist' => [
+                'id',
+                'Users.last_name',
+                'placed',
+                'total',
+                'payment',
+                'paid'
+            ]
+        ];
+
         if (($user_id = $this->request->getQuery('user_id')) !== null) {
-            $orders = $this->paginate(
-                $this->Orders,
-                [
-                    'order' => ['id' => 'DESC'],
-                    'contain' => ['Users', 'ItemsOrders' => 'ProcessedOrders'],
-                    'finder' => [
-                        'user' => ['user_id' => $user_id]
-                    ]
-                ]);
-        } else {
-            $orders = $this->paginate($this->Orders, ['order' => ['id' => 'DESC'], 'contain' => ['Users', 'ItemsOrders' => 'ProcessedOrders']]);
+            $options['finder'] = [
+                'user' => ['user_id' => $user_id]
+            ];
+
         }
+        $orders = $this->paginate($this->Orders, $options);
 
         $this->set('orders', $orders);
+    }
+
+    public function collections()
+    {
+        if (($user_id = $this->request->getQuery('user_id')) !== null) {
+            $items = $this->paginate($this->ItemsOrders, [
+                'order' => ['created' => 'DESC'],
+                'finder' => [
+                    'collections' => [
+                        'user_id' => $user_id
+                    ]
+                ]
+            ]);
+        } else {
+            $items = $this->paginate($this->ItemsOrders, [
+                'order' => ['created' => 'DESC'],
+                'finder' => 'collections',
+                'sortWhitelist' => [
+                    'Orders' => [
+                        'Users.last_name'
+                    ]
+                ]
+            ]);
+        }
+
+        $this->set('items', $items);
     }
 
     public function view($id = null)
@@ -269,7 +302,7 @@ class KitOrdersController extends AppController
      *
      * @param string|null $id ID of processed order to display
      */
-    public function processedOrders($id = null)
+    public function batches($id = null)
     {
         if ($id == null) {
             $orders = $this->paginate($this->ProcessedOrders, ['order' => ['created' => 'DESC'], 'contain' => ['Users', 'ItemsOrders' => ['Orders', 'Items']]]);
@@ -288,12 +321,24 @@ class KitOrdersController extends AppController
                 'batch' => ['id' => $id]
             ],
             'maxLimit' => $order->item_count,
-            'limit' => $order->item_count
+            'limit' => $order->item_count,
+            'sortWhitelist' => [
+                'id',
+                'Users.last_name',
+                'item_id',
+                'additional_info',
+                'size',
+                'price',
+                'quantity',
+                'subtotal',
+                'Orders.paid',
+                'collected'
+            ]
         ];
         $items = $this->Paginator->paginate($this->ItemsOrders, $options);
         $this->set('order', $order);
         $this->set('items', $items);
-        $this->viewBuilder()->setTemplate('view_processed_orders');
+        $this->viewBuilder()->setTemplate('view_batch');
     }
 
     /**
