@@ -1,5 +1,4 @@
 <?php
-
 use Migrations\AbstractMigration;
 
 class Initial extends AbstractMigration
@@ -18,16 +17,16 @@ class Initial extends AbstractMigration
                 'limit' => 255,
                 'null' => true,
             ])
-            ->addColumn('description', 'text', [
+            ->addColumn('description', 'string', [
                 'default' => null,
+                'limit' => 255,
+                'null' => true,
+            ])
+            ->addColumn('is_public', 'boolean', [
+                'default' => false,
                 'limit' => null,
                 'null' => true,
             ])
-            ->addIndex(
-                [
-                    'id',
-                ]
-            )
             ->create();
 
         $this->table('articles', ['id' => false, 'primary_key' => ['id']])
@@ -43,7 +42,7 @@ class Initial extends AbstractMigration
             ])
             ->addColumn('slug', 'string', [
                 'default' => null,
-                'limit' => 255,
+                'limit' => 190,
                 'null' => false,
             ])
             ->addColumn('category', 'string', [
@@ -97,17 +96,13 @@ class Initial extends AbstractMigration
             ])
             ->addIndex(
                 [
-                    'user_id',
-                ]
-            )
-            ->addIndex(
-                [
-                    'user_id',
-                ]
-            )
-            ->addIndex(
-                [
                     'slug',
+                ],
+                ['unique' => true]
+            )
+            ->addIndex(
+                [
+                    'user_id',
                 ]
             )
             ->addIndex(
@@ -219,16 +214,11 @@ class Initial extends AbstractMigration
                 'limit' => 190,
                 'null' => false,
             ])
-            ->addColumn('value', 'string', [
+            ->addColumn('value', 'text', [
                 'default' => null,
-                'limit' => 190,
+                'limit' => null,
                 'null' => true,
             ])
-            ->addIndex(
-                [
-                    'value',
-                ]
-            )
             ->create();
 
         $this->table('galleries', ['id' => false, 'primary_key' => ['id']])
@@ -269,7 +259,7 @@ class Initial extends AbstractMigration
             )
             ->create();
 
-        $this->table('galleries_images')
+        $this->table('galleries_images', ['id' => false, 'primary_key' => ['gallery_id', 'image_id']])
             ->addColumn('gallery_id', 'uuid', [
                 'default' => null,
                 'limit' => null,
@@ -320,7 +310,7 @@ class Initial extends AbstractMigration
                 'null' => true,
             ])
             ->addColumn('is_enable', 'boolean', [
-                'default' => true,
+                'default' => false,
                 'limit' => null,
                 'null' => true,
             ])
@@ -332,10 +322,10 @@ class Initial extends AbstractMigration
             ->addColumn('created', 'datetime', [
                 'default' => null,
                 'limit' => null,
-                'null' => false,
+                'null' => true,
             ])
             ->addColumn('modified', 'datetime', [
-                'default' => 'CURRENT_TIMESTAMP',
+                'default' => null,
                 'limit' => null,
                 'null' => true,
             ])
@@ -346,12 +336,7 @@ class Initial extends AbstractMigration
             )
             ->create();
 
-        $this->table('groups_acls', ['id' => false, 'primary_key' => ['id']])
-            ->addColumn('id', 'uuid', [
-                'default' => null,
-                'limit' => null,
-                'null' => false,
-            ])
+        $this->table('groups_acls', ['id' => false, 'primary_key' => ['']])
             ->addColumn('group_id', 'uuid', [
                 'default' => null,
                 'limit' => null,
@@ -362,6 +347,13 @@ class Initial extends AbstractMigration
                 'limit' => 190,
                 'null' => false,
             ])
+            ->addIndex(
+                [
+                    'group_id',
+                    'acl_id',
+                ],
+                ['unique' => true]
+            )
             ->addIndex(
                 [
                     'acl_id',
@@ -434,8 +426,8 @@ class Initial extends AbstractMigration
                 'null' => false,
             ])
             ->addColumn('price', 'decimal', [
-                'default' => null,
-                'null' => true,
+                'default' => '0.00',
+                'null' => false,
                 'precision' => 10,
                 'scale' => 2,
             ])
@@ -449,37 +441,51 @@ class Initial extends AbstractMigration
                 'limit' => 255,
                 'null' => true,
             ])
-            ->addColumn('created', 'timestamp', [
-                'default' => 'CURRENT_TIMESTAMP',
-                'limit' => null,
-                'null' => false,
+            ->addColumn('colours', 'string', [
+                'default' => null,
+                'limit' => 255,
+                'null' => true,
             ])
-            ->addColumn('modified', 'timestamp', [
-                'default' => '0000-00-00 00:00:00',
+            ->addColumn('instock', 'boolean', [
+                'default' => true,
                 'limit' => null,
-                'null' => false,
+                'null' => true,
             ])
             ->addColumn('status', 'boolean', [
                 'default' => false,
                 'limit' => null,
-                'null' => false,
+                'null' => true,
             ])
-            ->addColumn('additional_info', 'integer', [
-                'default' => '0',
-                'limit' => 4,
-                'null' => false,
+            ->addColumn('additional_info', 'boolean', [
+                'default' => false,
+                'limit' => null,
+                'null' => true,
             ])
             ->addColumn('additional_info_description', 'text', [
                 'default' => null,
                 'limit' => null,
                 'null' => true,
             ])
-            ->addIndex(
-                [
-                    'slug',
-                ],
-                ['unique' => true]
-            )
+            ->addColumn('until', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('from', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('created', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('modified', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
             ->create();
 
         $this->table('items_orders', ['id' => false, 'primary_key' => ['id']])
@@ -488,25 +494,30 @@ class Initial extends AbstractMigration
                 'limit' => null,
                 'null' => false,
             ])
-            ->addColumn('order_id', 'biginteger', [
+            ->addColumn('order_id', 'integer', [
                 'default' => null,
-                'limit' => 20,
-                'null' => false,
+                'limit' => 11,
+                'null' => true,
             ])
             ->addColumn('item_id', 'uuid', [
                 'default' => null,
                 'limit' => null,
-                'null' => false,
+                'null' => true,
             ])
             ->addColumn('size', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => false,
+                'null' => true,
+            ])
+            ->addColumn('colour', 'string', [
+                'default' => null,
+                'limit' => 255,
+                'null' => true,
             ])
             ->addColumn('quantity', 'integer', [
                 'default' => null,
                 'limit' => 11,
-                'null' => false,
+                'null' => true,
             ])
             ->addColumn('additional_info', 'string', [
                 'default' => null,
@@ -515,20 +526,15 @@ class Initial extends AbstractMigration
             ])
             ->addColumn('price', 'decimal', [
                 'default' => null,
-                'null' => false,
+                'null' => true,
                 'precision' => 10,
                 'scale' => 2,
             ])
             ->addColumn('subtotal', 'decimal', [
                 'default' => null,
-                'null' => false,
+                'null' => true,
                 'precision' => 10,
                 'scale' => 2,
-            ])
-            ->addColumn('modified', 'datetime', [
-                'default' => null,
-                'limit' => null,
-                'null' => true,
             ])
             ->addColumn('processed_order_id', 'integer', [
                 'default' => null,
@@ -536,6 +542,11 @@ class Initial extends AbstractMigration
                 'null' => true,
             ])
             ->addColumn('collected', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('modified', 'datetime', [
                 'default' => null,
                 'limit' => null,
                 'null' => true,
@@ -557,17 +568,148 @@ class Initial extends AbstractMigration
             )
             ->create();
 
-        $this->table('orders', ['id' => false, 'primary_key' => ['id']])
-            ->addColumn('id', 'biginteger', [
-                'autoIncrement' => true,
+        $this->table('membership_types', ['id' => false, 'primary_key' => ['id']])
+            ->addColumn('id', 'uuid', [
                 'default' => null,
-                'limit' => 20,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addColumn('title', 'string', [
+                'default' => null,
+                'limit' => 255,
+                'null' => true,
+            ])
+            ->addColumn('slug', 'string', [
+                'default' => null,
+                'limit' => 190,
+                'null' => true,
+            ])
+            ->addColumn('price', 'decimal', [
+                'default' => null,
+                'null' => true,
+                'precision' => 10,
+                'scale' => 2,
+            ])
+            ->addColumn('description', 'text', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('is_enable', 'boolean', [
+                'default' => false,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addColumn('valid_from', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('valid_to', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('created', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('modified', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->create();
+
+        $this->table('memberships', ['id' => false, 'primary_key' => ['id']])
+            ->addColumn('id', 'uuid', [
+                'default' => null,
+                'limit' => null,
                 'null' => false,
             ])
             ->addColumn('user_id', 'uuid', [
                 'default' => null,
                 'limit' => null,
-                'null' => false,
+                'null' => true,
+            ])
+            ->addColumn('student_id', 'integer', [
+                'default' => null,
+                'limit' => 11,
+                'null' => true,
+            ])
+            ->addColumn('soton_id', 'string', [
+                'default' => null,
+                'limit' => 20,
+                'null' => true,
+            ])
+            ->addColumn('first_name', 'string', [
+                'default' => null,
+                'limit' => 255,
+                'null' => true,
+            ])
+            ->addColumn('last_name', 'string', [
+                'default' => null,
+                'limit' => 255,
+                'null' => true,
+            ])
+            ->addColumn('date_of_birth', 'date', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('membership_type_id', 'uuid', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('payment_method', 'string', [
+                'default' => null,
+                'limit' => 10,
+                'null' => true,
+            ])
+            ->addColumn('created', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('modified', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('paid', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('is_cancelled', 'boolean', [
+                'default' => false,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('last_reminder', 'datetime', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addIndex(
+                [
+                    'membership_type_id',
+                ]
+            )
+            ->addIndex(
+                [
+                    'user_id',
+                ]
+            )
+            ->create();
+
+        $this->table('orders')
+            ->addColumn('user_id', 'uuid', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
             ])
             ->addColumn('payment', 'string', [
                 'default' => null,
@@ -580,10 +722,10 @@ class Initial extends AbstractMigration
                 'precision' => 10,
                 'scale' => 2,
             ])
-            ->addColumn('placed', 'timestamp', [
-                'default' => 'CURRENT_TIMESTAMP',
+            ->addColumn('placed', 'datetime', [
+                'default' => null,
                 'limit' => null,
-                'null' => false,
+                'null' => true,
             ])
             ->addColumn('paid', 'datetime', [
                 'default' => null,
@@ -592,6 +734,11 @@ class Initial extends AbstractMigration
             ])
             ->addColumn('is_cancelled', 'boolean', [
                 'default' => false,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addColumn('last_reminder', 'datetime', [
+                'default' => null,
                 'limit' => null,
                 'null' => true,
             ])
@@ -696,7 +843,7 @@ class Initial extends AbstractMigration
             ->addColumn('group_id', 'uuid', [
                 'default' => null,
                 'limit' => null,
-                'null' => false,
+                'null' => true,
             ])
             ->addColumn('email_address', 'string', [
                 'default' => null,
@@ -716,17 +863,17 @@ class Initial extends AbstractMigration
             ->addColumn('activation_date', 'datetime', [
                 'default' => null,
                 'limit' => null,
-                'null' => false,
+                'null' => true,
             ])
             ->addColumn('password', 'binary', [
                 'default' => null,
                 'limit' => null,
-                'null' => false,
+                'null' => true,
             ])
             ->addColumn('is_active', 'boolean', [
                 'default' => false,
                 'limit' => null,
-                'null' => false,
+                'null' => true,
             ])
             ->addColumn('is_enable', 'boolean', [
                 'default' => true,
@@ -792,12 +939,6 @@ class Initial extends AbstractMigration
             )
             ->addIndex(
                 [
-                    'new_email_code',
-                ],
-                ['unique' => true]
-            )
-            ->addIndex(
-                [
                     'reset_code',
                 ],
                 ['unique' => true]
@@ -809,12 +950,7 @@ class Initial extends AbstractMigration
             )
             ->create();
 
-        $this->table('users_acls', ['id' => false, 'primary_key' => ['id']])
-            ->addColumn('id', 'uuid', [
-                'default' => null,
-                'limit' => null,
-                'null' => false,
-            ])
+        $this->table('users_acls', ['id' => false, 'primary_key' => ['user_id']])
             ->addColumn('user_id', 'uuid', [
                 'default' => null,
                 'limit' => null,
@@ -823,16 +959,16 @@ class Initial extends AbstractMigration
             ->addColumn('acl_id', 'string', [
                 'default' => null,
                 'limit' => 190,
-                'null' => false,
+                'null' => true,
+            ])
+            ->addColumn('id', 'uuid', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
             ])
             ->addIndex(
                 [
                     'acl_id',
-                ]
-            )
-            ->addIndex(
-                [
-                    'user_id',
                 ]
             )
             ->create();
@@ -847,15 +983,6 @@ class Initial extends AbstractMigration
                     'delete' => 'SET_NULL'
                 ]
             )
-            ->addForeignKey(
-                'user_id',
-                'users',
-                'id',
-                [
-                    'update' => 'RESTRICT',
-                    'delete' => 'RESTRICT'
-                ]
-            )
             ->update();
 
         $this->table('galleries')
@@ -865,7 +992,7 @@ class Initial extends AbstractMigration
                 'id',
                 [
                     'update' => 'CASCADE',
-                    'delete' => 'SET_NULL'
+                    'delete' => 'RESTRICT'
                 ]
             )
             ->update();
@@ -877,24 +1004,12 @@ class Initial extends AbstractMigration
                 'id',
                 [
                     'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
+                    'delete' => 'RESTRICT'
                 ]
             )
             ->addForeignKey(
                 'image_id',
                 'images',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
-                ]
-            )
-            ->update();
-
-        $this->table('groups')
-            ->addForeignKey(
-                'parent_id',
-                'groups',
                 'id',
                 [
                     'update' => 'CASCADE',
@@ -910,7 +1025,7 @@ class Initial extends AbstractMigration
                 'id',
                 [
                     'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
+                    'delete' => 'RESTRICT'
                 ]
             )
             ->addForeignKey(
@@ -949,12 +1064,21 @@ class Initial extends AbstractMigration
                 'id',
                 [
                     'update' => 'CASCADE',
-                    'delete' => 'RESTRICT'
+                    'delete' => 'CASCADE'
                 ]
             )
             ->update();
 
-        $this->table('orders')
+        $this->table('memberships')
+            ->addForeignKey(
+                'membership_type_id',
+                'membership_types',
+                'id',
+                [
+                    'update' => 'CASCADE',
+                    'delete' => 'RESTRICT'
+                ]
+            )
             ->addForeignKey(
                 'user_id',
                 'users',
@@ -973,7 +1097,7 @@ class Initial extends AbstractMigration
                 'id',
                 [
                     'update' => 'CASCADE',
-                    'delete' => 'SET_NULL'
+                    'delete' => 'RESTRICT'
                 ]
             )
             ->update();
@@ -985,7 +1109,7 @@ class Initial extends AbstractMigration
                 'id',
                 [
                     'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
+                    'delete' => 'RESTRICT'
                 ]
             )
             ->update();
@@ -1009,7 +1133,7 @@ class Initial extends AbstractMigration
                 'id',
                 [
                     'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
+                    'delete' => 'RESTRICT'
                 ]
             )
             ->addForeignKey(
@@ -1029,9 +1153,6 @@ class Initial extends AbstractMigration
         $this->table('articles')
             ->dropForeignKey(
                 'user_id'
-            )
-            ->dropForeignKey(
-                'user_id'
             );
 
         $this->table('galleries')
@@ -1045,11 +1166,6 @@ class Initial extends AbstractMigration
             )
             ->dropForeignKey(
                 'image_id'
-            );
-
-        $this->table('groups')
-            ->dropForeignKey(
-                'parent_id'
             );
 
         $this->table('groups_acls')
@@ -1071,7 +1187,10 @@ class Initial extends AbstractMigration
                 'processed_order_id'
             );
 
-        $this->table('orders')
+        $this->table('memberships')
+            ->dropForeignKey(
+                'membership_type_id'
+            )
             ->dropForeignKey(
                 'user_id'
             );
@@ -1111,6 +1230,8 @@ class Initial extends AbstractMigration
         $this->dropTable('images');
         $this->dropTable('items');
         $this->dropTable('items_orders');
+        $this->dropTable('membership_types');
+        $this->dropTable('memberships');
         $this->dropTable('orders');
         $this->dropTable('processed_orders');
         $this->dropTable('registration_codes');
