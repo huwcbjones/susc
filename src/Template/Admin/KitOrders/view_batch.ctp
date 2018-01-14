@@ -81,11 +81,11 @@ $this->assign('title', 'View Batch # ' . $order->id);
                         || $this->request->getQuery('item_id') === $item->item_id ? ' class="info"' : '' ?>>
                             <th id="<?= $item->id ?>"><?= $this->Html->link($item->order->id, ['action' => 'view', $item->order->id]) ?></th>
                             <td><?= $this->Html->link($item->order->user->full_name, [$order->id, 'user_id' => $item->order->user->id]) ?></td>
-                            <td data-th="Item"><?= $this->Html->link(h($item->item->title), [$order->id, 'item_id' => $item->item_id]) ?></td>
+                            <td data-th="Item"><?= $this->Html->link($item->item->title, [$order->id, 'item_id' => $item->item_id]) ?></td>
                             <td data-th="Size" class="text-center"><?= $item->item->displaySize($item->size) ?></td>
                             <td data-th="Colouor" class="text-center"><?= $item->item->displayColour($item->colour) ?></td>
                             <td data-th="Additional Info"
-                                class="text-center"><?= h($item->item->displayAdditionalInformation($item->additional_info)) ?></td>
+                                class="text-center"><?= $item->item->displayAdditionalInformation($item->additional_info) ?></td>
 
                             <td data-th="Quantity" class="text-center"><?= $item->quantity ?></td>
                             <?php if ($this->hasAccessTo('admin.kit-orders.status')) : ?>
