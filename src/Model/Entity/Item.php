@@ -28,6 +28,7 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  * @property boolean $hasColour
  * @property string $colours
  * @property string[] $colourList
+ * @property string[] $quantityList
  * @property ItemsOrder $_joinData;
  * @property ItemsOrder[]|CollectionInterface $items_orders
  * @property boolean $status Enabled or Disabled
@@ -114,6 +115,12 @@ class Item extends Entity
             $colour_array[trim($colour)] = trim($colour);
         }
         return $colour_array;
+    }
+
+    protected function _getQuantityList()
+    {
+        $range = range(1, 9);
+        return array_combine($range, $range);
     }
 
     protected function _getHasSize(){

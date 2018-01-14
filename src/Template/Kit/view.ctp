@@ -14,7 +14,6 @@ $this->assign('description', $kit->description);
 
 $this->element('Kit/basket');
 $kitBagForm = new KitBagForm();
-$this->Form->unlockField('quantity');
 ?>
 <?php if (!$kit->isAvailableToOrder): ?>
     <div class="row">
@@ -84,11 +83,7 @@ $this->Form->unlockField('quantity');
                         </div>
                         <div class="form-group">
                             <label for="quantity">Quantity</label>
-                            <select name="quantity" id="quantity" class="form-control">
-                                <?php for ($i = 1; $i < 10; $i++) : ?>
-                                    <option value="<?= $i ?>"><?= $i ?></option>
-                                <?php endfor; ?>
-                            </select>
+                            <?= $this->Form->select('quantity', $kit->quantityList, ['empty' => 'Select Quantity']) ?>
                         </div>
 
                         <?php if ($kit->additional_info): ?>
