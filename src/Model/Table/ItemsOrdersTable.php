@@ -143,11 +143,13 @@ class ItemsOrdersTable extends Table
                     'Items.id IN' => $options['itemIDs']
                 ]);
         }
+        if(!$options['unpaid']) {
+            $query = $query->where(['Orders.paid IS NOT' => null]);
+        }
         return $query
             ->contain(['Orders'])
             ->where([
-                'Orders.paid IS NOT NULL',
-                'processed_order_id IS NULL',
+                'processed_order_id IS' => null,
                 ['Orders.is_cancelled' => false]
             ]);
     }
@@ -175,7 +177,7 @@ class ItemsOrdersTable extends Table
             ])
             ->where([
                 '`collected` IS ' => null,
-                '`processed_order_id` IS NOT' => null,
+                'ProcessedOrders.arrived IS NOT' => null,
                 'Orders.is_cancelled' => false
             ]);
         if (array_key_exists('user_id', $options)) {

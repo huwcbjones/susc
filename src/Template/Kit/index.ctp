@@ -44,7 +44,7 @@ $this->end();
                     $this->Html->image(
                         $item->imagePath,
                         [
-                            'alt' => h($item->title),
+                            'alt' => $item->title,
                             'class' => ['img-responsive', 'center-block', $item->isAvailableToOrder ? '' : 'kit-out-of-stock-img']
                         ]
                     ),
@@ -71,7 +71,7 @@ $this->end();
                     ]
                 ]) ?>
             <h3 class="h4 text-center<?= $item->isAvailableToOrder ? '' : ' kit-out-of-stock' ?>"><?= $this->Html->link(
-                    h($item->title),
+                    $item->title,
                     [
                         'controller' => 'kit',
                         'action' => 'view',

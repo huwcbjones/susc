@@ -84,26 +84,26 @@ class KitOrdersController extends AppController
 
     public function collections()
     {
+        $options = [
+            'order' => ['created' => 'DESC'],
+            'finder' => 'collections',
+            'sortWhitelist' => [
+                'order_id',
+                'Items.title',
+                'size',
+                'colour',
+                'additional_info',
+                'Orders.paid'
+            ]
+        ];
+
         if (($user_id = $this->request->getQuery('user_id')) !== null) {
-            $items = $this->paginate($this->ItemsOrders, [
-                'order' => ['created' => 'DESC'],
-                'finder' => [
-                    'collections' => [
-                        'user_id' => $user_id
-                    ]
-                ]
-            ]);
-        } else {
-            $items = $this->paginate($this->ItemsOrders, [
-                'order' => ['created' => 'DESC'],
-                'finder' => 'collections',
-                'sortWhitelist' => [
-                    'Orders' => [
-                        'Users.last_name'
-                    ]
-                ]
-            ]);
+            $options['finder'] = [
+                'collections' => ['user_id' => $user_id]
+            ];
         }
+
+        $items = $this->paginate($this->ItemsOrders, $options);
 
         $this->set('items', $items);
     }
@@ -113,6 +113,62 @@ class KitOrdersController extends AppController
         $order = $this->Orders->find('id', ['id' => $id])->firstOrFail();
 
         $this->set(compact('order'));
+    }
+
+    public function edit($id = null)
+    {
+        /** @var Order $order */
+        $order = $this->Orders->find('id', ['id' => $id])->firstOrFail();
+        $this->set(compact('order'));
+
+        if (!$this->request->is(['post', 'put'])) return;
+
+        $oldTotal = $order->total;
+
+        $order->total = 0;
+        foreach ($order->items_orders as $k => &$item) {
+            if(!array_key_exists($item->id, $this->request->getData('items_orders'))) continue;
+
+            $item->setAccess(['price', 'order_id', 'item_id', 'processed_order_id'], false);
+            $item = $this->ItemsOrders->patchEntity($item, $this->request->getData('items_orders')[$item->id]);
+            $item->subtotal = $item->price * $item->quantity;
+            $order->total += $item->subtotal;
+        }
+
+        $toPay = 0;
+
+        if($order->is_paid && $order->total != $oldTotal){
+            $order->paid = null;
+            $toPay = $order->total - $oldTotal;
+        }
+
+        try {
+            $result = $this->Orders->getConnection()->transactional(function () use ($order) {
+                $result = true;
+                foreach($order->items_orders as $k => $item){
+                    $result &= (bool)$this->ItemsOrders->save($item);
+                }
+
+                $result &= (bool)$this->Orders->save($order);
+                return $result;
+            });
+
+            if ($result) {
+                $email = new Email();
+                $email
+                    ->setTo($order->user->email_address, $order->user->full_name)
+                    ->setSubject('Updated Kit Order #' . $order->id)
+                    ->setTemplate('order_update')
+                    ->setViewVars(['order' => $order, 'user' => $order->user, 'toPay' => $toPay])
+                    ->send();
+                $this->Flash->success("Order updated!");
+                return $this->redirect(['action' => 'view', $order->id]);
+            } else {
+                $this->Flash->error("Failed to save order!");
+            }
+        } catch (\Exception $e) {
+            $this->Flash->error("Failed to save order!");
+        }
     }
 
     /**
@@ -404,8 +460,8 @@ class KitOrdersController extends AppController
         $this->loadComponent('KitProcess');
 
         try {
-            $this->KitProcess->process();
-            return $this->redirect(['action' => 'processed-orders']);
+            $id = $this->KitProcess->process();
+            return $this->redirect(['action' => 'batches', $id]);
         } catch (Exception $ex) {
 
         }

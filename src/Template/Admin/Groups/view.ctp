@@ -67,4 +67,78 @@ $this->assign('title', 'View Group: ' . $group->name);
         <h2><?= __('Access Control Objects') ?></h2>
         <?= $this->element('Admin/ACL', ['acls' => $group->acls, 'all_acls' => $all_acls, 'disabled' => true]) ?>
     </div>
+    <?php if ($this->hasAccessTo('admin.users.*')): ?>
+        <div class="users">
+            <h2>Group Members</h2>
+            <div class="panel-group" id="accordion-userList" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-primary">
+                    <div class="panel-heading" role="tab" id="h-userList">
+                        <h4 class="panel-title">
+                            <a role="button" data-toggle="collapse" data-parent="#accordion-userList" href="#c-userList" aria-expanded="true"
+                               aria-controls="c-userList">
+                                Group Members
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="c-userList" class="panel-collapse collapse"
+                         role="tabpanel" aria-labelledby="h-userList">
+                        <div class="panel-body">
+
+                        </div>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Created</th>
+                                <?php if ($this->hasAccessTo('admin.users.view')): ?>
+                                    <th></th>
+                                <?php endif ?>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($group->users as $user): ?>
+                                <tr>
+                                    <td><?= $user->first_name ?></td>
+                                    <td><?= $user->last_name ?></td>
+                                    <td><?= $user->created ?></td>
+                                    <?php if ($this->hasAccessTo('admin.users.view')): ?>
+                                        <td class="actions"><?= $this->Html->link(__('View'), ['controller' => 'Users', 'action' => 'view', $user->id]) ?></td>
+                                    <?php endif ?>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif ?>
 </form>
+
+<div class="row">
+    <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-0 col-lg-4">
+        <?= $this->Html->link('<span class="glyphicon glyphicon-chevron-left"></span> Back', ['action' => 'index'], ['class' => ['btn', 'btn-default', 'btn-block'], 'escape' => false]) ?>
+    </div>
+    <?php if ($this->hasAccessTo('admin.groups.edit') || $this->hasAccessTo('admin.groups.delete')): ?>
+        <div class="col-xs-12 visible-xs-block"><br/></div>
+        <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-2 col-lg-4 col-lg-offset-4">
+            <?php if ($this->hasAccessTo('admin.groups.edit') && $this->hasAccessTo('admin.groups.delete')): ?>
+                <div class="btn-group btn-block">
+                    <?= $this->Html->link('Edit <span class="glyphicon glyphicon-pencil"></span>', ['action' => 'edit', $group->id], ['class' => ['btn', 'btn-primary', 'col-sm-10', 'col-md-11'], 'escape' => false]) ?>
+                    <a href="#" class="btn btn-primary col-sm-2 col-md-1 dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu btn-block">
+                        <li><?= $this->Form->postLink('Delete&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-remove"></span>', ['action' => 'delete', $group->id], ['escape' => false, 'confirm' => __('Are you sure you want to delete {0}?', $group->name)]) ?></li>
+                    </ul>
+                </div>
+            <?php elseif ($this->hasAccessTo('admin.groups.edit')): ?>
+                <?= $this->Html->link('Edit <span class="glyphicon glyphicon-pencil"></span>', ['action' => 'edit', $group->id], ['class' => ['btn', 'btn-primary', 'btn-block'], 'escape' => false]) ?>
+            <?php else: ?>
+                <?= $this->Form->postLink('Delete&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-remove"></span>', ['action' => 'delete', $group->id], ['escape' => false, 'class' => ['btn', 'btn-primary', 'btn-block'], 'confirm' => __('Are you sure you want to delete {0}?', $group->name)]) ?>
+            <?php endif; ?>
+
+        </div>
+    <?php endif ?>
+</div>

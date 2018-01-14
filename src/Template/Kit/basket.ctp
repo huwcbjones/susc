@@ -52,7 +52,7 @@ $this->layout('clean');
                                     ]) ?></h3></th>
                             <td data-th="Additional Info" class="text-center"><?= $data['item']->displayAdditionalInformation($data['additional_info']) ?></td>
                             <td data-th="Colour" class="text-center"><?= $data['item']->displayColour($data['colour']) ?></td>
-                            <td data-th="Size" class="text-center"><?= $size ?></td>
+                            <td data-th="Size" class="text-center"><?= $data['item']->displaySize($size) ?></td>
                             <td data-th="Price" class="text-center"><?= $kit->formattedPrice ?></td>
                             <td data-th="Quantity" class="text-center"><?= $quantity ?></td>
                             <td data-th="Quantity" class="text-center"><?= sprintf("£%.2f", $quantity * $kit->price) ?></td>

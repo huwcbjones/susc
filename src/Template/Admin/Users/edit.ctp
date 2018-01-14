@@ -5,6 +5,9 @@
  */
 
 $this->assign('title', 'Edit User: ' . $user->full_name);
+$this->Form->unlockField('is_enable');
+$this->Form->unlockField('is_active');
+$this->Form->unlockField('is_change_password');
 ?>
     <h2><?= __('Details') ?></h2>
 <?= $this->Form->create($user, ['class' => ['form-horizontal']]) ?>
@@ -129,7 +132,15 @@ $this->assign('title', 'Edit User: ' . $user->full_name);
         <?= $this->element('Admin/ACL', ['acls' => $user->acls, 'all_acls' => $all_acls, 'Form' => $this->Form, 'disabled' => false]) ?>
     </div>
 
-<?= $this->Form->button(__('Submit')) ?>
+    <div class="row">
+        <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-0 col-lg-4">
+            <?= $this->Html->link('<span class="glyphicon glyphicon-chevron-left"></span> Cancel', ['action' => 'view', $user->id], ['class' => ['btn', 'btn-default', 'btn-block'], 'escape' => false]) ?>
+        </div>
+        <div class="col-xs-12 visible-xs-block"><br/></div>
+        <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-2 col-lg-4 col-lg-offset-4">
+            <?= $this->Form->button('Save <span class="glyphicon glyphicon-floppy-disk"></span>', ['type' => 'submit', 'class' => ['btn', 'btn-primary', 'btn-block'], 'escape' => false]); ?>
+        </div>
+    </div>
 <?= $this->Form->end() ?>
 <?php
 $this->start('postscript');

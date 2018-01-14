@@ -199,7 +199,7 @@ class User extends Entity
 
     protected function _getFull_name()
     {
-        return $this->first_name . ' ' . $this->last_name;
+        return h($this->first_name . ' ' . $this->last_name);
     }
 
     protected function _setPassword($password)
@@ -214,5 +214,22 @@ class User extends Entity
         if ($password == null) return null;
         if (is_string($password)) return $password;
         return stream_get_contents($password);
+    }
+
+    public function getActivatedIcon()
+    {
+        if ($this->isActivated()) {
+            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
+        } else {
+            return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
+        }
+    }
+    public function getEnabledIcon()
+    {
+        if ($this->isEnabled()) {
+            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
+        } else {
+            return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
+        }
     }
 }

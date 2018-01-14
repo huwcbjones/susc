@@ -49,7 +49,7 @@
     </div>
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
-            <?= $this->Html->link('View Basket', ['_name' => 'basket'], ['class' => ['btn', 'btn-primary', 'btn-md', 'btn-block']]) ?>
+            <?= $this->Html->link('View Basket&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-shopping-cart"></span>', ['_name' => 'basket'], ['escape' => false, 'class' => ['btn', 'btn-primary', 'btn-md', 'btn-block']]) ?>
         </div>
     </div>
 <?php endif; ?>

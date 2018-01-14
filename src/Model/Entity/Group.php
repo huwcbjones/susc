@@ -75,4 +75,13 @@ class Group extends Entity
             return null;
         }
     }
+
+    public function getEnabledIcon()
+    {
+        if ($this->isEnabled()) {
+            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
+        } else {
+            return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
+        }
+    }
 }

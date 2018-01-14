@@ -17,7 +17,7 @@ $this->element('Kit/basket');
     <div class="col-sm-8">
         <?= $this->fetch('content') ?>
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-4 hidden-xs">
         <h2 class="h3"><?= $this->Html->link('My Basket', ['_name' => 'basket']) ?></h2>
         <hr/>
         <?= $this->fetch('basket', $basketData) ?>
