@@ -19,6 +19,7 @@ $this->assign('title', 'Kit Orders');
                 <th scope="col"><?= $this->Paginator->sort('id', 'Order #') ?></th>
                 <th scope="col">Name</th>
                 <th scope="col"><?= $this->Paginator->sort('placed', 'Order Date') ?></th>
+                <th scope="col"># Items</th>
                 <th scope="col"><?= $this->Paginator->sort('total') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('payment', 'Payment') ?></th>
                 <th scope="col">Status</th>
@@ -37,6 +38,7 @@ $this->assign('title', 'Kit Orders');
                     <td><?= h($order->id) . ($order->is_cancelled ? '*' : '') ?></td>
                     <td><?= $this->Html->link($order->user->full_name, ['controller' => 'KitOrders', 'action' => 'index', 'user_id' => $order->user_id]) ?></td>
                     <td><?= $this->Time->format($order->placed, null, null, 'Europe/London') ?></td>
+                    <td><?= count($order->items) ?></td>
                     <td><?= $order->is_cancelled ? '-' : $order->formattedTotal ?></td>
                     <td><?= $order->is_cancelled ? '-' : $order->paymentMethod ?></td>
                     <td><?= h($order->status) ?></td>
