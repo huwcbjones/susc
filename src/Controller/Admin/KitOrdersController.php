@@ -115,6 +115,50 @@ class KitOrdersController extends AppController
         $this->set(compact('order'));
     }
 
+    public function edit($id = null)
+    {
+        /** @var Order $order */
+        $order = $this->Orders->find('id', ['id' => $id])->firstOrFail();
+        $this->set(compact('order'));
+
+        if (!$this->request->is(['post', 'put'])) return;
+
+        $order->total = 0;
+        foreach ($order->items_orders as $k => &$item) {
+            $item->setAccess(['price', 'order_id', 'item_id', 'processed_order_id'], false);
+            $item = $this->ItemsOrders->patchEntity($item, $this->request->getData('items_orders')[$item->id]);
+            $item->subtotal = $item->price * $item->quantity;
+            $order->total += $item->subtotal;
+        }
+        try {
+            $result = $this->Orders->getConnection()->transactional(function () use ($order) {
+                $result = true;
+                foreach($order->items_orders as $k => $item){
+                    $result &= (bool)$this->ItemsOrders->save($item);
+                }
+
+                $result &= (bool)$this->Orders->save($order);
+                return $result;
+            });
+
+            if ($result) {
+                $email = new Email();
+                $email
+                    ->setTo($order->user->email_address, $order->user->full_name)
+                    ->setSubject('Updated Kit Order #' . $order->id)
+                    ->setTemplate('order_update')
+                    ->setViewVars(['order' => $order, 'user' => $order->user])
+                    ->send();
+                $this->Flash->success("Order updated!");
+                return $this->redirect(['action' => 'view', $order->id]);
+            } else {
+                $this->Flash->error("Failed to save order!");
+            }
+        } catch (\Exception $e) {
+            $this->Flash->error("Failed to save order!");
+        }
+    }
+
     /**
      * Cancels an order
      *

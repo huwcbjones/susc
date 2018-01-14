@@ -28,12 +28,15 @@ $this->assign('title', 'View Order #' . $order->id);
             <div class="panel-heading">
                 <div>
                     <h3 style="display:inline">Order #<?= $order->id ?></h3>
-                    <?php if ((!$order->is_paid && !$order->is_cancelled || $order->ordered_left == count($order->items)) && $this->hasAccessTo('admin.kit-orders.status')): ?>
+                    <?php if (((!$order->is_paid && !$order->is_cancelled || $order->ordered_left == count($order->items)) && $this->hasAccessTo('admin.kit-orders.status')) || $this->hasAccessTo('admin.kit-orders.edit')): ?>
                         <div style="display:inline" class="pull-right">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">Options <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu">
+                                    <?php if ($this->hasAccessTo('admin.kit-orders.edit')): ?>
+                                        <li><?= $this->Html->link('Edit Order', ['action' => 'edit', $order->id]) ?></li>
+                                    <?php endif ?>
                                     <?php if (!$order->is_paid): ?>
                                         <li><a href="#" onclick="$('#paymentConfirmation').modal()">Mark Paid</a></li>
                                     <?php endif ?>
@@ -83,13 +86,11 @@ $this->assign('title', 'View Order #' . $order->id);
                     <tbody>
                     <?php foreach ($order->items as $item): ?>
                         <tr<?= $this->request->getQuery('highlight') === $item->id ? ' class="info"' : '' ?>>
-                            <th data-th="Item"><?= $this->Html->link(h($item->item->title), [
-                                    '_name' => 'kit_item',
+                            <th data-th="Item"><?= $this->Html->link(h($item->item->title), ['_name' => 'kit_item',
                                     'action' => 'view',
                                     'slug' => $item->item->slug,
-                                    'crc' => $item->item->crc
-                                ]) ?></th>
-                            <td><?= $item->processed_order_id !== null? $this->Html->link($item->processed_order_id, ['action' => 'processedOrders', $item->processed_order_id, 'highlight' => $item->id]): '-' ?></td>
+                                    'crc' => $item->item->crc]) ?></th>
+                            <td><?= $item->processed_order_id !== null ? $this->Html->link($item->processed_order_id, ['action' => 'processedOrders', $item->processed_order_id, 'highlight' => $item->id]) : '-' ?></td>
                             <td data-th="Size" class="text-center"><?= $item->item->displaySize($item->size) ?></td>
                             <td data-th="Colour" class="text-center"><?= $item->item->displayColour($item->colour) ?></td>
                             <td data-th="Additional Info"
@@ -116,7 +117,7 @@ $this->assign('title', 'View Order #' . $order->id);
                         <td class="text-center" style="vertical-align: middle"><?= $order->formattedTotal ?> </td>
                         <?php if ($this->hasAccessTo('admin.kit-orders.status')) : ?>
                             <th colspan="2"></th>
-                        <th style="vertical-align: middle"><?= $order->collected_left ?></th>
+                            <th style="vertical-align: middle"><?= $order->collected_left ?></th>
                         <?php endif ?>
                     </tr>
                     </tfoot>
