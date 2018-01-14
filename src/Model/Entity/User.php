@@ -199,7 +199,7 @@ class User extends Entity
 
     protected function _getFull_name()
     {
-        return $this->first_name . ' ' . $this->last_name;
+        return h($this->first_name . ' ' . $this->last_name);
     }
 
     protected function _setPassword($password)

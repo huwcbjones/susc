@@ -143,7 +143,7 @@ class Item extends Entity
         } elseif ($additionalInfo == '') {
             return '[None Provided]';
         } else {
-            return $additionalInfo;
+            return h($additionalInfo);
         }
     }
 
@@ -183,7 +183,7 @@ class Item extends Entity
         if (!$this->hasColour) {
             return '-';
         } else {
-            return $colour;
+            return h($colour);
         }
     }
 
@@ -192,7 +192,7 @@ class Item extends Entity
         if (!$this->hasSize) {
             return '-';
         } else {
-            return $size;
+            return h($size);
         }
     }
 }
