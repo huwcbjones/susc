@@ -69,23 +69,34 @@ echo $this->Form->create($order);
                                     'slug' => $item->item->slug,
                                     'crc' => $item->item->crc
                                 ]) ?></th>
-                            <td><?= $item->processed_order_id !== null ? $this->Html->link($item->processed_order_id, ['action' => 'processedOrders', $item->processed_order_id, 'highlight' => $item->id]) : '-' ?></td>
-                            <td data-th="Size"
-                                class="text-center"><?= $item->item->hasSize ? $this->Form->select('items_orders.' . $item->id . '.size', $item->item->sizeList, ['value' => $item->size, 'class' => 'input-sm']) : '-' ?></td>
-                            <td data-th="Colour"
-                                class="text-center"><?= $item->item->hasColour ? $this->Form->select('items_orders.' . $item->id . '.colour', $item->item->colourList, ['value' => $item->colour, 'class' => 'input-sm']) : '-' ?></td>
-                            <td data-th="Additional Info"
-                                class="text-center"><?= $item->item->additional_info ? $this->Form->text('items_orders.' . $item->id . '.additional_info', ['value' => $item->additional_info, 'class' => 'input-sm']) : '-' ?></td>
-                            <td data-th="Price" class="text-center" id="<?= $item->id ?>-price"
-                                data-price="<?= $item->price ?>"><?= $item->formattedPrice ?></td>
-                            <td data-th="Quantity"
-                                class="text-center"><?= $this->Form->select('items_orders.' . $item->id . '.quantity', $item->item->quantityList, ['value' => $item->quantity, 'class' => 'input-sm', 'id' => $item->id . '-quantity']) ?></td>
-                            <td data-th="Subtotal" class="text-right subtotal" id="<?= $item->id ?>-subtotal" data-subtotal="<?= $item->subtotal?>"><?= $item->formattedSubtotal ?></td>
+                            <?php if ($item->is_ordered): ?>
+                                <td><?= $item->processed_order_id !== null ? $this->Html->link($item->processed_order_id, ['action' => 'processedOrders', $item->processed_order_id, 'highlight' => $item->id]) : '-' ?></td>
+                                <td data-th="Size" class="text-center"><?= $item->item->displaySize($item->size) ?></td>
+                                <td data-th="Colour" class="text-center"><?= $item->item->displayColour($item->colour) ?></td>
+                                <td data-th="Additional Info" class="text-center"><?= $item->item->displayAdditionalInformation($item->additional_info) ?></td>
+                                <td data-th="Price" class="text-center"><?= $item->formattedPrice ?></td>
+                                <td data-th="Quantity" class="text-center"><?= $item->quantity ?></td>
+                            <?php else: ?>
+                                <td><?= $item->processed_order_id !== null ? $this->Html->link($item->processed_order_id, ['action' => 'processedOrders', $item->processed_order_id, 'highlight' => $item->id]) : '-' ?></td>
+                                <td data-th="Size"
+                                    class="text-center"><?= $item->item->hasSize ? $this->Form->select('items_orders.' . $item->id . '.size', $item->item->sizeList, ['value' => $item->size, 'class' => 'input-sm']) : '-' ?></td>
+                                <td data-th="Colour"
+                                    class="text-center"><?= $item->item->hasColour ? $this->Form->select('items_orders.' . $item->id . '.colour', $item->item->colourList, ['value' => $item->colour, 'class' => 'input-sm']) : '-' ?></td>
+                                <td data-th="Additional Info"
+                                    class="text-center"><?= $item->item->additional_info ? $this->Form->text('items_orders.' . $item->id . '.additional_info', ['value' => $item->additional_info, 'class' => 'input-sm']) : '-' ?></td>
+                                <td data-th="Price" class="text-center" id="<?= $item->id ?>-price"
+                                    data-price="<?= $item->price ?>"><?= $item->formattedPrice ?></td>
+                                <td data-th="Quantity"
+                                    class="text-center"><?= $this->Form->select('items_orders.' . $item->id . '.quantity', $item->item->quantityList, ['value' => $item->quantity, 'class' => 'input-sm', 'id' => $item->id . '-quantity']) ?></td>
+                            <?php endif ?>
+                            <td data-th="Subtotal" class="text-right subtotal" id="<?= $item->id ?>-subtotal"
+                                data-subtotal="<?= $item->subtotal ?>"><?= $item->formattedSubtotal ?></td>
                             <?php if ($this->hasAccessTo('admin.kit-orders.status')) : ?>
                                 <td><?= $item->getCollectedStatusIcon() ?></td>
                             <?php endif ?>
                         </tr>
                     <?php
+                    if (!$item->is_ordered):
                     $this->start('postscript');
                     echo $this->fetch('postscript');
                     ?>
@@ -100,13 +111,14 @@ echo $this->Form->create($order);
                             });
                         </script>
                         <?php $this->end(); ?>
-                    <?php endforeach; ?>
+                    <?php endif; endforeach; ?>
                     </tbody>
                     <tfoot>
                     <tr>
                         <td colspan="6"></td>
                         <td class="text-center"><h3 class="h4">Total:</h3></td>
-                        <td class="text-right" style="vertical-align: middle" id="totalCost" data-total="<?= $order->total ?>"><?= $order->formattedTotal ?> </td>
+                        <td class="text-right" style="vertical-align: middle" id="totalCost"
+                            data-total="<?= $order->total ?>"><?= $order->formattedTotal ?> </td>
                         <?php if ($this->hasAccessTo('admin.kit-orders.status')) : ?>
                             <th style="vertical-align: middle"><?= $order->collected_left ?></th>
                         <?php endif ?>
@@ -135,8 +147,8 @@ echo $this->fetch('postscript');
 ?>
 <script type="text/javascript">
     var totalCost = $("#totalCost");
-    function calculateTotal()
-    {
+
+    function calculateTotal() {
         var total = 0;
         $(".subtotal").each(function () {
             total += $(this).data('subtotal');
