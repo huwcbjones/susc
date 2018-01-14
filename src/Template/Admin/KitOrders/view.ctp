@@ -28,13 +28,13 @@ $this->assign('title', 'View Order #' . $order->id);
             <div class="panel-heading">
                 <div>
                     <h3 style="display:inline">Order #<?= $order->id ?></h3>
-                    <?php if (((!$order->is_paid && !$order->is_cancelled || $order->ordered_left == count($order->items)) && $this->hasAccessTo('admin.kit-orders.status')) || $this->hasAccessTo('admin.kit-orders.edit')): ?>
+                    <?php if (((!$order->is_paid && !$order->is_cancelled || $order->ordered_left == count($order->items)) && $this->hasAccessTo('admin.kit-orders.status')) || ($this->hasAccessTo('admin.kit-orders.edit') && !$order->is_all_ordered)): ?>
                         <div style="display:inline" class="pull-right">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">Options <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <?php if ($this->hasAccessTo('admin.kit-orders.edit')): ?>
+                                    <?php if ($this->hasAccessTo('admin.kit-orders.edit') && !$order->is_all_ordered): ?>
                                         <li><?= $this->Html->link('Edit Order', ['action' => 'edit', $order->id]) ?></li>
                                     <?php endif ?>
                                     <?php if (!$order->is_paid): ?>
@@ -86,7 +86,7 @@ $this->assign('title', 'View Order #' . $order->id);
                     <tbody>
                     <?php foreach ($order->items as $item): ?>
                         <tr<?= $this->request->getQuery('highlight') === $item->id ? ' class="info"' : '' ?>>
-                            <th data-th="Item"><?= $this->Html->link(h($item->item->title), ['_name' => 'kit_item',
+                            <th data-th="Item"><?= $this->Html->link($item->item->title, ['_name' => 'kit_item',
                                     'action' => 'view',
                                     'slug' => $item->item->slug,
                                     'crc' => $item->item->crc]) ?></th>
@@ -97,7 +97,7 @@ $this->assign('title', 'View Order #' . $order->id);
                                 class="text-center"><?= $item->item->displayAdditionalInformation($item->additional_info) ?></td>
                             <td data-th="Price" class="text-center"><?= $item->formattedPrice ?></td>
                             <td data-th="Quantity" class="text-center"><?= $item->quantity ?></td>
-                            <td data-th="Quantity" class="text-center"><?= $item->formattedSubtotal ?></td>
+                            <td data-th="Subtotal" class="text-center"><?= $item->formattedSubtotal ?></td>
                             <?php if ($this->hasAccessTo('admin.kit-orders.status')) : ?>
                                 <td><?= $item->getOrderedStatusIcon() ?></td>
                                 <td><?= $item->getArrivedStatusIcon() ?></td>
