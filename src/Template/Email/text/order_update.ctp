@@ -28,6 +28,15 @@ Hi <?= $user->first_name ?>,
 Your SUSC kit order #<?= $order->id ?> has been updated.
 You can view your order on the SUSC website at: <?= $this->Url->build(['controller' => 'Kit', 'action' => 'vieworder', $order->id], ['fullBase' => true]) ?>
 
+<?php if($toPay != 0): ?>
+<?php if($toPay > 0): ?>
+You now owe SUSC <?= sprintf("£%.2f", $toPay) ?>.
+This needs to be paid before your order is accepted!
+<?php else: ?>
+SUSC now owes you <?= sprintf("£%.2f", abs($toPay))?>.
+Please contact the treasurer to arrange your reimbursement.
+<?php endif ?>
+<?php endif ?>
 
 <?php if(!$order->is_paid): ?>
 Your selected payment method is: <?= $order->paymentMethod ?>.

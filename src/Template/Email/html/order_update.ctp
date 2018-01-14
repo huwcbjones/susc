@@ -29,12 +29,22 @@ use SUSC\View\AppView;
     You can view your order on the SUSC website
     at <?= $this->Html->link($this->Url->build(['controller' => 'Kit', 'action' => 'vieworder', $order->id], ['fullBase' => true])) ?>.</p>
 
-<?php if(!$order->is_paid): ?>
-<p>Your selected payment method is: <?= $order->paymentMethod ?>.<br/>
-    <small>Please note your order will not be accepted until payment is received.</small>
-</p>
+<?php if ($toPay != 0): ?>
+    <?php if ($toPay > 0): ?>
+        <p style="font-size: large">You now owe SUSC <?= sprintf("£%.2f", $toPay) ?>.
+            This needs to be paid before your order is accepted!</p>
+    <?php else: ?>
+        <p>SUSC now owes you <?= sprintf("£%.2f", abs($toPay)) ?>.
+            Please contact the treasurer to arrange your reimbursement.</p>
+    <?php endif ?>
+<?php endif ?>
 
-<p>You can find out how to pay at <?= $this->Html->link($this->Url->build(['_name' => 'faq'], ['fullBase' => true])) ?>.</p>
+<?php if (!$order->is_paid): ?>
+    <p>Your selected payment method is: <?= $order->paymentMethod ?>.<br/>
+        <small>Please note your order will not be accepted until payment is received.</small>
+    </p>
+
+    <p>You can find out how to pay at <?= $this->Html->link($this->Url->build(['_name' => 'faq'], ['fullBase' => true])) ?>.</p>
 <?php endif ?>
 
 <table class="table">

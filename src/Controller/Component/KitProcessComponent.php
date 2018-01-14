@@ -301,6 +301,8 @@ class KitProcessComponent extends Component
 
     /**
      * Processes a batch of items
+     *
+     * @return int Order ID
      */
     public function process()
     {
@@ -334,6 +336,7 @@ class KitProcessComponent extends Component
         $save = $this->ItemsOrders->saveMany($items);
         if ($save !== false) {
             $this->Flash->success('Batch processed!');
+            return $order->id;
         } else {
             $this->Flash->error('Failed to save batch!)');
         }
