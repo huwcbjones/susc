@@ -39,7 +39,7 @@ $title = $this->fetch('title_string', h($this->fetch('title')) . ' | ' . Configu
 <meta name="msapplication-square70x70logo" content="/img/icon/mstile-70x70.png"/>
 <meta name="msapplication-square150x150logo" content="/img/icon/mstile-150x150.png"/>
 <meta name="msapplication-wide310x150logo" content="/img/icon/mstile-310x150.png"/>
-<meta name="msapplication-square310x310logo" content="/img/icon/mstile-310x310.png"/>`
+<meta name="msapplication-square310x310logo" content="/img/icon/mstile-310x310.png"/>
 <meta name="COPYRIGHT"
       content="© <?= date('Y') ?>. All content, photos and text are the property of Southampton University Swimming Club. All Rights Reserved. Site conducted in accordance with the ASA &quot;Guidelines for Club Web Sites&quot;."/>
 <meta http-equiv="Content-Language" content="en-gb"/>
