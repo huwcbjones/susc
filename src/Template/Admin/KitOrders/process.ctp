@@ -16,19 +16,32 @@ use SUSC\View\AppView;
 $this->assign('title', 'Process Orders');
 ?>
 
-<h3>About Order Processing</h3>
+<h2>About Order Processing</h2>
 <p>To process orders, click the process orders button below. The website will then create an order batch based on the options below.</p>
 <ul>
-    <li>Orders that have <strong>not</strong> been paid for will <strong>not</strong> be included</li>
+    <li>Orders that have <strong>not</strong> been paid for will <strong>not</strong> be included (unless "Include unpaid items" is checked)</li>
     <li>Orders that have previously been processed will <strong>not</strong> be included</li>
     <li>After processing, you can download the orders.</li>
 </ul>
 
 
-<h3>Process Order</h3>
+<h2>Process Order</h2>
 
 <?= $this->Form->create() ?>
-<h4>Options</h4>
+<h3>Options</h3>
+<h4>Filters</h4>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="checkbox">
+            <label>
+                <?= $this->Form->checkbox('unpaid', ['hiddenField' => true]) ?>
+                Include unpaid items
+            </label>
+        </div>
+    </div>
+</div>
+
+<h4>Items to Process</h4>
 <div class="checkbox">
     <label>
         <input type="checkbox" id="selectAllItemsCheckbox" />
