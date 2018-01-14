@@ -28,37 +28,20 @@ $this->layout('profile');
             <tbody>
             <?php foreach ($orders as $order): ?>
                 <tr>
-                    <td><?= h($order->id) ?></td>
+                    <td><?= $order->id ?></td>
                     <td><?= $this->Time->format($order->placed, null, null, 'Europe/London') ?></td>
-                    <td><?= h($order->formattedTotal) ?></td>
-                    <td><?= h($order->paymentMethod) ?></td>
-                    <td><?= h($order->status) ?></td>
-                    <td>
-                        <?= $order->getPaidStatusIcon() ?>
-                    </td>
-                    <td>
-                        <?= $order->getOrderedStatusIcon() ?>
-                    </td>
-                    <td>
-                        <?= $order->getArrivedStatusIcon() ?>
-                    </td>
-                    <td>
-                        <?= $order->getCollectedStatusIcon() ?>
-                    </td>
+                    <td><?= $order->formattedTotal ?></td>
+                    <td><?= $order->paymentMethod ?></td>
+                    <td><?= $order->status ?></td>
+                    <td><?= $order->getPaidStatusIcon() ?></td>
+                    <td><?= $order->getOrderedStatusIcon() ?></td>
+                    <td><?= $order->getArrivedStatusIcon() ?></td>
+                    <td><?= $order->getCollectedStatusIcon() ?></td>
                     <td><?= $this->Html->link('View', ['controller' => 'Kit', 'action' => 'vieworder', 'orderid' => $order->id]) ?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
         </table>
     </div>
-    <div class="paginator">
-        <ul class="pagination">
-            <?= $this->Paginator->first('<< ' . __('first')) ?>
-            <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
-            <?= $this->Paginator->next(__('next') . ' >') ?>
-            <?= $this->Paginator->last(__('last') . ' >>') ?>
-        </ul>
-        <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
-    </div>
+    <?= $this->element('paginator') ?>
 </div>

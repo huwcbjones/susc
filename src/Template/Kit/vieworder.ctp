@@ -28,9 +28,9 @@ $this->layout('profile');
                     <thead>
                     <tr>
                         <th>Item</th>
-                        <th class="text-center">Additional Info</th>
-                        <th class="text-center">Colour</th>
                         <th class="text-center">Size</th>
+                        <th class="text-center">Colour</th>
+                        <th class="text-center">Info</th>
                         <th class="text-center">Price</th>
                         <th class="text-center">Quantity</th>
                         <th class="text-center">Subtotal</th>
@@ -54,21 +54,15 @@ $this->layout('profile');
                                     'slug' => $item->item->slug,
                                     'crc' => $item->item->crc
                                 ]) ?></th>
-                            <td data-th="Additional Info" class="text-center"><?= $item->item->displayAdditionalInformation($item->additional_info) ?></td>
-                            <td data-th="Colour" class="text-center"><?= h($item->item->displayColour($item->colour)) ?></td>
                             <td data-th="Size" class="text-center"><?= $item->item->displaySize($item->size) ?></td>
+                            <td data-th="Colour" class="text-center"><?= $item->item->displayColour($item->colour) ?></td>
+                            <td data-th="Additional Info" class="text-center"><?= $item->item->displayAdditionalInformation($item->additional_info) ?></td>
                             <td data-th="Price" class="text-center"><?= $item->formattedPrice ?></td>
                             <td data-th="Quantity" class="text-center"><?= $item->quantity ?></td>
                             <td data-th="Quantity" class="text-center"><?= $item->formattedSubtotal ?></td>
-                            <td>
-                                <span class="text-<?= ($item->is_ordered ? 'success' : 'danger') ?> glyphicon glyphicon-<?= ($item->is_ordered ? 'ok' : 'remove') ?>-sign"></span>
-                            </td>
-                            <td>
-                                <span class="text-<?= ($item->is_arrived ? 'success' : 'danger') ?> glyphicon glyphicon-<?= ($item->is_arrived ? 'ok' : 'remove') ?>-sign"></span>
-                            </td>
-                            <td>
-                                <span class="text-<?= ($item->is_collected ? 'success' : 'danger') ?> glyphicon glyphicon-<?= ($item->is_collected ? 'ok' : 'remove') ?>-sign"></span>
-                            </td>
+                            <td><?= $item->getOrderedStatusIcon() ?></td>
+                            <td><?= $item->getArrivedStatusIcon() ?></td>
+                            <td><?= $item->getCollectedStatusIcon() ?></td>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
@@ -77,7 +71,9 @@ $this->layout('profile');
                         <td colspan="5"></td>
                         <td class="text-center"><h3 class="h4">Total:</h3></td>
                         <td class="text-center" style="vertical-align: middle"><?= $order->formattedTotal ?> </td>
-                        <td colspan="3"></td>
+                        <td class="text-center" style="vertical-align: middle"><?= $order->ordered_left === 0 ? '' : $order->ordered_left ?></td>
+                        <td class="text-center" style="vertical-align: middle"><?= $order->arrived_left === 0 ? '' : $order->arrived_left ?></td>
+                        <td class="text-center" style="vertical-align: middle"><?= $order->collected_left === 0 ? '' : $order->collected_left ?></td>
                     </tr>
                     </tfoot>
                 </table>

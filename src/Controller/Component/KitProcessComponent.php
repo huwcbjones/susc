@@ -301,10 +301,13 @@ class KitProcessComponent extends Component
 
     /**
      * Processes a batch of items
+     *
+     * @return int Order ID
      */
     public function process()
     {
         $includeItems = $this->getController()->request->getData('items');
+        $includeUnpaid = $this->getController()->request->getData('unpaid', false);
 
         if(count($includeItems) == 0){
             $this->Flash->success('No items were selected to process. Please select some items to process');
@@ -312,7 +315,10 @@ class KitProcessComponent extends Component
         }
 
         /** @var ItemsOrder[] $items */
-        $items = $this->ItemsOrders->find('unprocessed', ['itemIDs' => $includeItems])->toArray();
+        $items = $this->ItemsOrders->find('unprocessed', [
+            'itemIDs' => $includeItems,
+            'unpaid' => $includeUnpaid
+        ])->toArray();
         if (count($items) === 0) {
             $this->Flash->success('No orders to process (you are up to date!)');
             return;
@@ -334,6 +340,7 @@ class KitProcessComponent extends Component
         $save = $this->ItemsOrders->saveMany($items);
         if ($save !== false) {
             $this->Flash->success('Batch processed!');
+            return $order->id;
         } else {
             $this->Flash->error('Failed to save batch!)');
         }

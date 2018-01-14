@@ -28,6 +28,7 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  * @property boolean $hasColour
  * @property string $colours
  * @property string[] $colourList
+ * @property string[] $quantityList
  * @property ItemsOrder $_joinData;
  * @property ItemsOrder[]|CollectionInterface $items_orders
  * @property boolean $status Enabled or Disabled
@@ -116,6 +117,12 @@ class Item extends Entity
         return $colour_array;
     }
 
+    protected function _getQuantityList()
+    {
+        $range = range(1, 9);
+        return array_combine($range, $range);
+    }
+
     protected function _getHasSize(){
         return trim($this->sizes) != '';
     }
@@ -136,7 +143,7 @@ class Item extends Entity
         } elseif ($additionalInfo == '') {
             return '[None Provided]';
         } else {
-            return $additionalInfo;
+            return h($additionalInfo);
         }
     }
 
@@ -176,7 +183,7 @@ class Item extends Entity
         if (!$this->hasColour) {
             return '-';
         } else {
-            return $colour;
+            return h($colour);
         }
     }
 
@@ -185,7 +192,7 @@ class Item extends Entity
         if (!$this->hasSize) {
             return '-';
         } else {
-            return $size;
+            return h($size);
         }
     }
 }

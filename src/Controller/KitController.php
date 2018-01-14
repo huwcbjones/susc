@@ -88,14 +88,22 @@ class KitController extends AppController
             }
 
             $id = $request->getData('id');
-            $size = h($request->getData('size'));
-            $quantity = h($request->getData('quantity'));
-            $colour = h($request->getData('colour'));
-            $additionalInfo = h($request->getData('additional_info'));
+            $size = $request->getData('size');
+            $quantity = $request->getData('quantity');
+            $colour = $request->getData('colour');
+            $additionalInfo = $request->getData('additional_info');
             $item = $this->Kit->get($id);
 
             if (!$item->isAvailableToOrder) {
                 $this->Flash->error($item->orderString, ['escape' => false]);
+                return;
+            }
+
+            if (
+                $quantity == ''
+                || !in_array($quantity, $item->quantityList)
+            ) {
+                $this->Flash->error('Please select a quantity!');
                 return;
             }
 

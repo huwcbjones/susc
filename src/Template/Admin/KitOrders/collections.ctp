@@ -33,7 +33,7 @@ $this->assign('title', 'Item Collections');
             <?php foreach ($items as $item): ?>
                 <tr>
                     <td><?= h($item->order_id) ?></td>
-                    <td><?= $this->Html->link(h($item->order->user->full_name), ['controller' => 'KitOrders', 'user_id' => $item->order->user_id]) ?></td>
+                    <td><?= $this->Html->link($item->order->user->full_name, ['controller' => 'KitOrders', 'user_id' => $item->order->user_id]) ?></td>
                     <td><?= $this->Html->link($item->item->title, ['_name' => 'kit_item', 'slug' => $item->item->slug, 'crc' => $item->item->crc]) ?></td>
                     <td><?= $item->item->displaySize($item->size) ?></td>
                     <td><?= $item->item->displayColour($item->colour) ?></td>
