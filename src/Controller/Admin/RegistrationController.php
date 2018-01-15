@@ -32,6 +32,15 @@ class RegistrationController extends AppController
         parent::beforeFilter($event);
     }
 
+    public function beforeRender(Event $event)
+    {
+        parent::beforeRender($event);
+        $requiresCode = $this->Config->get('users.registration.requires_code');
+        $this->set('requiresCode', $requiresCode->value !== '');
+        $this->viewBuilder()->setLayout('admin-registration');
+    }
+
+
     public function initialize()
     {
         parent::initialize();
@@ -67,7 +76,7 @@ class RegistrationController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
 
             $code->id = $this->request->getData('id');
-            if(trim($code->id) === ''){
+            if (trim($code->id) === '') {
                 $code->setError('id', ['ID must not be empty']);
             }
 
@@ -150,5 +159,37 @@ class RegistrationController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    public function configure()
+    {
+        $groupTable = TableRegistry::get('Groups');
+        $groups = $groupTable->find('list', ['limit' => 200]);
+
+        $registrationRequiresCode = $this->Config->get('users.registration.requires_code');
+        $defaultGroup = $this->Config->get('users.registration.default_group');
+
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $registrationRequiresCode->value = filter_var($this->request->getData('registrationRequiresCode', true), FILTER_VALIDATE_BOOLEAN);
+
+            try {
+                $newGroup = trim($this->request->getData('defaultGroup'));
+                $groupTable->get($newGroup);
+
+                $defaultGroup->value = $newGroup;
+            } catch(\Exception $e){
+                $this->Flash->error(__('Default group not found. Please, try again.'));
+                return;
+            }
+
+            if (count($this->Config->saveMany([$registrationRequiresCode, $defaultGroup])) == 2) {
+                $this->Flash->success(__('Signup configuration has been saved!'));
+                return $this->redirect(['controller' => 'Registration', 'action' => 'index']);
+            } else {
+                $this->Flash->error(__('The signup configuration could not be saved. Please, try again.'));
+            }
+        }
+
+        $this->set(compact('groups', 'registrationRequiresCode', 'defaultGroup'));
     }
 }
