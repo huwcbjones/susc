@@ -6,7 +6,7 @@
 use Cake\Core\Configure;
 use SUSC\Form\RegisterForm;
 
-$this->layout('empty');
+$this->setLayout('empty');
 $register = new RegisterForm();
 
 $this->start('css');
@@ -34,8 +34,9 @@ $this->Form->unlockField('g-recaptcha-response');
     <?= $this->Form->control('email_address', ['class' => ['form-control'], 'placeholder' => 'Email Address', 'required', 'id' => 'email_address']) ?>
 
     <?= $this->Form->control('password', ['class' => ['form-control', 'middle'], 'placeholder' => 'Password', 'required', 'id' => 'password', 'value' => '']) ?>
-
-    <?= $this->Form->control('registration_code', ['class' => ['form-control', 'bottom'], 'placeholder' => 'Registration Code', 'id' => 'registration_code', 'value' => $registrationCode]) ?>
+    <?php if ($requiresCode): ?>
+        <?= $this->Form->control('registration_code', ['class' => ['form-control', 'bottom'], 'placeholder' => 'Registration Code', 'id' => 'registration_code', 'value' => $registrationCode]) ?>
+    <?php endif; ?>
 
     <?= $this->Flash->render() ?>
     <?= $this->Form->button('Register', ['class' => ['btn', 'btn-lg', 'btn-primary', 'btn-block', 'g-recaptcha'], 'data-sitekey' => Configure::read('Recaptcha.sitekey'), 'data-callback' => 'submitForm']); ?>

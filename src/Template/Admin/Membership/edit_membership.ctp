@@ -32,10 +32,10 @@ $this->assign('title', 'Edit Membership: ' . $membership->full_name);
                 <div class="row">
                     <div class="col-sm-6">
                         <h2 class="h3">Their Details</h2>
-                        <p><strong>First Name:</strong> <?= $membership->first_name ?></p>
-                        <p><strong>Last Name:</strong> <?= $membership->last_name ?></p>
-                        <p><strong>Student ID:</strong> <?= $membership->student_id ?></p>
-                        <p><strong>Southampton ID:</strong> <?= $membership->soton_id ?></p>
+                        <p><strong>First Name:</strong> <?= $this->Form->text('first_name', ['value' => $membership->first_name]) ?></p>
+                        <p><strong>Last Name:</strong> <?= $this->Form->text('last_name', ['value' => $membership->last_name]) ?></p>
+                        <p><strong>Student ID:</strong> <?= $this->Form->text('student_id', ['value' => $membership->student_id]) ?></p>
+                        <p><strong>Southampton ID:</strong> <?= $this->Form->text('soton_id', ['value' => $membership->soton_id]) ?></p>
                         <p><strong>Date of Birth:</strong> <?= $membership->date_of_birth ?></p>
 
                         <h2 class="h3">Membership Details</h2>

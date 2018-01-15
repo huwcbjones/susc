@@ -4,6 +4,7 @@ namespace SUSC\Controller;
 
 
 use Cake\Core\Configure;
+use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\I18n\Time;
@@ -261,6 +262,15 @@ class UsersController extends AppController
         // Get registration code from get Param
         $this->set('registrationCode', $this->request->getQuery('code'));
 
+        $requiresCode = true;
+        try {
+            $requiresCode = filter_var($this->Config->get('users.registration.requires_code')->value, FILTER_VALIDATE_BOOLEAN);
+        } catch (RecordNotFoundException $e) {
+
+        }
+
+        $this->set('requiresCode', $requiresCode);
+
         if (!$this->request->is(['patch', 'post', 'put'])) {
             return;
         }
@@ -279,13 +289,6 @@ class UsersController extends AppController
         $codes = TableRegistry::get('RegistrationCodes');
         $group_id = null;
 
-        $requiresCode = true;
-        try {
-            $requiresCode = ($this->Config->get('users.registration.requires_code')->value === 'true') ? true : false;
-        } catch (RecordNotFoundException $e) {
-
-        }
-
         try {
             /** @var RegistrationCode $registration_code */
             $registration_code = $codes->get($this->request->getData('registration_code'));
@@ -295,7 +298,7 @@ class UsersController extends AppController
                 $this->Flash->error('An error occurred whilst creating your account. Code invalid!');
                 return;
             }
-        } catch (RecordNotFoundException $ex) {
+        } catch (RecordNotFoundException | InvalidPrimaryKeyException $ex) {
             if ($requiresCode) {
                 $this->Flash->error('An error occurred whilst creating your account. Code invalid!');
                 return;
@@ -303,7 +306,7 @@ class UsersController extends AppController
         }
         if ($group_id == null) {
             try {
-                $group_id = $this->Config->get('users.registration.default_group_id')->value;
+                $group_id = $this->Config->get('users.registration.default_group')->value;
             } catch (RecordNotFoundException $ex) {
                 $this->Flash->error('An error occurred whilst creating your account.' . ($requiresCode ? ' A registration code is required.' : ''));
                 return;

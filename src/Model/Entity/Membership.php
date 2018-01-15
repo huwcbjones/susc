@@ -1,4 +1,9 @@
 <?php
+/**
+ * SUSC Website
+ * Copyright (c) Southampton University Swimming Club. (https://susc.org.uk)
+ *
+ */
 
 namespace SUSC\Model\Entity;
 
@@ -56,7 +61,7 @@ class Membership extends Entity
         return $this->first_name . ' ' . $this->last_name;
     }
 
-    public function getStatusIcon()
+    public function getActiveStatusIcon()
     {
         if ($this->is_valid && $this->is_paid) {
             return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
@@ -75,6 +80,33 @@ class Membership extends Entity
         return '<span class="text-' . ($this->is_paid ? 'success' : 'danger') . ' glyphicon glyphicon-' . ($this->is_paid ? 'ok' : 'remove') . '-sign"></span>';
     }
 
+    public function getStatusIcon(){
+        // Cancelled
+        if($this->is_cancelled){
+            return '<span class="text-muted glyphicon glyphicon-ban-circle"></span>';
+        }
+
+        // Waiting for cpayment
+        if(!$this->is_paid){
+            return '<span class="text-warning glyphicon glyphicon-credit-card"></span>';
+        }
+
+        // Valid
+        if($this->is_paid && $this->is_valid){
+            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
+        }
+
+        // Not active
+        if(new FrozenTime() < $this->membership_type->valid_from){
+            return '<span class="text-warning glyphicon glyphicon-hourglass"></span>';
+        }
+
+        // Expired
+        if(new FrozenTime() > $this->membership_type->valid_to){
+            return '<span class="text-danger glyphicon glyphicon-alert"></span>';
+        }
+    }
+
     protected function _getIsPaid()
     {
         return $this->paid !== null;
@@ -90,7 +122,7 @@ class Membership extends Entity
     {
         switch ($this->payment_method) {
             case 'bat':
-                return 'Bank Account Transfer';
+                return 'BACs';
             case 'cash':
                 return 'Cash';
         }

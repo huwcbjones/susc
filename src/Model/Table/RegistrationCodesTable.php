@@ -35,6 +35,8 @@ class RegistrationCodesTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
+        $this->addBehavior('Timestamp');
+
         $this->belongsTo('Groups', [
             'foreignKey' => 'group_id',
             'joinType' => 'INNER'
@@ -76,4 +78,11 @@ class RegistrationCodesTable extends Table
 
         return $rules;
     }
+
+    public function find($type = 'all', $options = [])
+    {
+        return parent::find($type, $options)->contain(['Groups']);
+    }
+
+
 }
