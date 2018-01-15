@@ -11,7 +11,9 @@ use DateTime;
  *
  * @property string $id
  * @property FrozenTime $valid_from
+ * @property string $valid_from_string
  * @property FrozenTime $valid_to
+ * @property string $valid_to_string
  * @property string $group_id
  * @property boolean $enabled
  * @property FrozenTime $created
@@ -80,5 +82,12 @@ class RegistrationCode extends Entity
         } else {
             return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
         }
+    }
+
+    protected function _getValidFromString(){
+        return $this->valid_from == null ? '' : $this->valid_from->format('d F Y');
+    }
+    protected function _getValidToString(){
+        return $this->valid_to == null ? '' : $this->valid_to->format('d F Y');
     }
 }
