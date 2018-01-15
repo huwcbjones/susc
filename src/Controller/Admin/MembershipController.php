@@ -3,8 +3,6 @@
  * SUSC Website
  * Copyright (c) Southampton University Swimming Club. (https://susc.org.uk)
  *
- * @copyright Copyright (c) Southampton University Swimming Club. (https://susc.org.uk)
- * @link      http://susc.org.uk SUSC Website
  */
 
 namespace SUSC\Controller\Admin;
@@ -44,6 +42,7 @@ class MembershipController extends AppController
     public function getACL()
     {
         if ($this->request->getParam('action') == 'index') return 'admin.membership.*';
+        if ($this->request->getParam('action') == 'preview') return 'admin.membership.view';
         if ($this->request->getParam('action') == 'editMembership') return 'admin.membership.edit';
         if ($this->request->getParam('action') == 'sendReminderEmails') return 'admin.membership.remind';
         if (in_array($this->request->getParam('action'), ['paid', 'ordered', 'arrived', 'collected'])) {
@@ -109,6 +108,14 @@ class MembershipController extends AppController
         $this->set('_serialize', ['item']);
     }
 
+    public function preview($id)
+    {
+        $item = $this->MembershipTypes->get($id);
+
+        $this->set('item', $item);
+        $this->set('_serialize', ['item']);
+    }
+
     public function edit($id)
     {
         $item = $this->MembershipTypes->get($id);
@@ -144,7 +151,24 @@ class MembershipController extends AppController
 
     public function members()
     {
-        $memberships = $this->Paginate($this->Memberships, ['order' => ['created' => 'DESC']]);
+        $cancelled = filter_var($this->request->getQuery('cancelled', false), FILTER_VALIDATE_BOOLEAN);
+        $unpaid = filter_var($this->request->getQuery('unpaid', false), FILTER_VALIDATE_BOOLEAN);
+        $this->set('includeCancelledOrders', $cancelled);
+        $this->set('includeUnpaidOrders', $unpaid);
+
+        $query = $this->Memberships
+            ->find()
+            ->order(['Memberships.created' => 'DESC']);
+
+        if (!$cancelled) {
+            $query = $query->where(['is_cancelled' => $cancelled]);
+        }
+
+        if($unpaid) {
+            $query = $query->where(['paid IS NOT' => null]);
+        }
+
+        $memberships = $this->Paginate($query);
 
         $this->set('memberships', $memberships);
     }
@@ -329,7 +353,7 @@ class MembershipController extends AppController
             ->setTemplate('membership_reminder');
 
         $now = new DateTime();
-        foreach($members as &$member){
+        foreach ($members as &$member) {
             $member->last_reminder = $now;
             $email
                 ->setTo($member->user->email_address, $member->user->full_name)

@@ -3,8 +3,6 @@
  * SUSC Website
  * Copyright (c) Southampton University Swimming Club. (https://susc.org.uk)
  *
- * @copyright Copyright (c) Southampton University Swimming Club. (https://susc.org.uk)
- * @link      http://susc.org.uk SUSC Website
  */
 
 use Cake\I18n\FrozenTime;
@@ -20,6 +18,7 @@ use SUSC\View\AppView;
  */
 
 $this->assign('title', 'Add Membership Type');
+$this->Form->unlockField('is_enable');
 $this->start('css');
 echo $this->fetch('css');
 echo $this->Html->css('bootstrap-datetimepicker')
@@ -115,11 +114,11 @@ $this->end();
 
     <div class="row">
         <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-0 col-lg-4">
-            <?= $this->Html->link('<span class="glyphicon glyphicon-chevron-left"></span> Cancel', ['action' => 'index'], ['class' => ['btn', 'btn-default', 'btn-block'], 'escape' => false]) ?>
+            <?= $this->Html->link('<span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;&nbsp;Cancel', ['action' => 'index'], ['class' => ['btn', 'btn-default', 'btn-block'], 'escape' => false]) ?>
         </div>
         <div class="col-xs-12 visible-xs-block"><br/></div>
         <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-2 col-lg-4 col-lg-offset-4">
-            <?= $this->Form->button('Save <span class="glyphicon glyphicon-floppy-disk"></span>', ['type' => 'submit', 'class' => ['btn', 'btn-primary', 'btn-block'], 'escape' => false]); ?>
+            <?= $this->Form->button('Add Membership&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-floppy-disk"></span>', ['type' => 'submit', 'class' => ['btn', 'btn-primary', 'btn-block'], 'escape' => false]); ?>
         </div>
     </div>
 <?= $this->Form->end() ?>

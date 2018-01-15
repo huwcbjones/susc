@@ -1,4 +1,9 @@
 <?php
+/**
+ * SUSC Website
+ * Copyright (c) Southampton University Swimming Club. (https://susc.org.uk)
+ *
+ */
 
 namespace SUSC\Model\Entity;
 
@@ -96,6 +101,15 @@ class MembershipType extends Entity
     {
         $parser = new GithubMarkdownExtended();
         return $parser->parse($this->description);
+    }
+
+    public function getStatusIcon()
+    {
+        if ($this->is_enable) {
+            return '<span class="text-success glyphicon glyphicon-ok-sign"></span>';
+        } else {
+            return '<span class="text-danger glyphicon glyphicon-remove-sign"></span>';
+        }
     }
 
     protected function _getFormattedPrice()

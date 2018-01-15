@@ -3,8 +3,6 @@
  * SUSC Website
  * Copyright (c) Southampton University Swimming Club. (https://susc.org.uk)
  *
- * @copyright Copyright (c) Southampton University Swimming Club. (https://susc.org.uk)
- * @link      http://susc.org.uk SUSC Website
  */
 
 use SUSC\Model\Entity\MembershipType;
@@ -83,7 +81,7 @@ $this->end();
         <label for="is_enabled" class="col-sm-2 control-label">Is Enabled?</label>
         <div class="col-sm-10">
             <p class="form-control-static">
-                <?php if ($item->status): ?>
+                <?php if ($item->is_enable): ?>
                     <span class="text-success"><span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;&nbsp;Yes</span>
                 <?php else: ?>
                     <span class="text-danger"><span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;&nbsp;No</span>
@@ -110,12 +108,31 @@ $this->end();
 
 <div class="row">
     <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-0 col-lg-4">
-        <?= $this->Html->link('<span class="glyphicon glyphicon-chevron-left"></span> Back', ['action' => 'index'], ['class' => ['btn', 'btn-default', 'btn-block'], 'escape' => false]) ?>
     </div>
-    <?php if ($this->hasAccessTo('admin.membership.edit')): ?>
-        <div class="col-xs-12 visible-xs-block"><br/></div>
-        <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-2 col-lg-4 col-lg-offset-4">
+    <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-2 col-lg-4 col-lg-offset-4">
+        <?= $this->Html->link('Preview&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-eye-open"></span>', ['action' => 'preview', $item->id], ['class' => ['btn', 'btn-default', 'btn-block'], 'escape' => false]) ?>
+    </div>
+</div>
+<br/>
+<div class="row">
+    <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-0 col-lg-4">
+        <?= $this->Html->link('<span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;&nbsp;Back', ['action' => 'index'], ['class' => ['btn', 'btn-default', 'btn-block'], 'escape' => false]) ?>
+    </div>
+    <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-2 col-lg-4 col-lg-offset-4">
+        <?php if ($this->hasAccessTo('admin.membership.edit') && $this->hasAccessTo('admin.membership.delete')): ?>
+            <div class="btn-group btn-block">
+                <?= $this->Html->link('Edit&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-pencil"></span>', ['action' => 'edit', $item->id], ['class' => ['btn', 'btn-primary', 'col-sm-10', 'col-md-11'], 'escape' => false]) ?>
+                <a href="#" class="btn btn-primary col-sm-2 col-md-1 dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu btn-block">
+                    <li><?= $this->Form->postLink('Delete&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-remove"></span>', ['action' => 'delete', $item->id], ['escape' => false, 'confirm' => __('Are you sure you want to delete {0}?', $item->title)]) ?></li>
+                </ul>
+            </div>
+        <?php elseif ($this->hasAccessTo('admin.membership.edit')): ?>
             <?= $this->Html->link('Edit <span class="glyphicon glyphicon-pencil"></span>', ['action' => 'edit', $item->id], ['class' => ['btn', 'btn-primary', 'btn-block'], 'escape' => false]) ?>
-        </div>
-    <?php endif ?>
+        <?php else: ?>
+            <?= $this->Form->postLink('Delete&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-remove"></span>', ['action' => 'delete', $item->id], ['escape' => false, 'class' => ['btn', 'btn-primary', 'btn-block'], 'confirm' => __('Are you sure you want to delete {0}?', $item->title)]) ?>
+        <?php endif; ?>
+    </div>
 </div>

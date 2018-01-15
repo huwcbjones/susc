@@ -3,8 +3,6 @@
  * SUSC Website
  * Copyright (c) Southampton University Swimming Club. (https://susc.org.uk)
  *
- * @copyright Copyright (c) Southampton University Swimming Club. (https://susc.org.uk)
- * @link      http://susc.org.uk SUSC Website
  */
 
 use Cake\I18n\FrozenTime;
@@ -19,6 +17,7 @@ use SUSC\View\AppView;
  */
 
 $this->assign('title', 'Edit Membership: ' . $item->title);
+$this->Form->unlockField('is_enable');
 $this->start('css');
 echo $this->Html->css('bootstrap-datetimepicker');
 echo $this->fetch('css');
@@ -124,14 +123,14 @@ $this->end();
 <div class="form-group">
     <label for="created" class="col-sm-2 control-label">Created</label>
     <div class="col-sm-10">
-        <input type="text" name="created" class="form-control" readonly="readonly"
+        <input type="text" class="form-control" readonly="readonly"
                value="<?= $this->Time->i18nFormat($item->created, null, null, 'Europe/London') ?>"/>
     </div>
 </div>
 <div class="form-group">
     <label for="modified" class="col-sm-2 control-label">Last Modified</label>
     <div class="col-sm-10">
-        <input type="text" name="modified" class="form-control" readonly="readonly"
+        <input type="text" class="form-control" readonly="readonly"
                value="<?= $this->Time->i18nFormat($item->modified, null, null, 'Europe/London') ?>"/>
     </div>
 </div>
@@ -142,7 +141,7 @@ $this->end();
     </div>
     <div class="col-xs-12 visible-xs-block"><br/></div>
     <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-2 col-lg-4 col-lg-offset-4">
-        <?= $this->Form->button('Save <span class="glyphicon glyphicon-floppy-disk"></span>', ['type' => 'submit', 'class' => ['btn', 'btn-primary', 'btn-block'], 'escape' => false]); ?>
+        <?= $this->Form->button('Save Changes&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-floppy-disk"></span>', ['type' => 'submit', 'class' => ['btn', 'btn-primary', 'btn-block'], 'escape' => false]); ?>
     </div>
 </div>
 <?= $this->Form->end() ?>
