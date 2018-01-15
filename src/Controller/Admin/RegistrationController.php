@@ -60,4 +60,14 @@ class RegistrationController extends AppController
         $this->set('_serialize', ['codes']);
     }
 
+    public function view($id = null)
+    {
+        $code = $this->Codes->get($id, [
+            'contain' => ['Groups']
+        ]);
+
+        $this->set('code', $code);
+        $this->set('_serialize', ['code']);
+    }
+
 }
