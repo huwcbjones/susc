@@ -70,4 +70,35 @@ class RegistrationController extends AppController
         $this->set('_serialize', ['code']);
     }
 
+    public function edit($id = null)
+    {
+        $code = $this->Codes->get($id, [
+            'contain' => ['Groups']
+        ]);
+        $groups = $this->Codes->Groups->find('list', ['limit' => 200]);
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $code = $this->Codes->patchEntity($code, $this->request->getData());
+
+            $code->valid_from = $this->request->getData('valid_from');
+            if ($code->valid_from === '') $code->valid_from = null;
+
+            $code->valid_to = $this->request->getData('valid_to');
+            if ($code->valid_to === '') $code->valid_to = null;
+
+
+            if ($code->valid_from !== null && $code->valid_to !== null) {
+                if ($code->valid_from >= $code->valid_to) {
+                    $code->setError('valid_to', ['Valid To date must be after Valid From']);
+                }
+            }
+
+            if ($this->Codes->save($code)) {
+                $this->Flash->success(__('The registration code has been saved.'));
+                return $this->redirect(['action' => 'view', $code->id]);
+            }
+            $this->Flash->error(__('The registration code could not be saved. Please, try again.'));
+        }
+        $this->set(compact('groups', 'code'));
+        $this->set('_serialize', ['code']);
+    }
 }

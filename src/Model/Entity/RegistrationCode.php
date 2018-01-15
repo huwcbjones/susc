@@ -35,7 +35,9 @@ class RegistrationCode extends Entity
      */
     protected $_accessible = [
         '*' => true,
-        'id' => false
+        'id' => false,
+        'created' => false,
+        'modified' => false
     ];
 
     public function isValid(){
@@ -89,5 +91,43 @@ class RegistrationCode extends Entity
     }
     protected function _getValidToString(){
         return $this->valid_to == null ? '' : $this->valid_to->format('d F Y');
+    }
+
+    protected function _setValidFrom($data)
+    {
+        if ($data === '') {
+            return null;
+        }
+
+        return $data;
+    }
+
+    protected function _getValidFrom($valid_from)
+    {
+        if ($valid_from === null) {
+            return null;
+        } else if ($valid_from instanceof FrozenTime) {
+            return $valid_from;
+        }
+        return new FrozenTime($valid_from);
+    }
+
+    protected function _setValidTo($data)
+    {
+        if ($data === '') {
+            return null;
+        }
+
+        return $data;
+    }
+
+    protected function _getValidTo($valid_to)
+    {
+        if ($valid_to === null) {
+            return null;
+        } elseif ($valid_to instanceof FrozenTime) {
+            return $valid_to;
+        }
+        return new FrozenTime($valid_to);
     }
 }
