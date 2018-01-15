@@ -21,9 +21,15 @@ use SUSC\Model\Entity\User;
 $currentUrl = Router::normalize($this->request->here);
 $links = array();
 $links['admin'] = $currentUrl === Router::url(['_name' => 'admin']);
-$links['users'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index'])) !== false;
+$links['users-groups'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index'])) !== false
+    || strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index'])) !== false
+    || strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'index'])) !== false;
+$links['users'] = $currentUrl == Router::url(['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index']);
 $links['users_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Users', 'action' => 'add']);
-$links['groups'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index'])) !== false;
+$links['groups'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index']);
+$links['registration_codes'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'index']);
+$links['registration_codes-add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'add']);
+$links['registration_codes-configure'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'configure']);
 $links['groups_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'add']);
 $links['kit-items'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index'])) !== false;
 $links['kit-items_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'add']);
@@ -44,22 +50,30 @@ $links['membership_list'] = $currentUrl === Router::url(['prefix' => 'admin', 'c
     <li<?= $links['admin'] ? ' class="active"' : '' ?>><?= $this->Html->link('Site Administration', ['_name' => 'admin']) ?></li>
 </ul>
 
-<?php if ($this->hasAccessTo('admin.users.*')): ?>
+<?php if ($this->hasAccessTo('admin.users.*') || $this->hasAccessTo('admin.groups.*')): ?>
     <ul class="nav nav-sidebar">
-        <li<?= $links['users'] ? ' class="active"' : '' ?>><?= $this->Html->link('Users', ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index']) ?></li>
-        <?php if ($links['users']) : ?>
+        <li<?= $links['users-groups'] ? ' class="active"' : '' ?>><?= $this->Html->link('Users & Groups', ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index']) ?></li>
+        <?php if ($links['users-groups']) : ?>
+            <?php if ($this->hasAccessTo('admin.users.*')): ?>
+                <li<?= $links['users'] ? ' class="active"' : '' ?>><?= $this->Html->link('Users', ['prefix' => 'admin', 'controller' => 'Users']) ?></li>
+            <?php endif; ?>
             <?php if ($this->hasAccessTo('admin.users.add')): ?>
                 <li<?= $links['users_add'] ? ' class="active"' : '' ?>><?= $this->Html->link('Add User', ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'add']) ?></li>
             <?php endif; ?>
-        <?php endif; ?>
-    </ul>
-<?php endif ?>
-<?php if ($this->hasAccessTo('admin.groups.*')): ?>
-    <ul class="nav nav-sidebar">
-        <li<?= $links['groups'] ? ' class="active"' : '' ?>><?= $this->Html->link('Groups', ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index']) ?></li>
-        <?php if ($links['groups']) : ?>
-            <?php if ($this->hasAccessTo('admin.groups.add')): ?>
-                <li<?= $links['groups_add'] ? ' class="active"' : '' ?>><?= $this->Html->link('Add Group', ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'add']) ?></li>
+            <?php if ($this->hasAccessTo('admin.groups.*')): ?>
+                <li<?= $links['groups'] ? ' class="active"' : '' ?>><?= $this->Html->link('Groups', ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index']) ?></li>
+                <?php if ($this->hasAccessTo('admin.groups.add')): ?>
+                    <li<?= $links['groups_add'] ? ' class="active"' : '' ?>><?= $this->Html->link('Add Group', ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'add']) ?></li>
+                <?php endif; ?>
+            <?php endif; ?>
+            <?php if ($this->hasAccessTo('admin.registration.*')): ?>
+                <li<?= $links['registration_codes'] ? ' class="active"' : '' ?>><?= $this->Html->link('Signup Codes', ['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'index']) ?></li>
+            <?php endif; ?>
+            <?php if ($this->hasAccessTo('admin.registration.add')): ?>
+                <li<?= $links['registration_codes-add'] ? ' class="active"' : '' ?>><?= $this->Html->link('Add Signup Code', ['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'add']) ?></li>
+            <?php endif; ?>
+            <?php if ($this->hasAccessTo('admin.registration.configure')): ?>
+                <li<?= $links['registration_codes-configure'] ? ' class="active"' : '' ?>><?= $this->Html->link('Configure Signups', ['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'configure']) ?></li>
             <?php endif; ?>
         <?php endif; ?>
     </ul>
