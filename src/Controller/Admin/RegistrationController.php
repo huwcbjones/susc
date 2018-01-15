@@ -14,8 +14,6 @@ namespace SUSC\Controller\Admin;
 
 
 use Cake\Event\Event;
-use Cake\Http\Response;
-use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use SUSC\Controller\AppController;
 use SUSC\Model\Table\RegistrationCodesTable;
@@ -48,7 +46,15 @@ class RegistrationController extends AppController
 
     public function index()
     {
-        $codes = $this->paginate($this->Codes);
+        $codes = $this->paginate($this->Codes, [
+            'sortWhitelist' => [
+                'id',
+                'valid_from',
+                'valid_to',
+                'Groups.name',
+                'enabled'
+            ]
+        ]);
 
         $this->set(compact('codes'));
         $this->set('_serialize', ['codes']);
