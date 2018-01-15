@@ -57,7 +57,7 @@ $this->Form->unlockField('valid_to');
                 <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
                 <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
             </div>
-            <?= $this->Form->hidden('valid_from', ['value' => ($code->valid_from == null ? new FrozenTime() : $code->valid_from)->i18nFormat('yyyy-MM-dd HH:mm:ss'), 'id' => 'valid_from']) ?>
+            <?= $this->Form->hidden('valid_from', ['value' => $code->valid_from == null ? '' : ($code->valid_from)->i18nFormat('yyyy-MM-dd HH:mm:ss'), 'id' => 'valid_from']) ?>
             <?php if ($this->Form->isFieldError('valid_from')) : ?>
                 <span id="helpBlock" class="help-block"><?= $this->Form->error('valid_from') ?></span>
             <?php endif ?>
@@ -72,7 +72,7 @@ $this->Form->unlockField('valid_to');
                 <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
                 <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
             </div>
-            <?= $this->Form->hidden('valid_to', ['value' => ($code->valid_to == null ? new FrozenTime() : $code->valid_to)->i18nformat('yyyy-MM-dd HH:mm:ss'), 'id' => 'valid_to']) ?>
+            <?= $this->Form->hidden('valid_to', ['value' => $code->valid_to == null ? '' : ($code->valid_to)->i18nformat('yyyy-MM-dd HH:mm:ss'), 'id' => 'valid_to']) ?>
             <?php if ($this->Form->isFieldError('valid_to')) : ?>
                 <span id="helpBlock" class="help-block"><?= $this->Form->error('valid_to') ?></span>
             <?php endif ?>
