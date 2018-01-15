@@ -67,7 +67,7 @@ $links['membership_list'] = $currentUrl === Router::url(['prefix' => 'admin', 'c
                 <?php endif; ?>
             <?php endif; ?>
             <?php if ($this->hasAccessTo('admin.registration.*')): ?>
-                <li<?= $links['registration_codes'] ? ' class="active"' : '' ?>><?= $this->Html->link('Signup Codes', ['prefix' => 'admin', 'controller' => 'Registration']) ?></li>
+                <li<?= $links['registration_codes'] ? ' class="active"' : '' ?>><?= $this->Html->link('Signup Codes', ['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'index']) ?></li>
             <?php endif; ?>
             <?php if ($this->hasAccessTo('admin.registration.add')): ?>
                 <li<?= $links['registration_codes-add'] ? ' class="active"' : '' ?>><?= $this->Html->link('Add Signup Code', ['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'add']) ?></li>
