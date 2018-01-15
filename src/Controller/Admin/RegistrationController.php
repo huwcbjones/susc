@@ -135,4 +135,20 @@ class RegistrationController extends AppController
         $this->set(compact('groups', 'code'));
         $this->set('_serialize', ['code']);
     }
+
+    public function delete($id = null)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+
+        $code = $this->Codes->get($id);
+
+
+        if ($this->Codes->delete($code)) {
+            $this->Flash->success(__('The signup code has been deleted.'));
+        } else {
+            $this->Flash->error(__('The signup code could not be deleted. Please, try again.'));
+        }
+
+        return $this->redirect(['action' => 'index']);
+    }
 }
