@@ -1,4 +1,9 @@
 <?php
+/**
+ * SUSC Website
+ * Copyright (c) Southampton University Swimming Club. (https://susc.org.uk)
+ *
+ */
 
 namespace SUSC\Controller\Component;
 
