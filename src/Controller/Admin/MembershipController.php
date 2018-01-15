@@ -289,6 +289,11 @@ class MembershipController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             /** @var Membership $membership */
             $membership->membership_type_id = $this->request->getData('membership_type_id');
+            $membership->first_name = $this->request->getData('first_name');
+            $membership->last_name = $this->request->getData('last_name');
+            $membership->student_id = $this->request->getData('student_id');
+            $membership->soton_id = $this->request->getData('soton_id');
+
             if ($this->Memberships->save($membership)) {
                 $this->Flash->success(__('The membership has been updated.'));
 
