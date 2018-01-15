@@ -21,6 +21,7 @@ use SUSC\View\AppView;
 $now = new FrozenTime();
 $now_string = $now->format('d F Y');
 $now = $now->i18nformat('yyyy-MM-dd HH:mm:ss');
+$this->Form->unlockField('as_of');
 
 $this->assign('title', 'Membership List');
 $this->start('css');
@@ -40,7 +41,13 @@ $this->end();
         <input name="as_of" id="as_of" type="hidden"/>
     </div>
 </div>
-<?= $this->Form->submit('Download'); ?>
+<div class="row">
+    <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-0 col-lg-4"></div>
+    <div class="col-xs-12 visible-xs-block"><br/></div>
+    <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-2 col-lg-4 col-lg-offset-4">
+        <?= $this->Form->button('Download&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-download-alt"></span>', ['type' => 'submit', 'class' => ['btn', 'btn-primary', 'btn-block'], 'escape' => false]); ?>
+    </div>
+</div>
 <?= $this->Form->end() ?>
 
 <?php
