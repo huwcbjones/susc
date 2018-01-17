@@ -32,7 +32,7 @@ $links['faqs'] = $currentUrl === Router::url(['_name' => 'faq']);
 
 $links['membership'] = strpos($currentUrl, Router::url(['_name' => 'membership'])) !== false
     && strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index'])) === false;
-$links['admin'] = strpos($currentUrl, Router::url(['prefix' => 'admin'])) !== false;
+$links['admin'] = strpos($currentUrl, Router::url(['_name' => 'admin'])) !== false;
 $links['admin_panel'] = $currentUrl === Router::url(['controller' => 'Admin', 'action' => 'index']);
 $links['admin_users'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index'])) !== false;
 $links['admin_groups'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index'])) !== false;
@@ -49,7 +49,7 @@ $links['admin_committee'] = strpos($currentUrl, Router::url(['prefix' => 'admin'
 ?>
 <nav class="navbar navbar-inverse <?php if (!isset($fixedTop) || !$fixedTop): ?>container fix-menu-margin <?php endif ?><?php if (isset($fixedTop) && $fixedTop): ?>navbar-fixed-top <?php endif ?>"
      id="nav">
-    <div class="container<?php if (isset($fixedTop) && $fixedTop): ?>-fluid<?php endif; ?>" id="nav-container">
+    <div class="container<?php if (isset($fixedTop) && $fixedTop): ?>-fluid<?php endif; ?> nav-container" id="nav-container">
         <div class="navbar-header" id="nav-header">
             <?php if (!$this->fetch('navbar.top')): ?>
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
@@ -63,7 +63,7 @@ $links['admin_committee'] = strpos($currentUrl, Router::url(['prefix' => 'admin'
             <?= $this->Html->link(Configure::read('App.name'), '/', ['class' => 'navbar-brand']); ?>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right text-center">
+            <ul class="nav navbar-nav navbar-right text-center" id="logo-nav">
                 <li class="navbar-brand" id="logo">
                     <a class="header-image-container" href="/">
                         <span class="header-image"></span>
@@ -79,7 +79,7 @@ $links['admin_committee'] = strpos($currentUrl, Router::url(['prefix' => 'admin'
                     <ul class="dropdown-menu">
                         <li<?= $links['news'] ? ' class="active"' : '' ?>><?= $this->Html->link('News', ['_name' => 'news']) ?></li>
                         <li role="separator" class="divider"></li>
-                        <?php if ( $this->hasAccessTo('socials.*')): ?>
+                        <?php if ($this->hasAccessTo('socials.*')): ?>
                             <li<?= $links['socials'] ? ' class="active"' : '' ?>><?= $this->Html->link('Socials', ['_name' => 'socials']) ?></li>
                             <li role="separator" class="divider"></li>
                         <?php endif; ?>
@@ -101,7 +101,7 @@ $links['admin_committee'] = strpos($currentUrl, Router::url(['prefix' => 'admin'
                 </li>
 
                 <li class="dropdown<?= $links['kit'] || $links['membership'] || $links['faqs'] ? ' active' : '' ?>">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Kit &amp; Membership <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Shop <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li<?= $links['kit-shop'] ? ' class="active"' : '' ?>><?= $this->Html->link('Kit', ['_name' => 'kit']) ?></li>
                         <li role="separator" class="divider"></li>
@@ -124,8 +124,12 @@ $links['admin_committee'] = strpos($currentUrl, Router::url(['prefix' => 'admin'
                         <li<?= $links['about_contact'] ? ' class="active"' : '' ?>><?= $this->Html->link('Contact Us', ['_name' => 'contact']) ?></li>
                     </ul>
                 </li>
-                <?php if ( $this->hasAccessTo('admin.*')): ?>
-                    <li class="dropdown<?= $links['admin'] ? ' active' : '' ?>">
+                <?php if ($this->hasAccessTo('admin.*')): ?>
+                    <?php if ($links['admin']): ?>
+                        <li class="admin-menu-nav<?= $links['admin'] ? ' active' : '' ?> visible-xs" onclick="openMenu()"><a href="#">Admin <span
+                                        class="caret"></span></a></li>
+                    <?php endif ?>
+                    <li class="dropdown<?= $links['admin'] ? ' active hidden-xs' : '' ?>">
                         <a href="<?= Router::url(['_name' => 'admin']) ?>" class="dropdown-toggle"
                            data-toggle="dropdown"
                            aria-expanded="false">Admin <span class="caret"></span></a>
@@ -193,4 +197,23 @@ $links['admin_committee'] = strpos($currentUrl, Router::url(['prefix' => 'admin'
         </div>
     </div>
 </nav>
+<?php $this->start('postscript');
+echo $this->fetch('postscript');
+?>
+<script>
+    var mainMenu = $("#navbar");
 
+    function clickMainMenu(e) {
+        if (!$(e.target).closest("#navbar").length) {
+            mainMenu.collapse("hide");
+            document.removeEventListener("click", clickMainMenu);
+        }
+    }
+
+    $(function () {
+        mainMenu.on("shown.bs.collapse", function () {
+            document.addEventListener("click", clickMainMenu);
+        });
+    });
+</script>
+<?php $this->end() ?>
