@@ -1,6 +1,7 @@
 <?php
 $this->extend('/Layout/empty');
 ?>
+<div class="overlay"></div>
 <header class="main-masthead">
     <div class="container">
         <div class="row">
