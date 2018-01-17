@@ -205,15 +205,27 @@ echo $this->fetch('postscript');
 
     function clickMainMenu(e) {
         if (!$(e.target).closest("#navbar").length) {
+            $(".overlay").css({
+                "background-color": "rgba(0, 0, 0, 0)",
+                "pointer-events": ""
+            });
             mainMenu.collapse("hide");
             document.removeEventListener("click", clickMainMenu);
         }
     }
 
     $(function () {
-        mainMenu.on("shown.bs.collapse", function () {
-            document.addEventListener("click", clickMainMenu);
-        });
+        mainMenu
+            .on('show.bs.collapse', function () {
+                $(".overlay").css({
+                    "background-color": "rgba(0, 0, 0, 0.5)",
+                    "pointer-events": "none"
+                });
+            })
+            .on("shown.bs.collapse", function () {
+                document.addEventListener("click", clickMainMenu);
+            });
+
     });
 </script>
 <?php $this->end() ?>
