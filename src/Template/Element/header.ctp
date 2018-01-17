@@ -49,7 +49,7 @@ $links['admin_committee'] = strpos($currentUrl, Router::url(['prefix' => 'admin'
 ?>
 <nav class="navbar navbar-inverse <?php if (!isset($fixedTop) || !$fixedTop): ?>container fix-menu-margin <?php endif ?><?php if (isset($fixedTop) && $fixedTop): ?>navbar-fixed-top <?php endif ?>"
      id="nav">
-    <div class="container<?php if (isset($fixedTop) && $fixedTop): ?>-fluid<?php endif; ?>" id="nav-container">
+    <div class="container<?php if (isset($fixedTop) && $fixedTop): ?>-fluid<?php endif; ?> nav-container" id="nav-container">
         <div class="navbar-header" id="nav-header">
             <?php if (!$this->fetch('navbar.top')): ?>
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
@@ -63,7 +63,7 @@ $links['admin_committee'] = strpos($currentUrl, Router::url(['prefix' => 'admin'
             <?= $this->Html->link(Configure::read('App.name'), '/', ['class' => 'navbar-brand']); ?>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right text-center">
+            <ul class="nav navbar-nav navbar-right text-center" id="logo-nav">
                 <li class="navbar-brand" id="logo">
                     <a class="header-image-container" href="/">
                         <span class="header-image"></span>
@@ -101,7 +101,7 @@ $links['admin_committee'] = strpos($currentUrl, Router::url(['prefix' => 'admin'
                 </li>
 
                 <li class="dropdown<?= $links['kit'] || $links['membership'] || $links['faqs'] ? ' active' : '' ?>">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Kit &amp; Membership <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Shop <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li<?= $links['kit-shop'] ? ' class="active"' : '' ?>><?= $this->Html->link('Kit', ['_name' => 'kit']) ?></li>
                         <li role="separator" class="divider"></li>
