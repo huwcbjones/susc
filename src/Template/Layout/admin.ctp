@@ -32,10 +32,6 @@ $this->end();
 echo $this->fetch('postscript');
 ?>
     <script>
-        $(function () {
-            window.originalLeft = $(".sidebar").css("left");
-        });
-
         function clickCloseMenu(e) {
             if (!$(e.target).closest(".sidebar").length) {
                 closeMenu();
@@ -55,7 +51,7 @@ echo $this->fetch('postscript');
         }
 
         function closeMenu() {
-            $(".sidebar").css("left", originalLeft);
+            $(".sidebar").css("left", "");
             $(".overlay").css({
                 "background-color": "rgba(0, 0, 0, 0)",
                 "pointer-events": ""
