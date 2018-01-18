@@ -9,6 +9,9 @@ namespace SUSC\Controller;
 
 class AdminController extends AppController
 {
+
+    public $helpers = ['Menu'];
+
     function index()
     {
     }
