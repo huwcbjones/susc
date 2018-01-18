@@ -42,7 +42,7 @@ echo $this->fetch('postscript');
             $(".sidebar").css("left", 0);
             $(".overlay").css({
                 "background-color": "rgba(0, 0, 0, 0.5)",
-                "pointer-events": "none"
+                "pointer-events": ""
             });
             $("#navbar").collapse('toggle');
             setTimeout(function () {
@@ -54,7 +54,7 @@ echo $this->fetch('postscript');
             $(".sidebar").css("left", "");
             $(".overlay").css({
                 "background-color": "rgba(0, 0, 0, 0)",
-                "pointer-events": ""
+                "pointer-events": "none"
             });
             document.removeEventListener("click", clickCloseMenu);
         }
