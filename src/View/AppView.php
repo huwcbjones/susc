@@ -48,7 +48,7 @@ class AppView extends View
 
     public function hasAccessTo($acl){
         if(array_key_exists('currentUser', $this->viewVars) && $this->viewVars['currentUser'] !== null){
-            return ($this->viewVars['currentUser'])->isAuthorised($acl);
+            return ($this->viewVars['currentUser'])->hasAccessTo($acl);
         }
         try {
             if(substr($acl, -2) == '.*') $acl = substr($acl, 0, -2);

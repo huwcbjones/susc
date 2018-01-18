@@ -111,7 +111,7 @@ class User extends Entity
      * @param $acl string to test
      * @return bool
      */
-    public function isAuthorised($acl)
+    public function hasAccessTo($acl)
     {
         /** @var array|Acl $acls */
         $acls = $this->getEffectiveAcls();
