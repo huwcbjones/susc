@@ -206,8 +206,7 @@ echo $this->fetch('postscript');
     function clickMainMenu(e) {
         if (!$(e.target).closest("#navbar").length) {
             $(".overlay").css({
-                "background-color": "rgba(0, 0, 0, 0)",
-                "pointer-events": ""
+                "background-color": "rgba(0, 0, 0, 0)"
             });
             mainMenu.collapse("hide");
             document.removeEventListener("click", clickMainMenu);
@@ -218,8 +217,7 @@ echo $this->fetch('postscript');
         mainMenu
             .on('show.bs.collapse', function () {
                 $(".overlay").css({
-                    "background-color": "rgba(0, 0, 0, 0.5)",
-                    "pointer-events": "none"
+                    "background-color": "rgba(0, 0, 0, 0.5)"
                 });
             })
             .on("shown.bs.collapse", function () {
