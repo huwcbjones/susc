@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "4bf93affed7517b4d67533a6ef568141",
+    "content-hash": "615bc8f8e116fd3b833f3a9c8a8e5952",
     "packages": [
         {
             "name": "aura/intl",
@@ -140,16 +140,16 @@
         },
         {
             "name": "cakephp/chronos",
-            "version": "1.1.3",
+            "version": "1.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/chronos.git",
-                "reference": "56d98330d366a469745848b07540373846c40561"
+                "reference": "85bcaea6a832684b32ef54b2487b0c14a172e9e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/chronos/zipball/56d98330d366a469745848b07540373846c40561",
-                "reference": "56d98330d366a469745848b07540373846c40561",
+                "url": "https://api.github.com/repos/cakephp/chronos/zipball/85bcaea6a832684b32ef54b2487b0c14a172e9e6",
+                "reference": "85bcaea6a832684b32ef54b2487b0c14a172e9e6",
                 "shasum": ""
             },
             "require": {
@@ -193,7 +193,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2017-12-25T22:42:18+00:00"
+            "time": "2018-01-13T12:19:50+00:00"
         },
         {
             "name": "cakephp/migrations",
@@ -4490,7 +4490,8 @@
         "league/oauth2-facebook": 0,
         "league/oauth2-google": 0,
         "google/recaptcha": 0,
-        "psy/psysh": 0
+        "psy/psysh": 0,
+        "cakephp/debug_kit": 0
     },
     "prefer-stable": true,
     "prefer-lowest": false,

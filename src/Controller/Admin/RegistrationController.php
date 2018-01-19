@@ -49,7 +49,7 @@ class RegistrationController extends AppController
 
     public function getACL()
     {
-        if ($this->request->getParam('action') == 'index') return 'admin.users.*';
+        if ($this->request->getParam('action') == 'index') return 'admin.registration.*';
         return parent::getACL();
     }
 

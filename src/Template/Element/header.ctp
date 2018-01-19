@@ -219,7 +219,7 @@ echo $this->fetch('postscript');
             .on('show.bs.collapse', function () {
                 $(".overlay").css({
                     "background-color": "rgba(0, 0, 0, 0.5)",
-                    "pointer-events": "none"
+                    "pointer-events": "auto"
                 });
             })
             .on("shown.bs.collapse", function () {

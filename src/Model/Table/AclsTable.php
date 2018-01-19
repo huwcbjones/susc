@@ -1,6 +1,8 @@
 <?php
+
 namespace SUSC\Model\Table;
 
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -60,5 +62,24 @@ class AclsTable extends Table
             ->allowEmpty('description');
 
         return $validator;
+    }
+
+    /**
+     *
+     * @param $acl
+     * @return bool
+     */
+    public function isPublic($acl)
+    {
+        if (($pos = strpos($acl, '*')) !== false){
+            $acl = substr($acl, 0, $pos - 2);
+        }
+        var_dump($acl);die();
+        try {
+            $entity = $this->get($acl);
+            return $entity->is_public;
+        } catch (RecordNotFoundException $e) {
+            return false;
+        }
     }
 }
