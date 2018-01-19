@@ -7,7 +7,6 @@
  * @link      http://susc.org.uk SUSC Website
  */
 
-use Cake\Routing\Router;
 use SUSC\Model\Entity\User;
 
 /**
@@ -18,152 +17,67 @@ use SUSC\Model\Entity\User;
  * @var User $currentUser
  */
 
-$currentUrl = Router::normalize($this->request->here);
-$links = array();
-$links['admin'] = $currentUrl === Router::url(['_name' => 'admin']);
-$links['users-groups'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index'])) !== false
-    || strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index'])) !== false
-    || strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'index'])) !== false;
-$links['users'] = $currentUrl == Router::url(['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index']);
-$links['users_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Users', 'action' => 'add']);
-$links['groups'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index']);
-$links['registration_codes'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'index']);
-$links['registration_codes-add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'add']);
-$links['registration_codes-configure'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'configure']);
-$links['groups_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'add']);
-$links['kit-items'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index'])) !== false;
-$links['kit-items_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'add']);
-$links['kit-orders'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index'])) !== false;
-$links['kit-orders_view'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index']);
-$links['kit-orders_config'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'config']);
-$links['kit-orders_process'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'process']);
-$links['kit-orders_batches'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'batches'])) !== false;
-$links['kit-orders_collections'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'collections']);
-$links['membership'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'membership'])) !== false;
-$links['membership_add'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'membership', 'action' => 'add']);
-$links['membership_view'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'membership', 'action' => 'index']);
-$links['membership_members'] = strpos($currentUrl, Router::url(['prefix' => 'admin', 'controller' => 'membership', 'action' => 'members'])) !== false;
-$links['membership_list'] = $currentUrl === Router::url(['prefix' => 'admin', 'controller' => 'membership', 'action' => 'list']);
-
 ?>
-<ul class="nav nav-sidebar">
-    <li<?= $links['admin'] ? ' class="active"' : '' ?>><?= $this->Html->link('Site Administration', ['_name' => 'admin']) ?></li>
-</ul>
-
-<?php if ($this->hasAccessTo('admin.users.*') || $this->hasAccessTo('admin.groups.*')): ?>
-    <ul class="nav nav-sidebar">
-        <li<?= $links['users-groups'] ? ' class="active"' : '' ?>><?= $this->Html->link('Users & Groups', ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index']) ?></li>
-        <?php if ($links['users-groups']) : ?>
-            <?php if ($this->hasAccessTo('admin.users.*')): ?>
-                <li<?= $links['users'] ? ' class="active"' : '' ?>><?= $this->Html->link('Users', ['prefix' => 'admin', 'controller' => 'Users']) ?></li>
-            <?php endif; ?>
-            <?php if ($this->hasAccessTo('admin.users.add')): ?>
-                <li<?= $links['users_add'] ? ' class="active"' : '' ?>><?= $this->Html->link('Add User', ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'add']) ?></li>
-            <?php endif; ?>
-            <?php if ($this->hasAccessTo('admin.groups.*')): ?>
-                <li<?= $links['groups'] ? ' class="active"' : '' ?>><?= $this->Html->link('Groups', ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index']) ?></li>
-                <?php if ($this->hasAccessTo('admin.groups.add')): ?>
-                    <li<?= $links['groups_add'] ? ' class="active"' : '' ?>><?= $this->Html->link('Add Group', ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'add']) ?></li>
-                <?php endif; ?>
-            <?php endif; ?>
-            <?php if ($this->hasAccessTo('admin.registration.*')): ?>
-                <li<?= $links['registration_codes'] ? ' class="active"' : '' ?>><?= $this->Html->link('Signup Codes', ['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'index']) ?></li>
-            <?php endif; ?>
-            <?php if ($this->hasAccessTo('admin.registration.add')): ?>
-                <li<?= $links['registration_codes-add'] ? ' class="active"' : '' ?>><?= $this->Html->link('Add Signup Code', ['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'add']) ?></li>
-            <?php endif; ?>
-            <?php if ($this->hasAccessTo('admin.registration.configure')): ?>
-                <li<?= $links['registration_codes-configure'] ? ' class="active"' : '' ?>><?= $this->Html->link('Configure Signups', ['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'configure']) ?></li>
-            <?php endif; ?>
-        <?php endif; ?>
-    </ul>
-<?php endif; ?>
-<?php if ($this->hasAccessTo('admin.news.*')): ?>
-    <ul class="nav nav-sidebar">
-        <li><?= $this->Html->link('News', ['prefix' => 'admin', 'controller' => 'News', 'action' => 'index']) ?></li>
-        <?php if ($links['news']) : ?>
-            <?php if ($this->hasAccessTo('admin.news.add')): ?>
-                <li><?= $this->Html->link('Add Article', ['prefix' => 'admin', 'controller' => 'News', 'action' => 'add']) ?></li>
-            <?php endif; ?>
-        <?php endif; ?>
-    </ul>
-<?php endif ?>
-<?php if ($this->hasAccessTo('admin.fixtures.*')): ?>
-    <ul class="nav nav-sidebar">
-        <li><?= $this->Html->link('Fixtures', ['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'index']) ?></li>
-    </ul>
-    <?php if ($this->hasAccessTo('admin.fixtures.add')): ?>
-        <li><?= $this->Html->link('Add Fixture', ['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'add']) ?></li>
-    <?php endif; ?>
-    <?php if ($this->hasAccessTo('admin.fixtures.calendar')): ?>
-        <li><?= $this->Html->link('Edit Calendar', ['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'calendar']) ?></li>
-    <?php endif; ?>
-<?php endif ?>
-<?php if ($this->hasAccessTo('admin.socials.*')): ?>
-    <ul class="nav nav-sidebar">
-        <li><?= $this->Html->link('Socials', ['prefix' => 'admin', 'controller' => 'Socials', 'action' => 'index']) ?></li>
-    </ul>
-    <?php if ($this->hasAccessTo('admin.socials.add')): ?>
-        <li><?= $this->Html->link('Add Social', ['prefix' => 'admin', 'controller' => 'Socials', 'action' => 'add']) ?></li>
-    <?php endif; ?>
-<?php endif ?>
-<?php if ($this->hasAccessTo('admin.kit-items.*')): ?>
-    <ul class="nav nav-sidebar">
-        <li<?= $links['kit-items'] ? ' class="active"' : '' ?>><?= $this->Html->link('Kit Items', ['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index']) ?></li>
-        <?php if ($links['kit-items']) : ?>
-            <?php if ($this->hasAccessTo('admin.kit-items.add')): ?>
-                <li<?= $links['kit-items_add'] ? ' class="active"' : '' ?>><?= $this->Html->link('Add Item', ['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'add']) ?></li>
-            <?php endif; ?>
-        <?php endif; ?>
-    </ul>
-<?php endif ?>
-<?php if ($this->hasAccessTo('admin.kit-orders.*')): ?>
-    <ul class="nav nav-sidebar">
-        <li<?= $links['kit-orders'] ? ' class="active"' : '' ?>><?= $this->Html->link('Kit Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index']) ?></li>
-        <?php if ($links['kit-orders']) : ?>
-            <?php if ($this->hasAccessTo('admin.kit-orders.view')): ?>
-                <li<?= $links['kit-orders_view'] ? ' class="active"' : '' ?>><?= $this->Html->link('Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index']) ?></li>
-            <?php endif; ?>
-            <?php if ($this->hasAccessTo('admin.kit-orders.collections')): ?>
-                <li<?= $links['kit-orders_collections'] ? ' class="active"' : '' ?>><?= $this->Html->link('Collections', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'collections']) ?></li>
-            <?php endif; ?>
-            <?php if ($this->hasAccessTo('admin.kit-orders.process')): ?>
-                <li<?= $links['kit-orders_batches'] ? ' class="active"' : '' ?>><?= $this->Html->link('Batches', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'batches']) ?></li>
-            <?php endif; ?>
-            <?php if ($this->hasAccessTo('admin.kit-orders.process')): ?>
-                <li<?= $links['kit-orders_process'] ? ' class="active"' : '' ?>><?= $this->Html->link('Process Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'process']) ?></li>
-            <?php endif; ?>
-            <?php if ($this->hasAccessTo('admin.kit-orders.remind')): ?>
-                <li><?= $this->Form->postLink('Send Reminders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'sendReminderEmails']) ?></li>
-            <?php endif; ?>
-            <?php if ($this->hasAccessTo('admin.kit-orders.config')): ?>
-                <li<?= $links['kit-orders_config'] ? ' class="active"' : '' ?>><?= $this->Html->link('Configure', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'config']) ?></li>
-            <?php endif; ?>
-        <?php endif; ?>
-    </ul>
-<?php endif ?>
-<?php if ($this->hasAccessTo('admin.membership.*')): ?>
-    <ul class="nav nav-sidebar">
-        <li<?= $links['membership'] ? ' class="active"' : '' ?>><?= $this->Html->link('Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index']) ?></li>
-        <?php if ($links['membership']) : ?>
-            <?php if ($this->hasAccessTo('admin.membership.add')): ?>
-                <li<?= $links['membership_add'] ? ' class="active"' : '' ?>><?= $this->Html->link('Add Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'add']) ?></li>
-            <?php endif; ?>
-            <?php if ($this->hasAccessTo('admin.membership.view')): ?>
-                <li<?= $links['membership_view'] ? ' class="active"' : '' ?>><?= $this->Html->link('Membership Types', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index']) ?></li>
-            <?php endif; ?>
-            <?php if ($this->hasAccessTo('admin.membership.members')): ?>
-                <li<?= $links['membership_members'] ? ' class="active"' : '' ?>><?= $this->Html->link('Members', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'members']) ?></li>
-            <?php endif; ?>
-            <?php if ($this->hasAccessTo('admin.membership.list')): ?>
-                <li<?= $links['membership_list'] ? ' class="active"' : '' ?>><?= $this->Html->link('Membership List', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'list']) ?></li>
-            <?php endif; ?>
-            <?php if ($this->hasAccessTo('admin.membership.remind')): ?>
-                <li><?= $this->Form->postLink('Send Reminders', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'sendReminderEmails']) ?></li>
-            <?php endif; ?>
-            <?php if ($this->hasAccessTo('admin.membership.config')): ?>
-                <li<?= $links['membership_config'] ? ' class="active"' : '' ?>><?= $this->Html->link('Configure', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'config']) ?></li>
-            <?php endif; ?>
-        <?php endif; ?>
-    </ul>
-<?php endif ?>
+<?=
+$this->Menu
+    ->startMenu('Site Administration', ['_name' => 'admin'], 'admin.*', [], ['fuzzy' => false])
+    ->end();
+?>
+<?=
+$this->Menu
+    ->startMenuMap('Users & Groups', [
+        'admin.users.*' => ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index'],
+        'admin.groups.*' => ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index'],
+        'admin.registration.*' => ['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'index']
+    ])
+    ->item('Users', ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index'], 'admin.users.*', [], ['fuzzy' => true])
+    ->item('Add User', ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'add'], 'admin.users.add')
+    ->item('Groups', ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index'], 'admin.groups.*', [], ['fuzzy' => true])
+    ->item('Add Group', ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'add'], 'admin.groups.add')
+    ->item('Signup Codes', ['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'index'], 'admin.registration.*', [], ['fuzzy' => true])
+    ->item('Add Signup Code', ['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'add'], 'admin.registration.add')
+    ->item('Configure Signups', ['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'configure'], 'admin.registration.configure')
+    ->end();
+?>
+<?=
+$this->Menu
+    ->startMenuMap('News & Fixtures', [
+        'admin.news.*' => ['prefix' => 'admin', 'controller' => 'News', 'action' => 'index'],
+        'admin.fixtures.*' => ['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'index'],
+        'admin.socials.*' => ['prefix' => 'admin', 'controller' => 'Socials', 'action' => 'index']
+    ])
+    ->item('News', ['prefix' => 'admin', 'controller' => 'News', 'action' => 'index'], 'admin.news.*', [], ['fuzzy' => true])
+    ->item('Add Article', ['prefix' => 'admin', 'controller' => 'News', 'action' => 'add'], 'admin.news.add')
+    ->item('Fixtures', ['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'index'], 'admin.fixtures.*', [], ['fuzzy' => true])
+    ->item('Add Fixture', ['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'add'], 'admin.fixtures.add')
+    ->item('Socials', ['prefix' => 'admin', 'controller' => 'Socials', 'action' => 'index'], 'admin.socials.*', [], ['fuzzy' => true])
+    ->item('Add Social', ['prefix' => 'admin', 'controller' => 'Socials', 'action' => 'add'], 'admin.socials.add')
+    ->end();
+?>
+<?=
+$this->Menu
+    ->startMenuMap('Kit', [
+        'admin.kit-items.*' => ['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index'],
+        'admin.kit-order.*' => ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index']
+    ])
+    ->item('Items', ['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index'], 'admin.kit-items.*', [], ['fuzzy' => true])
+    ->item('Add Item', ['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'add'], 'admin.kit-items.add')
+    ->item('Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index'], 'admin.kit-orders.*')
+    ->item('Collections', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'collections'], 'admin.kit-orders.collections')
+    ->item('Batches', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'batches'], 'admin.kit-orders.batches')
+    ->item('Process Batch', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'process'], 'admin.kit-orders.process')
+    ->item('Send Reminders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'sendReminderEmails'], 'admin.kit-orders.remind')
+    ->item('Configure', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'config'], 'admin.kit-orders.config')
+    ->end();
+?>
+<?=
+$this->Menu
+    ->startMenu('Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index'], 'admin.membership.*')
+    ->item('Add Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'add'], 'admin.membership.add')
+    ->item('Membership Types', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index'], 'admin.membership.*')
+    ->item('Members', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'members'], 'admin.membership.members')
+    ->item('Membership List', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'list'], 'admin.membership.list')
+    ->item('Send Reminders', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'sendReminderEmails'], 'admin.membership.remind')
+    ->item('Configure', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'config'], 'admin.membership.config')
+    ->end();
+?>
