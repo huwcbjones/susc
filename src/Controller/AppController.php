@@ -18,7 +18,6 @@ namespace SUSC\Controller {
     use Cake\Cache\Cache;
     use Cake\Controller\Component\AuthComponent;
     use Cake\Controller\Controller as BaseController;
-    use Cake\Controller\Exception\AuthSecurityException;
     use Cake\Core\Configure;
     use Cake\Core\Exception\Exception;
     use Cake\Datasource\Exception\RecordNotFoundException;
@@ -98,7 +97,7 @@ namespace SUSC\Controller {
             // Allow public pages to be seen
             $acl = $this->getACL();
             try {
-                if(substr($acl, -2) == '.*') $acl = substr($acl, 0, -2);
+                if (substr($acl, -2) == '.*') $acl = substr($acl, 0, -2);
                 $acl_entity = TableRegistry::get('Acls')->get($acl);
                 if ($acl_entity->is_public) {
                     $this->Auth->allow([$this->request->getParam('action')]);
@@ -163,21 +162,14 @@ namespace SUSC\Controller {
 
 
             if ($this->currentUser != null) {
-                return $this->currentUser->isAuthorised($acl);
+                return $this->currentUser->hasAccessTo($acl);
             }
 
-            if ($user == null) {
-                try {
-                    $acl_entity = TableRegistry::get('Acls')->get($acl);
-
-                    return $acl_entity->is_public;
-                } catch (RecordNotFoundException $ex) {
-                    return false;
-                }
+            if ($user != null) {
+                return $user->hasAccessTo($acl);
             }
 
-            $user = $this->Users->get($user['id']);
-            return $user->isAuthorised($acl);
+            return TableRegistry::get('acls')->isPublic($acl);
         }
 
         public function beforeFilter(Event $event)
@@ -241,8 +233,9 @@ namespace SUSC\Controller {
             }
         }
 
-        public function blackhole($type, Exception $e){
-            if(Configure::read('debug')) {
+        public function blackhole($type, Exception $e)
+        {
+            if (Configure::read('debug')) {
                 $this->Flash->set($e->getMessage(), ['element' => 'error']);
             } else {
                 $this->Flash->set('Something strange happened with this request.', ['element' => 'warning']);

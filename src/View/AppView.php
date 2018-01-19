@@ -17,12 +17,14 @@ use BootstrapUI\View\UIViewTrait;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\View\View;
+use SUSC\View\Helper\MenuHelper;
 
 /**
  * Application View
  *
  * Your application’s default view class
  *
+ * @property MenuHelper $Menu
  * @link http://book.cakephp.org/3.0/en/views.html#the-app-view
  */
 class AppView extends View
@@ -44,11 +46,12 @@ class AppView extends View
         $this->initializeUI(['layout' => false]);
         $this->loadHelper('Text');
         $this->loadHelper('Paginator');
+        $this->loadHelper('Menu');
     }
 
     public function hasAccessTo($acl){
         if(array_key_exists('currentUser', $this->viewVars) && $this->viewVars['currentUser'] !== null){
-            return ($this->viewVars['currentUser'])->isAuthorised($acl);
+            return ($this->viewVars['currentUser'])->hasAccessTo($acl);
         }
         try {
             if(substr($acl, -2) == '.*') $acl = substr($acl, 0, -2);

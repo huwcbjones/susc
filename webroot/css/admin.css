@@ -59,6 +59,11 @@ body {
     margin-bottom: 20px;
     margin-left: -20px;
 }
+.nav-sidebar > li {
+    opacity: 1;
+    transition: opacity 0.5s, max-height 0.6s;
+    max-height: 50px;
+}
 .nav-sidebar > li > a {
     padding-right: 20px;
     padding-left: 20px;
@@ -72,6 +77,33 @@ body {
 .nav-sidebar > li:not(:first-child) > a:before {
     content:"-\0000a0";
     margin-left: 10px;
+}
+
+.nav-sidebar > .item-hidden {
+    pointer-events: none;
+    opacity: 0;
+    max-height: 0;
+}
+
+.nav-sidebar > li:first-child > a.expando:after {
+    content: "\A0";
+    display: inline-block;
+    left: 10px;
+    width: 0;
+    height: 0;
+    margin-left: 7px;
+    vertical-align: middle;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+    transition: 0.5s;
+}
+.nav-sidebar > li:first-child > a:not(.expanded):after {
+    border-top: 4px dashed;
+    border-top: 4px solid \9;
+}
+.nav-sidebar > li:first-child > a.expanded:after {
+    border-bottom: 4px dashed;
+    border-bottom: 4px solid \9;
 }
 
 /*
