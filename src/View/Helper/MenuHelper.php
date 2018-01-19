@@ -64,9 +64,11 @@ class MenuHelper extends Helper
      */
     protected $_currentURL = '/';
 
+    protected $_menuHeader = null;
     protected $_menuOpen = false;
     protected $_menuID = '';
     protected $_buffer = '';
+    protected $_numberOfItems = 0;
 
     /**
      * Default helper config
@@ -76,7 +78,8 @@ class MenuHelper extends Helper
     protected $_defaultConfig = [
         'templates' => [
             'ul' => '<ul{{attrs}}>{{content}}</ul>',
-            'li' => '<li{{attrs}}>{{content}}</li>'
+            'li' => '<li{{attrs}}>{{content}}</li>',
+            'js' => '<script type="text/javascript">{{content}}</script>'
         ]
     ];
 
@@ -95,8 +98,10 @@ class MenuHelper extends Helper
         if ($this->_menuOpen) {
             trigger_error('Menu is already open.', E_USER_NOTICE);
         } else {
+            $this->_numberOfItems = 0;
             $this->_buffer = '';
             $this->_menuOpen = true;
+            $this->_menuID = '';
         }
 
         $options += [
@@ -105,8 +110,10 @@ class MenuHelper extends Helper
 
         $this->_currentHeaderIsActive = $this->_isActive($url, $options['fuzzy']);
 
-        $this->_menu($title, $url, $acl, $attrs, $options);
+        $this->_menuID = strtolower(Text::slug($title));
+        $options['id'] = $this->_menuID;
 
+        $this->_menuHeader = compact('title', 'url', 'acl', 'attrs', 'options');
         return $this;
     }
 
@@ -129,18 +136,96 @@ class MenuHelper extends Helper
         }
     }
 
-    public function _menu($title, $url, $acl, $attrs, $options = [])
+    public function startMenuMap($title, $map, $attrs = [], $options = [])
     {
-
-        if ($this->_currentHeaderIsActive) {
-            $options = $this->addClass($options, 'active');
+        if ($this->_menuOpen) {
+            trigger_error('Menu is already open.', E_USER_NOTICE);
         } else {
-            $url = '#';
+            $this->_buffer = '';
+            $this->_menuOpen = true;
         }
+
+        $this->_currentHeaderIsActive = false;
+        $menuUrl = null;
+        $menuAcl = null;
+        foreach ($map as $acl => $url) {
+            if (!$this->_currentHeaderIsActive && $this->_isActive($url, true)) {
+                $this->_currentHeaderIsActive = true;
+            }
+            if ($menuUrl == null && $this->_hasAccess($acl)) {
+                $menuAcl = $acl;
+                $menuUrl = $url;
+            }
+        }
+
+        $acl = $menuAcl;
+        $url = $menuUrl;
+
         $this->_menuID = strtolower(Text::slug($title));
         $options['id'] = $this->_menuID;
 
-        $this->_buffer .= $this->_item($title, $url, $acl, $attrs, $options, true);
+        if ($menuAcl !== null && $menuUrl !== null) {
+            $this->_menuHeader = compact('title', 'url', 'acl', 'attrs', 'options');
+        }
+
+        return $this;
+    }
+
+    protected function _hasAccess($acl)
+    {
+        if ($this->_currentUser !== null) return $this->_currentUser->hasAccessTo($acl);
+
+        return TableRegistry::get('acls')->isPublic($acl);
+    }
+
+    public function end($options = [])
+    {
+        $options += [
+            'class' => ['nav nav-sidebar']
+        ];
+
+        $content = '';
+        if ($this->_menuHeader != null) {
+            $endOptions = $options;
+            extract($this->_menuHeader);
+            $this->_buffer = $this->_menu($title, $url, $acl, $attrs, $options) . $this->_buffer;
+            $options = $endOptions;
+
+            $content = $this->formatTemplate('ul', [
+                'attrs' => $this->templater()->formatAttributes($options),
+                'content' => $this->_buffer
+            ]);
+        }
+
+
+        $this->_menuID = '';
+        $this->_menuOpen = false;
+        $this->_menuHeader = null;
+        $this->_buffer = '';
+
+        return $content;
+    }
+
+    public function _menu($title, $url, $acl, $attrs, $options = [])
+    {
+        if ($this->_currentHeaderIsActive) {
+            $attrs = $this->addClass($attrs, 'active');
+        }
+        if ($this->_numberOfItems != 0) {
+            $options = $this->addClass($options, 'expando');
+            $url = '#';
+            $this->_generateMenuScript();
+        }
+
+        return $this->_item($title, $url, $acl, $attrs, $options, true);
+    }
+
+    protected function _generateMenuScript()
+    {
+        if ($this->_menuID == '') return;
+
+        $script = '$(function () {$("#' . $this->_menuID . '").click(function(){toggleMenu("' . $this->_menuID . '")});});';
+        $this->_View->append('postscript', $this->formatTemplate('js', ['content' => $script]));
     }
 
     protected function _item($title, $url, $acl = null, $attrs = [], $options = [], $menuHeader = false)
@@ -168,10 +253,11 @@ class MenuHelper extends Helper
 
         if (!$menuHeader) {
             if (!$this->_currentHeaderIsActive) {
-                $attrs = $this->addClass($attrs, 'item-hidden');
+                $attrs = $this->addClass($attrs, ['item-hidden']);
             }
-
             $attrs = $this->addClass($attrs, $this->_menuID);
+            $attrs = $this->addClass($attrs,'admin-menu-item');
+            $this->_numberOfItems++;
         }
 
         return $this->formatTemplate('li', [
@@ -180,65 +266,12 @@ class MenuHelper extends Helper
         ]);
     }
 
-    protected function _hasAccess($acl)
-    {
-        if ($this->_currentUser !== null) return $this->_currentUser->hasAccessTo($acl);
-
-        return TableRegistry::get('acls')->isPublic($acl);
-    }
-
-    public function startMenuMap($title, $map, $attrs = [], $options = [])
-    {
-        if ($this->_menuOpen) {
-            trigger_error('Menu is already open.', E_USER_NOTICE);
-        } else {
-            $this->_buffer = '';
-            $this->_menuOpen = true;
-        }
-
-        $this->_currentHeaderIsActive = false;
-        $menuUrl = null;
-        $menuAcl = null;
-        foreach ($map as $acl => $url) {
-            if (!$this->_currentHeaderIsActive && $this->_isActive($url, true)) {
-                $this->_currentHeaderIsActive = true;
-            }
-            if ($menuUrl == null && $this->_hasAccess($acl)) {
-                $menuAcl = $acl;
-                $menuUrl = $url;
-            }
-        }
-
-        $this->_menu($title, $menuUrl, $menuAcl, $attrs, $options);
-
-        return $this;
-    }
-
-    public function end($options = [])
-    {
-        $options += [
-            'class' => ['nav nav-sidebar']
-        ];
-
-        $content = '';
-        if (trim($this->_buffer) !== '') {
-            $content = $this->formatTemplate('ul', [
-                'attrs' => $this->templater()->formatAttributes($options),
-                'content' => $this->_buffer
-            ]);
-        }
-
-
-        $this->_menuID = '';
-        $this->_menuOpen = false;
-        $this->_buffer = '';
-
-        return $content;
-    }
-
     public function item($title, $url, $acl = null, $attrs = [], $options = [])
     {
         if ($this->_menuOpen) {
+            if ($this->_menuID != '') {
+                $attrs += ['id' => $this->_menuID];
+            }
             $this->_buffer .= $this->_item($title, $url, $acl, $attrs, $options);
             return $this;
         } else {
