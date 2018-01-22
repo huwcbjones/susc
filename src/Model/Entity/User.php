@@ -35,6 +35,7 @@ use DateTime;
  * @property Article[] $articles
  * @property Acl[] $acls
  * @property Order[] $orders
+ * @property Session[] $sessions
  */
 class User extends Entity
 {

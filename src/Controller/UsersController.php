@@ -47,19 +47,28 @@ class UsersController extends AppController
         }
 
         $user = $this->Auth->identify();
-        if ($user) {
-            $this->Auth->setUser($user);
-            return $this->redirect($this->Auth->redirectUrl());
+        if (!$user) {
+            $this->Flash->error('Invalid username and/or password.');
+            $this->request->withData('password', '');
         }
 
-        $this->Flash->error('Invalid username and/or password.');
-        $this->request->withData('password', '');
-
+        if ($this->request->getData('remember', false)) {
+            $session = $this->Users->Sessions->newEntity();
+            $session->user_id = $user['id'];
+            $session->ip = $this->request->clientIp();
+            $session->expires = new DateTime('+30 days');
+            $key = $session->regenerate();
+            if ($this->Users->Sessions->save($session)) {
+                $this->Cookie->write('user_session', $session->id . ':' . $key);
+            }
+        }
+        return $this->redirect($this->Auth->redirectUrl());
     }
 
     public function logout()
     {
         $this->Flash->success(__('You have successfully logged out'));
+        $this->Cookie->delete('user_session');
         $this->redirect($this->Auth->logout());
     }
 
