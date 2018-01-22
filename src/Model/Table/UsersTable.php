@@ -19,9 +19,10 @@ use SUSC\Model\Entity\User;
  *
  * @property ArticlesTable|HasMany $Articles
  * @property GroupsTable|BelongsTo $Group
- * @property |\Cake\ORM\Association\HasMany $KitCompletedOrders
- * @property |\Cake\ORM\Association\HasMany $KitOrders
+ * @property HasMany $KitCompletedOrders
+ * @property HasMany $KitOrders
  * @property AclsTable|BelongsToMany $Acls
+ * @property SessionsTable|HasMany $Sessions
  *
  * @method User get($primaryKey, $options = [])
  * @method User newEntity($data = null, array $options = [])
@@ -65,6 +66,8 @@ class UsersTable extends Table
         $this->belongsToMany('Acls', ['joinTable' => 'users_acls'])
             ->setForeignKey('user_id')
             ->setTargetForeignKey('acl_id');
+
+        $this->hasMany('Sessions');
     }
 
     /**
@@ -263,6 +266,6 @@ class UsersTable extends Table
 
     public function find($type = 'all', $options = [])
     {
-        return parent::find($type, $options)->contain(['Groups', 'Acls']);
+        return parent::find($type, $options)->contain(['Groups', 'Acls', 'Sessions']);
     }
 }
