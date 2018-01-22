@@ -25,6 +25,7 @@ namespace SUSC\Controller {
     use Cake\Network\Request;
     use Cake\ORM\TableRegistry;
     use Cake\Routing\Router;
+    use DateTime;
     use Psr\Log\LogLevel;
     use SUSC\Model\Entity\User;
     use SUSC\Model\Table\ConfigTable;
@@ -66,6 +67,10 @@ namespace SUSC\Controller {
             $this->loadComponent('RequestHandler');
             $this->loadComponent('Security');
             $this->loadComponent('Csrf');
+            $this->loadComponent('Cookie');
+            $this->Cookie->configKey('user_session', [
+                'httpOnly' => true
+            ]);
             $this->request->addDetector(
                 'crawler',
                 function ($request) {
@@ -114,9 +119,43 @@ namespace SUSC\Controller {
             $this->currentUser = null;
             if ($this->Auth->user('id') !== null) {
                 $this->currentUser = $this->Users->get($this->Auth->user('id'));
+            } elseif ($this->Cookie->check('user_session')) {
+                $this->_resumeSession();
             }
 
             $this->set('currentUser', $this->currentUser);
+        }
+
+        private function _resumeSession()
+        {
+            $providedCookie = explode(':', $this->Cookie->read('user_session'));
+            try {
+                if(count($providedCookie) !== 2){
+                    throw new \Exception('Invalid cookie format');
+                }
+                $sessionID = $providedCookie[0];
+                $sessionKey = $providedCookie[1];
+
+                $session = $this->Users->Sessions->get($sessionID);
+                if (new Datetime() > $session->expires){
+                    throw new \Exception('Session has expired!');
+                }
+                if ($this->request->clientIp() != $session->ip) {
+                    throw new \Exception('Client IP doesn\'t match');
+                }
+                if($session->validateSession($sessionKey)){
+                    $newKey = $session->regenerate();
+                    $this->Users->Sessions->save($session);
+                    $this->Cookie->write('user_session', $session->id . ':' . $newKey);
+                    $this->currentUser = $this->Users->get($session->user_id);
+                    $this->Auth->setUser($this->currentUser);
+                }
+            } catch (\Exception $e) {
+                if(isset($session)) {
+                    $this->Users->Sessions->delete($session);
+                }
+                $this->Cookie->delete('user_session');
+            }
         }
 
         /**

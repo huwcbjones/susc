@@ -47,19 +47,27 @@ class UsersController extends AppController
         }
 
         $user = $this->Auth->identify();
-        if ($user) {
-            $this->Auth->setUser($user);
-            return $this->redirect($this->Auth->redirectUrl());
+        if (!$user) {
+            $this->Flash->error('Invalid username and/or password.');
+            $this->request->withData('password', '');
         }
 
-        $this->Flash->error('Invalid username and/or password.');
-        $this->request->withData('password', '');
-
+        if ($this->request->getData('remember', false)) {
+            $session = $this->Users->Sessions->newEntity();
+            $session->user_id = $user['id'];
+            $session->ip = $this->request->clientIp();
+            $key = $session->regenerate();
+            if ($this->Users->Sessions->save($session)) {
+                $this->Cookie->write('user_session', $session->id . ':' . $key);
+            }
+        }
+        return $this->redirect($this->Auth->redirectUrl());
     }
 
     public function logout()
     {
         $this->Flash->success(__('You have successfully logged out'));
+        $this->Cookie->delete('user_session');
         $this->redirect($this->Auth->logout());
     }
 
@@ -108,6 +116,20 @@ class UsersController extends AppController
             );
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('Your password has been changed!'));
+
+                // Delete all existing sessions
+                $this->Users->Sessions->deleteAll(['user_id' => $user->id]);
+
+                // Write a new session if an old session existed
+                if($this->Cookie->check('user_session')){
+                    $session = $this->Users->Sessions->newEntity();
+                    $session->user_id = $user['id'];
+                    $session->ip = $this->request->clientIp();
+                    $key = $session->regenerate();
+                    if ($this->Users->Sessions->save($session)) {
+                        $this->Cookie->write('user_session', $session->id . ':' . $key);
+                    }
+                }
 
                 $email = new Email();
                 $email
