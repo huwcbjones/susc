@@ -54,6 +54,7 @@ class Session extends Entity
 
     public function regenerate()
     {
+        $this->expires = new \DateTime('+1 month');
         $key = bin2hex(random_bytes(64));
         $this->validator = hash('sha512', $key);
         return $key;
