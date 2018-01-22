@@ -50,6 +50,7 @@ class UsersController extends AppController
         if (!$user) {
             $this->Flash->error('Invalid username and/or password.');
             $this->request->withData('password', '');
+            return;
         }
 
         if ($this->request->getData('remember', false)) {
@@ -61,6 +62,7 @@ class UsersController extends AppController
                 $this->Cookie->write('user_session', $session->id . ':' . $key);
             }
         }
+        $this->Auth->setUser($user);
         return $this->redirect($this->Auth->redirectUrl());
     }
 
