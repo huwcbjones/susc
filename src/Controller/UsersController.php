@@ -56,7 +56,6 @@ class UsersController extends AppController
             $session = $this->Users->Sessions->newEntity();
             $session->user_id = $user['id'];
             $session->ip = $this->request->clientIp();
-            $session->expires = new DateTime('+30 days');
             $key = $session->regenerate();
             if ($this->Users->Sessions->save($session)) {
                 $this->Cookie->write('user_session', $session->id . ':' . $key);
@@ -117,6 +116,20 @@ class UsersController extends AppController
             );
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('Your password has been changed!'));
+
+                // Delete all existing sessions
+                $this->Users->Sessions->deleteAll(['user_id' => $user->id]);
+
+                // Write a new session if an old session existed
+                if($this->Cookie->check('user_session')){
+                    $session = $this->Users->Sessions->newEntity();
+                    $session->user_id = $user['id'];
+                    $session->ip = $this->request->clientIp();
+                    $key = $session->regenerate();
+                    if ($this->Users->Sessions->save($session)) {
+                        $this->Cookie->write('user_session', $session->id . ':' . $key);
+                    }
+                }
 
                 $email = new Email();
                 $email
