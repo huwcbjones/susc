@@ -246,8 +246,8 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     // Connect About
     $routes->scope('/about', ['controller' => 'About'], function (RouteBuilder $routes) {
-        $routes->redirect('/', ['action' => 'club']);
-        $routes->connect('/club', ['action' => 'club'], ['_name' => 'about']);
+        $routes->connect('/', ['action' => 'club'], ['_name' => 'about']);
+        $routes->redirect('/club', ['action' => 'club']);
         $routes->connect('/contact', ['action' => 'contact'], ['_name' => 'contact']);
         $routes->connect('/coaches', ['action' => 'coaches'], ['_name' => 'coaches']);
         $routes->connect('/committee', ['action' => 'committee'], ['_name' => 'committee']);

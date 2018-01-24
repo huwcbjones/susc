@@ -6,6 +6,7 @@ namespace SUSC\Model\Entity;
 use Cake\Auth\DefaultPasswordHasher;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Entity;
+use Cake\ORM\TableRegistry;
 use DateTime;
 
 /**
@@ -114,6 +115,8 @@ class User extends Entity
      */
     public function hasAccessTo($acl)
     {
+        if(TableRegistry::get('acls')->isPublic($acl)) return true;
+
         /** @var array|Acl $acls */
         $acls = $this->getEffectiveAcls();
         $acl_array = explode('.', $acl);

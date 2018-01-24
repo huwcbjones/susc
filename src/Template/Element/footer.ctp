@@ -1,7 +1,7 @@
 <footer>
     <?php if(!isset($sponsors) || $sponsors): ?>
     <div class="row">
-        <div class="col-md-4 col-xs-12 text-center">
+        <div class="col-md-6 col-xs-12 text-center">
             <div class="row">
                 <div class="col-xs-12">
                     <h4>Funded by</h4>
@@ -9,8 +9,8 @@
             </div>
             <div class="row">
                 <div class="col-xs-6">
-                    <?= $this->Html->link('<h5>University of Southampton Students\' Union</h5>' .
-                        $this->Html->image('us_logo.svg', ['alt' => 'University of Southampton Students\' Union', 'class' => 'img-responsive footer-logo center-block']),
+                    <?= $this->Html->link('<h5>Southampton University Students\' Union</h5>' .
+                        $this->Html->image('susu_logo.svg', ['alt' => 'Southampton University Students\' Union', 'class' => 'img-responsive footer-logo center-block']),
                         'https://www.susu.org',
                         ['target' => '_blank', 'escape' => false])
                     ?>
@@ -24,14 +24,14 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-8 col-xs-12 text-center">
+        <div class="col-md-6 col-xs-12 text-center">
             <div class="row">
                 <div class="col-xs-12">
                     <h4>Proudly sponsored by</h4>
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-4 col-xs-12">
+                <div class="col-sm-6 col-xs-12">
                     <?= $this->Html->link('<h5>Kelly&rsquo;s Bar</h5>' .
                         $this->Html->image('kellys.png', ['alt' => 'Kelly\'s Bar', 'class' => 'img-responsive footer-logo center-block']),
                         'https://www.facebook.com/kellysbarsoton/',
@@ -39,7 +39,7 @@
                     ?>
                 </div>
                 <div class="clearfix visible-xs-block"></div>
-                <div class="col-sm-4 col-xs-12">
+                <div class="col-sm-6 col-xs-12">
                     <?= $this->Html->link('<h5>Tariq Manzils</h5>' .
                         $this->Html->image('manzils.png', ['alt' => 'Manzils', 'class' => 'img-responsive footer-logo center-block']),
                         'http://tariqmanzils.com/',
@@ -47,13 +47,6 @@
                     ?>
                 </div>
                 <div class="clearfix visible-xs-block"></div>
-                <div class="col-sm-4 col-xs-12">
-                    <?= $this->Html->link('<h5>Jesters</h5>' .
-                        $this->Html->image('jesters.png', ['alt' => 'Jesters', 'class' => 'img-responsive footer-logo center-block']),
-                        'https://www.facebook.com/officialclownsandjesters/',
-                        ['target' => '_blank', 'escape' => false])
-                    ?>
-                </div>
             </div>
         </div>
     </div>
