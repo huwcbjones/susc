@@ -77,8 +77,9 @@ class MenuHelper extends Helper
      */
     protected $_defaultConfig = [
         'templates' => [
-            'ul' => '<ul{{attrs}}>{{content}}</ul>',
+            'ul' => '<ul class="dropdown-menu">{{content}}</ul>',
             'li' => '<li{{attrs}}>{{content}}</li>',
+            'menu-li' => '<li{{attrs}}>{{link}}{{content}}</li>',
             'js' => '<script type="text/javascript">{{content}}</script>'
         ]
     ];
@@ -191,19 +192,10 @@ class MenuHelper extends Helper
 
     public function end($options = [])
     {
-        $options = $this->templater()->addClass($options, 'nav');
-
         $content = '';
         if ($this->_menuHeader != null) {
-            $endOptions = $options;
             extract($this->_menuHeader);
-            $this->_buffer = $this->_menu($title, $url, $acl, $attrs, $options) . $this->_buffer;
-            $options = $endOptions;
-
-            $content = $this->formatTemplate('ul', [
-                'attrs' => $this->templater()->formatAttributes($options),
-                'content' => $this->_buffer
-            ]);
+            $content = $this->_menu($title, $url, $acl, $attrs, $options);
         }
 
 
@@ -222,20 +214,22 @@ class MenuHelper extends Helper
 
         }
         if ($this->_numberOfItems != 0) {
-            $options = $this->addClass($options, 'expando');
+            $attrs = $this->addClass($attrs, 'dropdown');
+            $options = $this->addClass($options, 'dropdown-toggle');
+            $options['data-toggle'] = 'dropdown';
             $url = '#';
-            $this->_generateMenuScript();
+
+            unset($options['fuzzy']);
+            return $this->formatTemplate('menu-li', [
+                'attrs' => $this->templater()->formatAttributes($attrs),
+                'link' => $this->Html->link($title, $url, $options),
+                'content' => $this->formatTemplate('ul', [
+                    'content' => $this->_buffer
+                ])
+            ]);
+        } else {
+            return $this->_item($title, $url, $acl, $attrs, $options, true);
         }
-
-        return $this->_item($title, $url, $acl, $attrs, $options, true);
-    }
-
-    protected function _generateMenuScript()
-    {
-        if ($this->_menuID == '') return;
-
-        $script = '$(function () {$("#' . $this->_menuID . '").click(function(){toggleMenu("' . $this->_menuID . '")});});';
-        $this->_View->append('postscript', $this->formatTemplate('js', ['content' => $script]));
     }
 
     protected function _item($title, $url, $acl = null, $attrs = [], $options = [], $menuHeader = false)
@@ -263,17 +257,50 @@ class MenuHelper extends Helper
 
         if (!$menuHeader) {
             if (!$this->_currentHeaderIsActive) {
-                $attrs = $this->addClass($attrs, ['item-hidden']);
+                $attrs = $this->addClass($attrs, 'item-hidden');
             }
             $attrs = $this->addClass($attrs, $this->_menuID);
-            $attrs = $this->addClass($attrs, 'admin-menu-item');
             $this->_numberOfItems++;
         }
-
         return $this->formatTemplate('li', [
             'attrs' => $this->templater()->formatAttributes($attrs),
             'content' => $this->Html->link($title, $url, $options)
         ]);
+    }
+
+    public function separator($acl = null)
+    {
+        $attrs = [
+            'role' => 'separator',
+            'class' => 'divider'
+        ];
+        if($this->_menuOpen){
+            $attrs = $this->templater()->addClass($attrs, $this->_menuID);
+        }
+        $separator = $this->formatTemplate('li', [
+            'content' => '',
+            'attrs' => $this->templater()->formatAttributes($attrs)
+        ]);
+
+        if (is_array($acl)) {
+            $hasAccess = false;
+            foreach ($acl as $a) {
+                if ($this->_hasAccess($a)) {
+                    $hasAccess = true;
+                    break;
+                }
+            }
+            if (!$hasAccess) $separator = '';
+        } else {
+            if (!$this->_hasAccess($acl)) $separator = '';
+        }
+
+        if ($this->_menuOpen) {
+            $this->_buffer .= $separator;
+            return $this;
+        } else {
+            return $separator;
+        }
     }
 
     public function item($title, $url, $acl = null, $attrs = [], $options = [])

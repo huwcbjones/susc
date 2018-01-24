@@ -19,12 +19,12 @@ use SUSC\Model\Entity\User;
 
 ?>
 <?=
-$this->Menu
+$this->AdminMenu
     ->startMenu('Site Administration', ['_name' => 'admin'], 'admin.*', [], ['fuzzy' => false])
     ->end(['class' => 'nav-sidebar']);
 ?>
 <?=
-$this->Menu
+$this->AdminMenu
     ->startMenuMap('Users & Groups', [
         'admin.users.*' => ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index'],
         'admin.groups.*' => ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index'],
@@ -40,7 +40,7 @@ $this->Menu
     ->end(['class' => 'nav-sidebar']);
 ?>
 <?=
-$this->Menu
+$this->AdminMenu
     ->startMenuMap('News & Fixtures', [
         'admin.news.*' => ['prefix' => 'admin', 'controller' => 'News', 'action' => 'index'],
         'admin.fixtures.*' => ['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'index'],
@@ -55,7 +55,7 @@ $this->Menu
     ->end(['class' => 'nav-sidebar']);
 ?>
 <?=
-$this->Menu
+$this->AdminMenu
     ->startMenuMap('Kit', [
         'admin.kit-items.*' => ['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index'],
         'admin.kit-order.*' => ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index']
@@ -71,7 +71,7 @@ $this->Menu
     ->end(['class' => 'nav-sidebar']);
 ?>
 <?=
-$this->Menu
+$this->AdminMenu
     ->startMenu('Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index'], 'admin.membership.*', [], ['fuzzy' => true])
     ->item('Add Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'add'], 'admin.membership.add')
     ->item('Membership Types', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index'], 'admin.membership.*')
