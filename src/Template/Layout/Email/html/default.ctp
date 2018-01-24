@@ -25,8 +25,8 @@ use Cake\Core\Configure;
     <div class="row">
         <div class="col-xs-12">
             <?php if (Configure::read('App.devel')): ?>
-                <p class="text-danger"><span class="glyphicon glyphicon-alert"></span> This email is from the SUSC development website. If you were not
-                    expecting to see this email, please disregard it!</p>
+                <p class="text-danger"><span class="glyphicon glyphicon-alert"></span>&nbsp;&nbsp;&nbsp;This email is from the SUSC development website. If you were not
+                    expecting to see this email, please disregard it!&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-alert"></span></p>
             <?php endif; ?>
             <?= $this->fetch('content') ?>
 
