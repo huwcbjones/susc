@@ -1,14 +1,14 @@
 <?php
 
+use Cake\Core\Configure;
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= use Cake\Core\Configure;
-
-        $this->fetch('title') ?></title>
+    <title><?= $this->fetch('title') ?></title>
     <?= $this->Html->css('bootstrap.min.css', ['fullBase' => true]) ?>
     <?= $this->Html->css('styling.css', ['fullBase' => true]) ?>
 </head>
