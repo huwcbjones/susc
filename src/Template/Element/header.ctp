@@ -3,7 +3,11 @@
 
 use Cake\Core\Configure;
 use Cake\Routing\Router;
+use SUSC\View\AppView;
 
+/**
+ * @var AppView $this
+ */
 $currentUrl = Router::normalize($this->request->here);
 $links = array();
 $links['home'] = $currentUrl === Router::url(['_name' => 'home']);
@@ -63,13 +67,7 @@ $links['admin_committee'] = strpos($currentUrl, Router::url(['prefix' => 'admin'
             <?= $this->Html->link(Configure::read('App.name'), '/', ['class' => 'navbar-brand']); ?>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right text-center" id="logo-nav">
-                <li class="navbar-brand" id="logo">
-                    <a class="header-image-container" href="/">
-                        <span class="header-image"></span>
-                    </a>
-                </li>
-            </ul>
+            <?= $this->Menu->startMenu('<span class="header-image"></span>', '/', null, ['class'=>'navbar-brand'], ['escape' => false])->end(['class' => 'nav navbar-right text-center', 'id' => 'logo-nav']) ?>
             <ul class="nav navbar-nav navbar-left">
 
                 <li class="dropdown<?= $links['events'] ? ' active' : '' ?>">

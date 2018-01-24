@@ -104,14 +104,20 @@ class MenuHelper extends Helper
             $this->_menuID = '';
         }
 
-        $options += [
-            'fuzzy' => true
-        ];
+        if ($acl !== null) {
+            $options += [
+                'fuzzy' => true
+            ];
+        }
 
-        $this->_currentHeaderIsActive = $this->_isActive($url, $options['fuzzy']);
+        $this->_currentHeaderIsActive = $this->_isActive($url, $options);
 
-        $this->_menuID = strtolower(Text::slug($title));
-        $options['id'] = $this->_menuID;
+        if (array_key_exists('id', $options)) {
+            $this->_menuID = $options['id'];
+        } else {
+            $this->_menuID = strtolower(Text::slug($title));
+            $options['id'] = $this->_menuID;
+        }
 
         $this->_menuHeader = compact('title', 'url', 'acl', 'attrs', 'options');
         return $this;
@@ -122,14 +128,14 @@ class MenuHelper extends Helper
      * Defaults to exact url match
      *
      * @param array|mixed $url url to check
-     * @param bool $fuzzy If true, will do a fuzzy match (not exact)
+     * @param array|mixed $options
      *
      * @return bool True if url is active
      */
-    protected function _isActive($url, $fuzzy = false)
+    protected function _isActive($url, $options = [])
     {
         $url = Router::url($url);
-        if ($fuzzy) {
+        if (array_key_exists('fuzzy', $options) && $options['fuzzy']) {
             return strpos($this->_currentURL, $url) !== false;
         } else {
             return $url === $this->_currentURL;
@@ -145,16 +151,20 @@ class MenuHelper extends Helper
             $this->_menuOpen = true;
         }
 
+        if (!array_key_exists('fuzzy', $options)) {
+            $options['fuzzy'] = true;
+        }
+
         $this->_currentHeaderIsActive = false;
         $menuUrl = null;
         $menuAcl = null;
         foreach ($map as $acl => $url) {
-            if (!$this->_currentHeaderIsActive && $this->_isActive($url, true)) {
-                $this->_currentHeaderIsActive = true;
-            }
             if ($menuUrl == null && $this->_hasAccess($acl)) {
                 $menuAcl = $acl;
                 $menuUrl = $url;
+            }
+            if (!$this->_currentHeaderIsActive && $this->_isActive($url, $options)) {
+                $this->_currentHeaderIsActive = true;
             }
         }
 
@@ -173,6 +183,7 @@ class MenuHelper extends Helper
 
     protected function _hasAccess($acl)
     {
+        if ($acl == null) return true;
         if ($this->_currentUser !== null) return $this->_currentUser->hasAccessTo($acl);
 
         return TableRegistry::get('acls')->isPublic($acl);
@@ -180,9 +191,7 @@ class MenuHelper extends Helper
 
     public function end($options = [])
     {
-        $options += [
-            'class' => ['nav nav-sidebar']
-        ];
+        $options = $this->templater()->addClass($options, 'nav');
 
         $content = '';
         if ($this->_menuHeader != null) {
@@ -208,8 +217,9 @@ class MenuHelper extends Helper
 
     public function _menu($title, $url, $acl, $attrs, $options = [])
     {
-        if ($this->_currentHeaderIsActive) {
+        if ($this->_currentHeaderIsActive && (!array_key_exists('class', $attrs) || strpos($attrs['class'], 'active') === false)) {
             $attrs = $this->addClass($attrs, 'active');
+
         }
         if ($this->_numberOfItems != 0) {
             $options = $this->addClass($options, 'expando');
@@ -247,7 +257,7 @@ class MenuHelper extends Helper
             if (!$this->_hasAccess($acl)) return '';
         }
 
-        if ($this->_isActive($url, $options['fuzzy'])) {
+        if ($this->_isActive($url, $options) && (!array_key_exists('class', $attrs) || strpos($attrs['class'], 'active') === false)) {
             $attrs = $this->addClass($attrs, 'active');
         }
 
@@ -256,7 +266,7 @@ class MenuHelper extends Helper
                 $attrs = $this->addClass($attrs, ['item-hidden']);
             }
             $attrs = $this->addClass($attrs, $this->_menuID);
-            $attrs = $this->addClass($attrs,'admin-menu-item');
+            $attrs = $this->addClass($attrs, 'admin-menu-item');
             $this->_numberOfItems++;
         }
 
