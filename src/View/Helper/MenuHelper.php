@@ -77,8 +77,9 @@ class MenuHelper extends Helper
      */
     protected $_defaultConfig = [
         'templates' => [
-            'ul' => '<ul{{attrs}}>{{content}}</ul>',
+            'ul' => '<ul class="dropdown-menu">{{content}}</ul>',
             'li' => '<li{{attrs}}>{{content}}</li>',
+            'menu-li' => '<li{{attrs}}>{{link}}{{content}}</li>',
             'js' => '<script type="text/javascript">{{content}}</script>'
         ]
     ];
@@ -104,14 +105,20 @@ class MenuHelper extends Helper
             $this->_menuID = '';
         }
 
-        $options += [
-            'fuzzy' => true
-        ];
+        if ($acl !== null) {
+            $options += [
+                'fuzzy' => true
+            ];
+        }
 
-        $this->_currentHeaderIsActive = $this->_isActive($url, $options['fuzzy']);
+        $this->_currentHeaderIsActive = $this->_isActive($url, $options);
 
-        $this->_menuID = strtolower(Text::slug($title));
-        $options['id'] = $this->_menuID;
+        if (array_key_exists('id', $options)) {
+            $this->_menuID = $options['id'];
+        } else {
+            $this->_menuID = strtolower(Text::slug($title));
+            $options['id'] = $this->_menuID;
+        }
 
         $this->_menuHeader = compact('title', 'url', 'acl', 'attrs', 'options');
         return $this;
@@ -122,14 +129,14 @@ class MenuHelper extends Helper
      * Defaults to exact url match
      *
      * @param array|mixed $url url to check
-     * @param bool $fuzzy If true, will do a fuzzy match (not exact)
+     * @param array|mixed $options
      *
      * @return bool True if url is active
      */
-    protected function _isActive($url, $fuzzy = false)
+    protected function _isActive($url, $options = [])
     {
         $url = Router::url($url);
-        if ($fuzzy) {
+        if (array_key_exists('fuzzy', $options) && $options['fuzzy']) {
             return strpos($this->_currentURL, $url) !== false;
         } else {
             return $url === $this->_currentURL;
@@ -145,16 +152,20 @@ class MenuHelper extends Helper
             $this->_menuOpen = true;
         }
 
+        if (!array_key_exists('fuzzy', $options)) {
+            $options['fuzzy'] = true;
+        }
+
         $this->_currentHeaderIsActive = false;
         $menuUrl = null;
         $menuAcl = null;
         foreach ($map as $acl => $url) {
-            if (!$this->_currentHeaderIsActive && $this->_isActive($url, true)) {
-                $this->_currentHeaderIsActive = true;
-            }
             if ($menuUrl == null && $this->_hasAccess($acl)) {
                 $menuAcl = $acl;
                 $menuUrl = $url;
+            }
+            if (!$this->_currentHeaderIsActive && $this->_isActive($url, $options)) {
+                $this->_currentHeaderIsActive = true;
             }
         }
 
@@ -173,6 +184,7 @@ class MenuHelper extends Helper
 
     protected function _hasAccess($acl)
     {
+        if ($acl == null) return true;
         if ($this->_currentUser !== null) return $this->_currentUser->hasAccessTo($acl);
 
         return TableRegistry::get('acls')->isPublic($acl);
@@ -180,21 +192,10 @@ class MenuHelper extends Helper
 
     public function end($options = [])
     {
-        $options += [
-            'class' => ['nav nav-sidebar']
-        ];
-
         $content = '';
         if ($this->_menuHeader != null) {
-            $endOptions = $options;
             extract($this->_menuHeader);
-            $this->_buffer = $this->_menu($title, $url, $acl, $attrs, $options) . $this->_buffer;
-            $options = $endOptions;
-
-            $content = $this->formatTemplate('ul', [
-                'attrs' => $this->templater()->formatAttributes($options),
-                'content' => $this->_buffer
-            ]);
+            $content = $this->_menu($title, $url, $acl, $attrs, $options);
         }
 
 
@@ -208,24 +209,27 @@ class MenuHelper extends Helper
 
     public function _menu($title, $url, $acl, $attrs, $options = [])
     {
-        if ($this->_currentHeaderIsActive) {
+        if ($this->_currentHeaderIsActive && (!array_key_exists('class', $attrs) || strpos($attrs['class'], 'active') === false)) {
             $attrs = $this->addClass($attrs, 'active');
+
         }
         if ($this->_numberOfItems != 0) {
-            $options = $this->addClass($options, 'expando');
+            $attrs = $this->addClass($attrs, 'dropdown');
+            $options = $this->addClass($options, 'dropdown-toggle');
+            $options['data-toggle'] = 'dropdown';
             $url = '#';
-            $this->_generateMenuScript();
+
+            unset($options['fuzzy']);
+            return $this->formatTemplate('menu-li', [
+                'attrs' => $this->templater()->formatAttributes($attrs),
+                'link' => $this->Html->link($title, $url, $options),
+                'content' => $this->formatTemplate('ul', [
+                    'content' => $this->_buffer
+                ])
+            ]);
+        } else {
+            return $this->_item($title, $url, $acl, $attrs, $options, true);
         }
-
-        return $this->_item($title, $url, $acl, $attrs, $options, true);
-    }
-
-    protected function _generateMenuScript()
-    {
-        if ($this->_menuID == '') return;
-
-        $script = '$(function () {$("#' . $this->_menuID . '").click(function(){toggleMenu("' . $this->_menuID . '")});});';
-        $this->_View->append('postscript', $this->formatTemplate('js', ['content' => $script]));
     }
 
     protected function _item($title, $url, $acl = null, $attrs = [], $options = [], $menuHeader = false)
@@ -247,23 +251,56 @@ class MenuHelper extends Helper
             if (!$this->_hasAccess($acl)) return '';
         }
 
-        if ($this->_isActive($url, $options['fuzzy'])) {
+        if ($this->_isActive($url, $options) && (!array_key_exists('class', $attrs) || strpos($attrs['class'], 'active') === false)) {
             $attrs = $this->addClass($attrs, 'active');
         }
 
         if (!$menuHeader) {
             if (!$this->_currentHeaderIsActive) {
-                $attrs = $this->addClass($attrs, ['item-hidden']);
+                $attrs = $this->addClass($attrs, 'item-hidden');
             }
             $attrs = $this->addClass($attrs, $this->_menuID);
-            $attrs = $this->addClass($attrs,'admin-menu-item');
             $this->_numberOfItems++;
         }
-
         return $this->formatTemplate('li', [
             'attrs' => $this->templater()->formatAttributes($attrs),
             'content' => $this->Html->link($title, $url, $options)
         ]);
+    }
+
+    public function separator($acl = null)
+    {
+        $attrs = [
+            'role' => 'separator',
+            'class' => 'divider'
+        ];
+        if($this->_menuOpen){
+            $attrs = $this->templater()->addClass($attrs, $this->_menuID);
+        }
+        $separator = $this->formatTemplate('li', [
+            'content' => '',
+            'attrs' => $this->templater()->formatAttributes($attrs)
+        ]);
+
+        if (is_array($acl)) {
+            $hasAccess = false;
+            foreach ($acl as $a) {
+                if ($this->_hasAccess($a)) {
+                    $hasAccess = true;
+                    break;
+                }
+            }
+            if (!$hasAccess) $separator = '';
+        } else {
+            if (!$this->_hasAccess($acl)) $separator = '';
+        }
+
+        if ($this->_menuOpen) {
+            $this->_buffer .= $separator;
+            return $this;
+        } else {
+            return $separator;
+        }
     }
 
     public function item($title, $url, $acl = null, $attrs = [], $options = [])

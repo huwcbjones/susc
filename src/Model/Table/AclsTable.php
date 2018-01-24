@@ -72,9 +72,8 @@ class AclsTable extends Table
     public function isPublic($acl)
     {
         if (($pos = strpos($acl, '*')) !== false){
-            $acl = substr($acl, 0, $pos - 2);
+            $acl = substr($acl, 0, $pos - 1);
         }
-        var_dump($acl);die();
         try {
             $entity = $this->get($acl);
             return $entity->is_public;

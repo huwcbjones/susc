@@ -63,16 +63,19 @@
     }
 }
 @media (min-width: 768px) {
+    #nav {
+        padding-left: 10px;
+    }
     .nav-container {
-        padding-left: 5px;
+        padding-left: 0;
         padding-right: 10px;
     }
     #logo-nav {
         margin-right: -20px;
     }
     .fix-menu-padding {
-        padding-left: 21px;
-        padding-right: 9px;
+        padding-left: 6px;
+        padding-right: 19px;
     }
 
     #content {
@@ -91,6 +94,27 @@
 .menu-padding {
     padding-top: 25px !important;
 }
+
+.nav > li > a.dropdown-toggle:after {
+    content: "\A0";
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 5px;
+    vertical-align: middle;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+    border-top: 4px dashed;
+    border-top: 4px solid \9;
+    transition: 0.5s;
+}
+
+.nav > li.open >a.dropdown-toggle:after {
+    border-top: none;
+    border-bottom: 4px dashed;
+    border-bottom: 4px solid \9;
+}
+
 
 .fix-menu-margin {
     margin-bottom: 0;
@@ -111,7 +135,7 @@
     border-radius: 5px;
 }
 
-#logo {
+#logo-nav > li {
     padding-top: 0;
     padding-bottom: 0;
     float: inherit;
@@ -134,11 +158,13 @@
     margin-top: 0;
 }
 
-.header-image-container {
-    padding-top: 0 !important;
-    padding-right: 0 !important;
-    padding-bottom: 0 !important;
+#logo-nav > li> a {
+    margin-left: 15px;
+    padding: 0;
     height: 50px;
+}
+#logo-nav > li> a:hover {
+    background: none;
 }
 /* for low resolution display */
 .header-image {
@@ -262,4 +288,9 @@ fieldset[disabled] .btn-dark.focus {
 .btn-dark .badge {
     color: #552b35;
     background-color: #ffffff;
+}
+
+.navbar-devel {
+    background-color: #f0f;
+    color: #333 !important;
 }

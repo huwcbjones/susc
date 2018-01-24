@@ -19,12 +19,12 @@ use SUSC\Model\Entity\User;
 
 ?>
 <?=
-$this->Menu
+$this->AdminMenu
     ->startMenu('Site Administration', ['_name' => 'admin'], 'admin.*', [], ['fuzzy' => false])
-    ->end();
+    ->end(['class' => 'nav-sidebar']);
 ?>
 <?=
-$this->Menu
+$this->AdminMenu
     ->startMenuMap('Users & Groups', [
         'admin.users.*' => ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index'],
         'admin.groups.*' => ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index'],
@@ -37,10 +37,10 @@ $this->Menu
     ->item('Signup Codes', ['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'index'], 'admin.registration.*', [], ['fuzzy' => true])
     ->item('Add Signup Code', ['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'add'], 'admin.registration.add')
     ->item('Configure Signups', ['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'configure'], 'admin.registration.configure')
-    ->end();
+    ->end(['class' => 'nav-sidebar']);
 ?>
 <?=
-$this->Menu
+$this->AdminMenu
     ->startMenuMap('News & Fixtures', [
         'admin.news.*' => ['prefix' => 'admin', 'controller' => 'News', 'action' => 'index'],
         'admin.fixtures.*' => ['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'index'],
@@ -52,32 +52,32 @@ $this->Menu
     ->item('Add Fixture', ['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'add'], 'admin.fixtures.add')
     ->item('Socials', ['prefix' => 'admin', 'controller' => 'Socials', 'action' => 'index'], 'admin.socials.*', [], ['fuzzy' => true])
     ->item('Add Social', ['prefix' => 'admin', 'controller' => 'Socials', 'action' => 'add'], 'admin.socials.add')
-    ->end();
+    ->end(['class' => 'nav-sidebar']);
 ?>
 <?=
-$this->Menu
+$this->AdminMenu
     ->startMenuMap('Kit', [
         'admin.kit-items.*' => ['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index'],
         'admin.kit-order.*' => ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index']
     ])
     ->item('Items', ['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index'], 'admin.kit-items.*', [], ['fuzzy' => true])
     ->item('Add Item', ['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'add'], 'admin.kit-items.add')
-    ->item('Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index'], 'admin.kit-orders.*')
+    ->item('Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index'], 'admin.kit-orders.*', [], ['fuzzy' => true])
     ->item('Collections', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'collections'], 'admin.kit-orders.collections')
     ->item('Batches', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'batches'], 'admin.kit-orders.batches')
     ->item('Process Batch', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'process'], 'admin.kit-orders.process')
     ->item('Send Reminders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'sendReminderEmails'], 'admin.kit-orders.remind')
     ->item('Configure', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'config'], 'admin.kit-orders.config')
-    ->end();
+    ->end(['class' => 'nav-sidebar']);
 ?>
 <?=
-$this->Menu
-    ->startMenu('Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index'], 'admin.membership.*')
+$this->AdminMenu
+    ->startMenu('Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index'], 'admin.membership.*', [], ['fuzzy' => true])
     ->item('Add Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'add'], 'admin.membership.add')
     ->item('Membership Types', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index'], 'admin.membership.*')
     ->item('Members', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'members'], 'admin.membership.members')
     ->item('Membership List', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'list'], 'admin.membership.list')
     ->item('Send Reminders', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'sendReminderEmails'], 'admin.membership.remind')
     ->item('Configure', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'config'], 'admin.membership.config')
-    ->end();
+    ->end(['class' => 'nav-sidebar']);
 ?>
