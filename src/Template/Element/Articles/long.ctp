@@ -1,3 +1,25 @@
+<ol class="hidden" itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <?= $this->Html->link('<span itemprop="name">News</span>', ['_name' => 'news'], ['itemscope', 'itemtype' => 'http://schema.org/Thing', 'itemprop' => 'item', 'escape' => false]) ?>
+        <meta itemprop="position" content="1"/>
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <?= $this->Html->link('<span itemprop="name">' . $article->created->format('Y') . '</span>', ['action' => 'index', $article->created->format('Y')], ['itemscope', 'itemtype' => 'http://schema.org/Thing', 'itemprop' => 'item', 'escape' => false]) ?>
+        <meta itemprop="position" content="2"/>
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <?= $this->Html->link('<span itemprop="name">' . $article->created->format('m') . '</span>', ['action' => 'index', $article->created->format('Y'), $article->created->format('m')], ['itemscope', 'itemtype' => 'http://schema.org/Thing', 'itemprop' => 'item', 'escape' => false]) ?>
+        <meta itemprop="position" content="3"/>
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <?= $this->Html->link('<span itemprop="name">' . $article->created->format('d') . '</span>', ['action' => 'index', $article->created->format('Y'), $article->created->format('m'), $article->created->format('d')], ['itemscope', 'itemtype' => 'http://schema.org/Thing', 'itemprop' => 'item', 'escape' => false]) ?>
+        <meta itemprop="position" content="4"/>
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <?= $this->Html->link('<span itemprop="name">' . h($article->title) . '</span>', ['view' => 'index', $article->created->format('Y'), $article->created->format('m'), $article->created->format('d'), $article->slug], ['itemscope', 'itemtype' => 'http://schema.org/Thing', 'itemprop' => 'item', 'escape' => false]) ?>
+        <meta itemprop="position" content="5"/>
+    </li>
+</ol>
 <div class="blog-post">
     <div class="row">
         <div class="col-xs-12">

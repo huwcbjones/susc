@@ -37,6 +37,16 @@ echo $this->fetch('css');
 <?php
 $this->end();
 ?>
+<ol class="hidden" itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <?= $this->Html->link('<span itemprop="name">Shop</span>', '#', ['itemscope', 'itemtype' => 'http://schema.org/Thing', 'itemprop' => 'item', 'escape' => false]) ?>
+        <meta itemprop="position" content="1"/>
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <?= $this->Html->link('<span itemprop="name">Kit</span>', ['_name' => 'kit'], ['itemscope', 'itemtype' => 'http://schema.org/Thing', 'itemprop' => 'item', 'fullBase' => true, 'escape' => false]) ?>
+        <meta itemprop="position" content="2"/>
+    </li>
+</ol>
 <div class="row">
     <?php foreach ($kit as $item): ?>
         <div class="col-xs-6 col-sm-4 col-md-3">

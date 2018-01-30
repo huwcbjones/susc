@@ -68,6 +68,7 @@ class NewsController extends AppController
                     ->find('date', $options)
             )
         );
+        $this->set(compact('year', 'month', 'day'));
     }
 
     public function view($year = null, $month = null, $day = null, $slug = null)
