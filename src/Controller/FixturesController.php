@@ -60,6 +60,7 @@ class FixturesController extends AppController
 
     public function index($year = null)
     {
+        $this->set(compact('year'));
         $options = array();
         if($year != null) $options['year'] = $year;
         $this->set(

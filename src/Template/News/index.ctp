@@ -27,6 +27,30 @@ $this->end();
 
 $this->element('Articles/sidebar', ['controller' => 'News'])
 ?>
+<ol class="hidden" itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <?= $this->Html->link('<span itemprop="name">News</span>', ['_name' => 'news'], ['itemscope', 'itemtype' => 'http://schema.org/Thing', 'itemprop' => 'item', 'escape' => false]) ?>
+        <meta itemprop="position" content="1"/>
+    </li>
+    <?php if (isset($year)): ?>
+        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+            <?= $this->Html->link('<span itemprop="name">' . $year . '</span>', ['action' => 'index', $year], ['itemscope', 'itemtype' => 'http://schema.org/Thing', 'itemprop' => 'item', 'escape' => false]) ?>
+            <meta itemprop="position" content="2"/>
+        </li>
+        <?php if (isset($month)): ?>
+            <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                <?= $this->Html->link('<span itemprop="name">' . $month . '</span>', ['action' => 'index', $year, $month], ['itemscope', 'itemtype' => 'http://schema.org/Thing', 'itemprop' => 'item', 'escape' => false]) ?>
+                <meta itemprop="position" content="3"/>
+            </li>
+            <?php if (isset($day)): ?>
+                <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                    <?= $this->Html->link('<span itemprop="name">' . $day . '</span>', ['action' => 'index', $year, $month, $day], ['itemscope', 'itemtype' => 'http://schema.org/Thing', 'itemprop' => 'item', 'escape' => false]) ?>
+                    <meta itemprop="position" content="4"/>
+                </li>
+            <?php endif ?>
+        <?php endif ?>
+    <?php endif ?>
+</ol>
 <div class="row">
     <div class="col-sm-8">
         <?php if ($news->count() != 0): ?>

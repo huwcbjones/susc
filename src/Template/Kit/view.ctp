@@ -15,6 +15,25 @@ $this->assign('description', $kit->description);
 $this->element('Kit/basket');
 $kitBagForm = new KitBagForm();
 ?>
+    <ol class="hidden" itemscope itemtype="http://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+            <?= $this->Html->link('<span itemprop="name">Shop</span>', '#', ['itemscope', 'itemtype' => 'http://schema.org/Thing', 'itemprop' => 'item', 'escape' => false]) ?>
+            <meta itemprop="position" content="1"/>
+        </li>
+        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+            <?= $this->Html->link('<span itemprop="name">Kit</span>', ['_name' => 'kit'], ['itemscope', 'itemtype' => 'http://schema.org/Thing', 'itemprop' => 'item', 'fullBase' => true, 'escape' => false]) ?>
+            <meta itemprop="position" content="2"/>
+        </li>
+        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+            <?= $this->Html->link('<span itemprop="name">' . $kit->title . '</span>', [
+                'controller' => 'kit',
+                'action' => 'view',
+                'crc' => $kit->crc,
+                'slug' => $kit->slug
+            ], ['itemscope', 'itemtype' => 'http://schema.org/Thing', 'itemprop' => 'item', 'fullBase' => true, 'escape' => false]) ?>
+            <meta itemprop="position" content="3"/>
+        </li>
+    </ol>
 <?php if (!$kit->isAvailableToOrder): ?>
     <div class="row">
         <div class="col-xs-12">
