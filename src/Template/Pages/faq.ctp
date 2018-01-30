@@ -19,5 +19,15 @@ use SUSC\View\AppView;
 
 $this->assign('title', 'Kit/Membership FAQs');
 $this->assign('description', $content);
-
-echo $content;
+?>
+<ol class="hidden" itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <?= $this->Html->link('<span itemprop="name">Shop</span>', '#', ['itemscope', 'itemtype' => 'http://schema.org/Thing', 'itemprop' => 'item', 'escape' => false]) ?>
+        <meta itemprop="position" content="1"/>
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <?= $this->Html->link('<span itemprop="name">'. $this->fetch('title') .'</span>', ['_name' => 'faq'], ['itemscope', 'itemtype' => 'http://schema.org/Thing', 'itemprop' => 'item', 'fullBase' => true, 'escape' => false]) ?>
+        <meta itemprop="position" content="2"/>
+    </li>
+</ol>
+<?= $content ?>

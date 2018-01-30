@@ -17,7 +17,16 @@ echo $this->fetch('css'); ?>
     }
 </style>
 <?php $this->end(); ?>
-
+<ol class="hidden" itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <?= $this->Html->link('<span itemprop="name">About Us</span>', ['_name' => 'about'], ['itemscope', 'itemtype' => 'http://schema.org/Thing', 'itemprop' => 'item', 'escape' => false]) ?>
+        <meta itemprop="position" content="1"/>
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+        <?= $this->Html->link('<span itemprop="name">' . $this->fetch('title'). '</span>', ['_name' => 'committee'], ['itemscope', 'itemtype' => 'http://schema.org/Thing', 'itemprop' => 'item', 'escape' => false]) ?>
+        <meta itemprop="position" content="2"/>
+    </li>
+</ol>
 <div class="row">
     <div class="col-sm-10 col-sm-offset-1">
         <?php $count = 0; ?>
