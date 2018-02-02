@@ -6,7 +6,6 @@
 
 use Cake\Collection\CollectionInterface;
 use SUSC\Model\Entity\ItemsOrder;
-use SUSC\Model\Entity\Order;
 use SUSC\View\AppView;
 
 $this->assign('title', 'Item Collections');
@@ -18,7 +17,7 @@ $this->assign('title', 'Item Collections');
             <thead>
             <tr>
                 <th scope="col"><?= $this->Paginator->sort('order_id', 'Order #') ?></th>
-                <th scope="col">Name</th>
+                <th scope="col"><?= $this->Paginator->sort('Users.last_name', 'Name') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('Items.title', 'Item') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('size', 'Size') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('colour', 'Colour') ?></th>
@@ -32,7 +31,7 @@ $this->assign('title', 'Item Collections');
             <tbody>
             <?php foreach ($items as $item): ?>
                 <tr>
-                    <td><?= h($item->order_id) ?></td>
+                    <td><?= $this->Html->link($item->order_id, ['action' => 'view', $item->order->id]) ?></td>
                     <td><?= $this->Html->link($item->order->user->full_name, ['controller' => 'KitOrders', 'user_id' => $item->order->user_id]) ?></td>
                     <td><?= $this->Html->link($item->item->title, ['_name' => 'kit_item', 'slug' => $item->item->slug, 'crc' => $item->item->crc]) ?></td>
                     <td><?= $item->item->displaySize($item->size) ?></td>

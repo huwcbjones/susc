@@ -156,19 +156,26 @@ class MembershipController extends AppController
         $this->set('includeCancelledOrders', $cancelled);
         $this->set('includeUnpaidOrders', $unpaid);
 
-        $query = $this->Memberships
-            ->find()
-            ->order(['Memberships.created' => 'DESC']);
+        $query = $this->Memberships->find();
 
         if (!$cancelled) {
             $query = $query->where(['is_cancelled' => $cancelled]);
         }
 
-        if($unpaid) {
+        if ($unpaid) {
             $query = $query->where(['paid IS NOT' => null]);
         }
 
-        $memberships = $this->Paginate($query);
+        $memberships = $this->Paginate($query, [
+            'order' => ['Memberships.created' => 'DESC'],
+            'sortWhitelist' => [
+                'Memberships.first_name',
+                'Memberships.last_name',
+                'membership_type_id',
+                'created',
+                'payment_method',
+                'paid'
+            ]]);
 
         $this->set('memberships', $memberships);
     }

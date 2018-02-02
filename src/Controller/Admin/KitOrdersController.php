@@ -90,6 +90,7 @@ class KitOrdersController extends AppController
             'sortWhitelist' => [
                 'order_id',
                 'Items.title',
+                'Users.last_name',
                 'size',
                 'colour',
                 'additional_info',
@@ -127,7 +128,7 @@ class KitOrdersController extends AppController
 
         $order->total = 0;
         foreach ($order->items_orders as $k => &$item) {
-            if(!array_key_exists($item->id, $this->request->getData('items_orders'))) continue;
+            if (!array_key_exists($item->id, $this->request->getData('items_orders'))) continue;
 
             $item->setAccess(['price', 'order_id', 'item_id', 'processed_order_id'], false);
             $item = $this->ItemsOrders->patchEntity($item, $this->request->getData('items_orders')[$item->id]);
@@ -137,7 +138,7 @@ class KitOrdersController extends AppController
 
         $toPay = 0;
 
-        if($order->is_paid && $order->total != $oldTotal){
+        if ($order->is_paid && $order->total != $oldTotal) {
             $order->paid = null;
             $toPay = $order->total - $oldTotal;
         }
@@ -145,7 +146,7 @@ class KitOrdersController extends AppController
         try {
             $result = $this->Orders->getConnection()->transactional(function () use ($order) {
                 $result = true;
-                foreach($order->items_orders as $k => $item){
+                foreach ($order->items_orders as $k => $item) {
                     $result &= (bool)$this->ItemsOrders->save($item);
                 }
 
@@ -361,7 +362,18 @@ class KitOrdersController extends AppController
     public function batches($id = null)
     {
         if ($id == null) {
-            $orders = $this->paginate($this->ProcessedOrders, ['order' => ['created' => 'DESC'], 'contain' => ['Users', 'ItemsOrders' => ['Orders', 'Items']]]);
+            $orders = $this->paginate($this->ProcessedOrders, [
+                'order' => ['created' => 'DESC'],
+                'contain' => ['Users', 'ItemsOrders' => ['Orders', 'Items']],
+                'sortWhitelist' => [
+                    'id',
+                    'created',
+                    'additional_info',
+                    'total',
+                    'ordered',
+                    'arrived'
+                ]
+            ]);
 
             $this->set('orders', $orders);
             return;

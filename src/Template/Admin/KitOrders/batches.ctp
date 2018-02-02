@@ -31,17 +31,11 @@ $this->assign('title', 'Batches');
             <tr>
                 <th scope="col"><?= $this->Paginator->sort('id', 'Batch #') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('created', 'Order Date') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('item_count', 'Items') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('total', 'Total') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('is_ordered', '<attr title="Ordered">O?</attr>', ['escape' => false]) ?></th>
-                <th scope="col"><?= $this->Paginator->sort('is_arrived', '<attr title="Arrived">A?</attr>', ['escape' => false]) ?></th>
-                <th scope="col"><?= $this->Paginator->sort('is_collected', '<attr title="Collected">C?</attr>', ['escape' => false]) ?></th>
-                <?php if ($this->hasAccessTo('admin.kit-orders.process')): ?>
-                    <th scope="col" class="actions"></th>
-                <?php endif; ?>
-                <?php if ($this->hasAccessTo('admin.kit-orders.process')): ?>
-                    <th scope="col" class="actions"></th>
-                <?php endif ?>
+                <th scope="col"># Items</th>
+                <th scope="col">Total</th>
+                <th scope="col"><?= $this->Paginator->sort('ordered', '<attr title="Ordered">O?</attr>', ['escape' => false]) ?></th>
+                <th scope="col"><?= $this->Paginator->sort('arrived', '<attr title="Arrived">A?</attr>', ['escape' => false]) ?></th>
+                <th scope="col"><attr title="Collected">C?</attr></th>
                 <?php if ($this->hasAccessTo('admin.kit-orders.view')): ?>
                     <th scope="col" class="actions" colspan="2"></th>
                 <?php endif ?>
