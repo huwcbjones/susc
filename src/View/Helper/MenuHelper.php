@@ -21,6 +21,7 @@ use Cake\Routing\Router;
 use Cake\Utility\Text;
 use Cake\View\Helper;
 use Cake\View\Helper\HtmlHelper;
+use Cake\View\Helper\UrlHelper;
 use Cake\View\StringTemplateTrait;
 use Cake\View\View;
 use SUSC\Model\Entity\User;
@@ -30,6 +31,7 @@ use SUSC\Model\Entity\User;
  * @package SUSC\View\Helper
  *
  * @property HtmlHelper $Html
+ * @property UrlHelper $Url
  */
 class MenuHelper extends Helper
 {
@@ -40,7 +42,7 @@ class MenuHelper extends Helper
      *
      * @var array
      */
-    public $helpers = ['Html'];
+    public $helpers = ['Html', 'Url'];
 
     /**
      * Reference to the Response object
@@ -91,7 +93,7 @@ class MenuHelper extends Helper
         parent::__construct($View, $config);
 
         $this->_currentUser = $this->_View->get('currentUser');
-        $this->_currentURL = Router::normalize($this->request->getRequestTarget());
+        $this->_currentURL = Router::normalize($this->request->getUri()->getPath());
     }
 
     public function startMenu($title, $url, $acl = null, $attrs = [], $options = [])
@@ -135,7 +137,7 @@ class MenuHelper extends Helper
      */
     protected function _isActive($url, $options = [])
     {
-        $url = Router::url($url);
+        $url = $this->Url->build($url);
         if (array_key_exists('fuzzy', $options) && $options['fuzzy']) {
             return strpos($this->_currentURL, $url) !== false;
         } else {
