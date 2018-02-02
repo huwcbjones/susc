@@ -46,6 +46,7 @@ body {
 }
 @media (max-width: 767px) {
     .sidebar {
+        z-index: 3;
         left: -200px;
         display: block;
     }
