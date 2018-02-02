@@ -46,9 +46,9 @@ $this->assign('title', 'Memberships');
             <table class="table table-hover table-striped table-condensed">
                 <thead>
                 <tr>
-                    <th scope="col"><?= $this->Paginator->sort('first_name') ?></th>
-                    <th scope="col"><?= $this->Paginator->sort('last_name') ?></th>
-                    <th scope="col"><?= $this->Paginator->sort('membership_type', 'Type') ?></th>
+                    <th scope="col"><?= $this->Paginator->sort('Memberships.first_name', 'First Name') ?></th>
+                    <th scope="col"><?= $this->Paginator->sort('Memberships.last_name', 'Last Name') ?></th>
+                    <th scope="col"><?= $this->Paginator->sort('membership_type_id', 'Type') ?></th>
                     <th scope="col"><?= $this->Paginator->sort('created', 'Registered') ?></th>
                     <th scope="col"><?= $this->Paginator->sort('payment_method', 'Payment') ?></th>
                     <th scope="col"><abbr title="Status">S?</abbr></th>
