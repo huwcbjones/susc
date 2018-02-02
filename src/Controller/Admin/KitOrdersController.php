@@ -90,6 +90,7 @@ class KitOrdersController extends AppController
             'sortWhitelist' => [
                 'order_id',
                 'Items.title',
+                'Users.last_name',
                 'size',
                 'colour',
                 'additional_info',
