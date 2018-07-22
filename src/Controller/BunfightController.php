@@ -100,7 +100,7 @@ class BunfightController extends AppController
                     ])
                     ->send();
                 $this->Flash->success($this->Config->get('bunfight.confirmation_message')['value'], ['escape' => false]);
-                //return $this->redirect($this->request->getUri()->getPath());
+                return $this->redirect($this->request->getUri()->getPath());
             } else {
                 $this->Flash->error('There was an issue processing your signup. Please correct any errors and try again.');
             }
@@ -119,10 +119,13 @@ class BunfightController extends AppController
 
     protected function _renderEmail(BunfightSignup $signup, $template)
     {
-        $template = $this->Config->get('bunfight.email_template_' . $template)['value'];
-        $twig = new \Twig_Environment(new \Twig_Loader_String());
-        $template = $twig->createTemplate($template);
-        return $template->render($this->_getEmailVariables($signup));
+        $template_name = 'bunfight.email_template_' . $template;
+        $template = $this->Config->get( $template_name)['value'];
+        $twig = new \Twig_Environment(new \Twig_Loader_Array([
+            $template_name => $template
+        ])  );
+
+        return $twig->render($template_name, $this->_getEmailVariables($signup));
     }
 
     protected function _renderHtmlEmail(BunfightSignup $signup)
