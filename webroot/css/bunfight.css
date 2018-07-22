@@ -1,0 +1,13 @@
+/*
+ * SUSC Website
+ * Copyright (c) Southampton University Swimming Club. (https://susc.org.uk)
+ *
+ * @copyright Copyright (c) Southampton University Swimming Club. (https://susc.org.uk)
+ * @link      http://susc.org.uk SUSC Website
+ */
+
+.bunfight-container {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    margin-top: 30px;
+}
