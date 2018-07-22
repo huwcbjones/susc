@@ -65,6 +65,6 @@ class BunfightSession extends Entity
     }
 
     protected function _getIsFull(){
-        return $this->totalCapacity == $this->signups_count;
+        return $this->totalCapacity >= $this->signups_count;
     }
 }
