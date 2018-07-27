@@ -51,10 +51,13 @@ class BunfightSession extends Entity
 
     protected function _getProgress()
     {
-        return ceil(100* ($this->signups_count / $this->totalCapacity));
+        $signups = $this->signups_count;
+        if ($this->signups_count >= $this->totalCapacity) $signups = $this->totalCapacity;
+        return ceil(100 * ($signups / $this->totalCapacity));
     }
 
-    protected function _getProgressStatus() {
+    protected function _getProgressStatus()
+    {
         if ($this->signups_count >= $this->totalCapacity) {
             return 'danger';
         } elseif ($this->signups_count >= $this->capacity) {
@@ -64,7 +67,8 @@ class BunfightSession extends Entity
         }
     }
 
-    protected function _getIsFull(){
+    protected function _getIsFull()
+    {
         return $this->signups_count >= $this->totalCapacity;
     }
 }
