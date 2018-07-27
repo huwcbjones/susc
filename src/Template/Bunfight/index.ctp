@@ -116,7 +116,7 @@ echo $this->fetch('css')
                 <div class="col-sm-9">
                     <?php foreach ($sessions as $session): ?>
                         <div class="row">
-                            <div class="col-xs-4">
+                            <div class="col-xs-12 col-sm-6 col-lg-4">
                                 <div class="radio">
                                     <label>
                                         <?php if(!$session->isFull): ?>
@@ -127,7 +127,7 @@ echo $this->fetch('css')
                                     </label>
                                 </div>
                             </div>
-                            <div class="col-xs-8">
+                            <div class="col-xs-12 col-sm-6 col-lg-8">
                                 <div class="progress">
                                     <div class="progress-bar progress-bar-<?= $session->progressStatus?>" role="progressbar" aria-valuenow="<?= $session->progress?>" aria-valuemin="0"
                                          aria-valuemax="100" style="width: <?= $session->progress?>%;">
@@ -162,7 +162,7 @@ echo $this->fetch('css')
             </div>
 
             <div class="row">
-                <div class="col-xs-8 col-xs-offset-2 col-sm-5 col-sm-offset-2 col-lg-4 col-lg-offset-4 pull-right">
+                <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-lg-4 col-lg-offset-4">
                     <?= $this->Form->button('Signup <span class="glyphicon glyphicon-send"></span>', ['type' => 'submit', 'class' => ['btn', 'btn-success', 'btn-block']]) ?>
                 </div>
             </div>
