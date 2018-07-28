@@ -2,6 +2,7 @@
 namespace SUSC\Model\Entity;
 
 use Cake\ORM\Entity;
+use huwcbjones\markdown\GithubMarkdownExtended;
 
 /**
  * Static Entity
@@ -26,4 +27,9 @@ class Config extends Entity
         '*' => true,
         'id' => false
     ];
+
+    public function renderValue(){
+        $parser = new GithubMarkdownExtended();
+        return $parser->parse($this->value);
+    }
 }

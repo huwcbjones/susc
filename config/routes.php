@@ -256,6 +256,7 @@ Router::scope('/', function (RouteBuilder $routes) {
     // Connect Bunfight
     $routes->scope('/bunfight', ['controller' => 'Bunfight'], function (RouteBuilder $routes) {
         $routes->connect('/', ['action' => 'index']);
+        $routes->connect('/data', ['action' => 'data']);
         $routes->connect('/unsubscribe', ['action' => 'unsubscribe']);
     });
 

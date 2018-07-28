@@ -103,6 +103,7 @@ $this->append('css', $this->Html->css('bunfight'));
     <div class="row">
         <div class="col-xs-12">
             <p class="pull-left">&copy; <?= date("Y") ?> Southampton University Swimming Club.</p>
+            <p class="pull-right"><?= $this->Html->link('Data Use', ['action' => 'data']) ?></p>
         </div>
     </div>
 

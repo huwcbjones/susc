@@ -56,8 +56,7 @@ class BunfightController extends AppController
 
     public function getACL()
     {
-        if ($this->request->getParam('action') == 'index') return 'bunfight.*';
-        return parent::getACL();
+        return 'bunfight.*';
     }
 
     public function index()
@@ -71,7 +70,6 @@ class BunfightController extends AppController
         } catch (Exception $ex) {
             return $this->redirect(['_name' => 'home']);
         }
-
 
         $sessions = $this->BunfightSessions->find('bunfight', ['bunfight_id' => $bunfight_id]);
         $squads = $this->Squads->find();
@@ -96,6 +94,12 @@ class BunfightController extends AppController
             }
         }
         $this->set(compact('bunfight', 'sessions', 'squads', 'signup'));
+    }
+
+
+    public function data() {
+        $this->viewBuilder()->setTemplate('data_use');
+        $this->set('data_use', $this->Config->get('bunfight.data_disclaimer')->renderValue());
     }
 
     public function unsubscribe()
