@@ -19,9 +19,8 @@ namespace SUSC\Controller;
 use Cake\Database\Exception;
 use Cake\Event\Event;
 use Cake\Mailer\MailerAwareTrait;
-use Cake\Network\Exception\SocketException;
 use Cake\ORM\TableRegistry;
-use SUSC\Model\Entity\BunfightSignup;
+use SUSC\Mailer\BunfightMailer;
 use SUSC\Model\Table\BunfightSessionsTable;
 use SUSC\Model\Table\BunfightSignupsTable;
 use SUSC\Model\Table\BunfightsTable;
@@ -48,6 +47,9 @@ class BunfightController extends AppController
         $this->BunfightSessions = TableRegistry::get('BunfightSessions');
         $this->BunfightSignups = TableRegistry::get('BunfightSignups');
         $this->Squads = TableRegistry::get('Squads');
+
+        $mailer = new BunfightMailer();
+        $this->BunfightSignups->getEventManager()->on($mailer);
     }
 
     public function getACL()
@@ -74,37 +76,19 @@ class BunfightController extends AppController
 
         $signup = $this->BunfightSignups->newEntity();
         if ($this->request->is('POST')) {
+
             $priorSignup = $this->BunfightSignups->find('signup', [
                 "email" => $this->request->getData("email_address"),
                 "bunfight" => $bunfight_id
             ])->first();
             if($priorSignup !== null) $signup = $priorSignup;
+
             $this->BunfightSignups->patchEntity($signup, $this->request->getData(), ['associated' => ['Squads']]);
             $signup->bunfight_id = $bunfight_id;
-            if ($this->BunfightSignups->save($signup, ['associated' => ['Squads']])) {
 
-                /** @var BunfightSignup $signup */
-                $signup = $this->BunfightSignups->find()
-                    ->where(['BunfightSignups.id' => $signup->id])
-                    ->contain([
-                        'Squads' => [
-                            'TrainingSessions' => [
-                                'sort' => [
-                                    'day',
-                                    'start'
-                                ]
-                            ]
-                        ],
-                        'BunfightSessions'
-                    ])->firstOrFail();
-                try {
-                    $this->getMailer('Bunfight')->send('signup', [$signup]);
-                    $this->Flash->success($this->Config->get('bunfight.confirmation_message')['value'], ['escape' => false]);
-                } catch (SocketException $e) {
-                    $this->Flash->warning('We booked you into your session but failed to send your email.');
-                } finally {
-                    return $this->redirect($this->request->getUri()->getPath());
-                }
+            if ($this->BunfightSignups->save($signup, ['associated' => ['Squads']])) {
+                $this->Flash->success($this->Config->get('bunfight.confirmation_message')['value'], ['escape' => false]);
+                return $this->redirect($this->request->getUri()->getPath());
             } else {
                 $this->Flash->error('There was an issue processing your signup. Please correct any errors and try again.');
             }

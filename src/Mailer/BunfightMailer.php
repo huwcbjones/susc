@@ -20,25 +20,24 @@ namespace SUSC\Mailer;
 use ArrayObject;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\Event\EventListenerInterface;
 use Cake\Mailer\Mailer;
 use Cake\ORM\TableRegistry;
 use huwcbjones\markdown\GithubMarkdownExtended;
 use SUSC\Model\Entity\BunfightSignup;
 
-class BunfightMailer extends Mailer
+class BunfightMailer extends Mailer implements EventListenerInterface
 {
     public function implementedEvents()
     {
         return [
-            'BunfightSignup.afterSave' => 'onSignup'
+            'Model.afterSave' => 'onSignup'
         ];
     }
 
     public function onSignup(Event $event, EntityInterface $entity, ArrayObject $options)
     {
-        if ($entity->isNew()) {
-            $this->send('signup', [$entity]);
-        }
+        $this->send('signup', [$entity]);
     }
 
     public function signup(BunfightSignup $signup)
@@ -54,18 +53,11 @@ class BunfightMailer extends Mailer
             ]);
     }
 
-
-    protected function _getEmailVariables(BunfightSignup $signup)
+    protected function _renderHtmlEmail(BunfightSignup $signup)
     {
-        $vars = [
-            'session_date' => null,
-            'squads_list' => join(', ', $signup->squad_names),
-            'squads' => $this->_getSquads($signup)
-        ];
-        if ($signup->bunfight_session != null){
-            $vars['session_date'] = $signup->bunfight_session->start->i18nFormat('EEEE d MMMM y h:mm a', null, 'Europe/London');
-        }
-        return $vars;
+        $content = $this->_renderEmail($signup, 'html');
+        $parser = new GithubMarkdownExtended();
+        return $parser->parse($content);
     }
 
     protected function _renderEmail(BunfightSignup $signup, $template)
@@ -80,22 +72,30 @@ class BunfightMailer extends Mailer
         return $twig->render($template_name, $this->_getEmailVariables($signup));
     }
 
-    protected function _renderHtmlEmail(BunfightSignup $signup)
+    protected function _getEmailVariables(BunfightSignup $signup)
     {
-        $content = $this->_renderEmail($signup, 'html');
-        $parser = new GithubMarkdownExtended();
-        return $parser->parse($content);
-    }
-
-    protected function _renderPlainEmail(BunfightSignup $signup)
-    {
-        return $this->_renderEmail($signup, 'plain');
+        $vars = [
+            'session_date' => null,
+            'squads_list' => join(', ', $signup->squad_names),
+            'squads' => $this->_getSquads($signup)
+        ];
+        if ($signup->bunfight_session != null) {
+            $vars['session_date'] = $signup->bunfight_session->start->i18nFormat('EEEE d MMMM y h:mm a', null, 'Europe/London');
+        }
+        return $vars;
     }
 
     protected function _getSquads(BunfightSignup $signup)
     {
+        $squadsTable = TableRegistry::getTableLocator()->get("Squads");
         $squads = [];
         foreach ($signup->squads as $s) {
+            $squadsTable->loadInto($s, ['TrainingSessions' => [
+                'sort' => [
+                    'day',
+                    'start'
+                ]
+            ]]);
             $sessions = [];
             foreach ($s->training_sessions as $session) {
 
@@ -113,5 +113,10 @@ class BunfightMailer extends Mailer
             ];
         }
         return $squads;
+    }
+
+    protected function _renderPlainEmail(BunfightSignup $signup)
+    {
+        return $this->_renderEmail($signup, 'plain');
     }
 }
