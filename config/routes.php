@@ -257,12 +257,6 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->scope('/bunfight', ['controller' => 'Bunfight'], function (RouteBuilder $routes) {
         $routes->connect('/', ['action' => 'index']);
         $routes->connect('/unsubscribe', ['action' => 'unsubscribe']);
-        $routes->connect('/unsubscribe/:id', ['action' => 'unsubscribe',
-            [
-                'pass' => ['id'],
-                'id' => '[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}'
-            ]
-        ]);
     });
 
 

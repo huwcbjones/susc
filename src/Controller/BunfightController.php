@@ -21,6 +21,7 @@ use Cake\Event\Event;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\ORM\TableRegistry;
 use SUSC\Mailer\BunfightMailer;
+use SUSC\Model\Entity\BunfightSignup;
 use SUSC\Model\Table\BunfightSessionsTable;
 use SUSC\Model\Table\BunfightSignupsTable;
 use SUSC\Model\Table\BunfightsTable;
@@ -43,6 +44,7 @@ class BunfightController extends AppController
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
+        $this->viewBuilder()->setLayout('bunfight');
         $this->Bunfights = TableRegistry::get('Bunfights');
         $this->BunfightSessions = TableRegistry::get('BunfightSessions');
         $this->BunfightSignups = TableRegistry::get('BunfightSignups');
@@ -81,7 +83,7 @@ class BunfightController extends AppController
                 "email" => $this->request->getData("email_address"),
                 "bunfight" => $bunfight_id
             ])->first();
-            if($priorSignup !== null) $signup = $priorSignup;
+            if ($priorSignup !== null) $signup = $priorSignup;
 
             $this->BunfightSignups->patchEntity($signup, $this->request->getData(), ['associated' => ['Squads']]);
             $signup->bunfight_id = $bunfight_id;
@@ -95,5 +97,36 @@ class BunfightController extends AppController
         }
         $this->set(compact('bunfight', 'sessions', 'squads', 'signup'));
     }
+
+    public function unsubscribe()
+    {
+        $this->viewBuilder()->setTemplate('unsub');
+        $email_address = $this->request->getQuery('email_address');
+        $this->set('email_address', $email_address);
+        if (!$this->request->is('POST')) return;
+
+        if (($post_email_address = $this->request->getData('email_address')) === null and $email_address === null) {
+            $this->Flash->error('No email address provided!');
+            return;
+        }
+        $email_address = $post_email_address != null ? $post_email_address : $email_address;
+
+        /** @var BunfightSignup[] $signups */
+        $signups = $this->BunfightSignups->find()->where(['email_address' => $email_address])->all();
+        $to_save = [];
+        foreach ($signups as $s) {
+            $s->consent_to_emails = false;
+            $to_save[] = $s;
+        }
+
+        if ($this->BunfightSignups->saveMany($to_save) !== false) {
+            $this->Flash->success('You have been unsubscribed.');
+            return $this->redirect("");
+        } else {
+            $this->Flash->error('We could not unsubscribe you, please email us to correct this issue.');
+            return $this->redirect("?email_address=".$email_address);
+        }
+    }
+
 
 }
