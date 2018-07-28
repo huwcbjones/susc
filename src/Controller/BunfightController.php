@@ -18,9 +18,9 @@ namespace SUSC\Controller;
 
 use Cake\Database\Exception;
 use Cake\Event\Event;
-use Cake\Mailer\Email;
+use Cake\Mailer\MailerAwareTrait;
+use Cake\Network\Exception\SocketException;
 use Cake\ORM\TableRegistry;
-use huwcbjones\markdown\GithubMarkdownExtended;
 use SUSC\Model\Entity\BunfightSignup;
 use SUSC\Model\Table\BunfightSessionsTable;
 use SUSC\Model\Table\BunfightSignupsTable;
@@ -38,6 +38,9 @@ use SUSC\Model\Table\SquadsTable;
  */
 class BunfightController extends AppController
 {
+
+    use MailerAwareTrait;
+
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
@@ -71,10 +74,16 @@ class BunfightController extends AppController
 
         $signup = $this->BunfightSignups->newEntity();
         if ($this->request->is('POST')) {
+            $priorSignup = $this->BunfightSignups->find('signup', [
+                "email" => $this->request->getData("email_address"),
+                "bunfight" => $bunfight_id
+            ])->first();
+            if($priorSignup !== null) $signup = $priorSignup;
             $this->BunfightSignups->patchEntity($signup, $this->request->getData(), ['associated' => ['Squads']]);
-
+            $signup->bunfight_id = $bunfight_id;
             if ($this->BunfightSignups->save($signup, ['associated' => ['Squads']])) {
 
+                /** @var BunfightSignup $signup */
                 $signup = $this->BunfightSignups->find()
                     ->where(['BunfightSignups.id' => $signup->id])
                     ->contain([
@@ -88,19 +97,14 @@ class BunfightController extends AppController
                         ],
                         'BunfightSessions'
                     ])->firstOrFail();
-                $email = new Email();
-                $email
-                    ->setTo($signup->email_address, $signup->full_name)
-                    ->setSubject('SUSC Taster Session')
-                    ->setTemplate('bunfight_signup')
-                    ->setViewVars([
-                        'signup' => $signup,
-                        'content' => $this->_renderHtmlEmail($signup),
-                        'plain_content' => $this->_renderPlainEmail($signup),
-                    ])
-                    ->send();
-                $this->Flash->success($this->Config->get('bunfight.confirmation_message')['value'], ['escape' => false]);
-                return $this->redirect($this->request->getUri()->getPath());
+                try {
+                    $this->getMailer('Bunfight')->send('signup', [$signup]);
+                    $this->Flash->success($this->Config->get('bunfight.confirmation_message')['value'], ['escape' => false]);
+                } catch (SocketException $e) {
+                    $this->Flash->warning('We booked you into your session but failed to send your email.');
+                } finally {
+                    return $this->redirect($this->request->getUri()->getPath());
+                }
             } else {
                 $this->Flash->error('There was an issue processing your signup. Please correct any errors and try again.');
             }
@@ -108,58 +112,4 @@ class BunfightController extends AppController
         $this->set(compact('bunfight', 'sessions', 'squads', 'signup'));
     }
 
-    protected function _getEmailVariables(BunfightSignup $signup)
-    {
-        return [
-            'session_date' => $signup->bunfight_session->start->i18nFormat('EEEE d MMMM y h:mm a', null, 'Europe/London'),
-            'squads_list' => join(', ', $signup->squad_names),
-            'squads' => $this->_getSquads($signup)
-        ];
-    }
-
-    protected function _renderEmail(BunfightSignup $signup, $template)
-    {
-        $template_name = 'bunfight.email_template_' . $template;
-        $template = $this->Config->get( $template_name)['value'];
-        $twig = new \Twig_Environment(new \Twig_Loader_Array([
-            $template_name => $template
-        ])  );
-
-        return $twig->render($template_name, $this->_getEmailVariables($signup));
-    }
-
-    protected function _renderHtmlEmail(BunfightSignup $signup)
-    {
-        $content = $this->_renderEmail($signup, 'html');
-        $parser = new GithubMarkdownExtended();
-        return $parser->parse($content);
-    }
-
-    protected function _renderPlainEmail(BunfightSignup $signup)
-    {
-        return $this->_renderEmail($signup, 'plain');
-    }
-
-    protected function _getSquads(BunfightSignup $signup)
-    {
-        $squads = [];
-        foreach ($signup->squads as $s) {
-            $sessions = [];
-            foreach ($s->training_sessions as $session) {
-
-                $sessions[] = [
-                    'day' => $session->dayStr,
-                    'start' => $session->start->format('H:i A'),
-                    'finish' => $session->finish->format('H:i A'),
-                    'location' => $session->location
-                ];
-            }
-            $squads[] = [
-                'name' => $s->name,
-                'description' => $s->description,
-                'sessions' => $sessions
-            ];
-        }
-        return $squads;
-    }
 }
