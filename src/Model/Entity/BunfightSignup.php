@@ -1,4 +1,5 @@
 <?php
+
 namespace SUSC\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -13,6 +14,8 @@ use Cake\Routing\Router;
  * @property string $last_name
  * @property string $full_name
  * @property string $email_address
+ * @property string $gender
+ * @property string $ability
  * @property int $graduation_year
  * @property string[] $squad_ids
  * @property string $bunfight_session_id
@@ -26,6 +29,20 @@ use Cake\Routing\Router;
  */
 class BunfightSignup extends Entity
 {
+
+    public static $genders = [
+        'f' => 'Female',
+        'm' => 'Male'
+    ];
+    public static $abilities = [
+        '-' => 'Can’t Swim',
+        'l' => 'Swimming Lessons',
+        'b' => 'Club',
+        'c' => 'County',
+        'r' => 'Regional',
+        'n' => 'National',
+        'i' => 'International'
+    ];
 
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
@@ -41,6 +58,8 @@ class BunfightSignup extends Entity
         'last_name' => true,
         'email_address' => true,
         'graduation_year' => true,
+        'gender' => true,
+        'ability' => true,
         'squad_id' => true,
         'bunfight_id' => true,
         'bunfight_session_id' => true,
@@ -49,15 +68,18 @@ class BunfightSignup extends Entity
         'bunfight_session' => true
     ];
 
-    protected function _getFullName() {
+    protected function _getFullName()
+    {
         return $this->first_name . ' ' . $this->last_name;
     }
 
-    protected function _getUnsubscribeUri() {
-        return Router::url(['controller' => 'Bunfight', 'action' => 'unsubscribe', $this->id], true);
+    protected function _getUnsubscribeUri()
+    {
+        return Router::url(['controller' => 'Bunfight', 'action' => 'unsubscribe', '?' => ['email_address' => $this->email_address]], true);
     }
 
-    protected function _getSquadNames() {
+    protected function _getSquadNames()
+    {
         $names = [];
         foreach ($this->squads as $s) {
             $names[] = $s->name;

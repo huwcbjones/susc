@@ -69,10 +69,22 @@ echo $this->fetch('css');
         <?php endif; ?>
     </div>
 </div>
+<div class="form-group<?= !$this->Form->isFieldError('gender') ? '' : ' has-error' ?>">
+    <label for="status" class="col-sm-3 control-label">Gender</label>
+    <div class="col-sm-9">
+        <?= $this->Form->select('gender', BunfightSignup::$genders, ['empty' => 'Prefer not to say']) ?>
+    </div>
+</div>
 <div class="form-group<?= !$this->Form->isFieldError('graduation_year') ? '' : ' has-error' ?>">
     <label for="status" class="col-sm-3 control-label">Expected Year of Graduation</label>
     <div class="col-sm-9">
-        <?= $this->Form->select('graduation_year', $years, ['empty' => 'Don\'t want to say']) ?>
+        <?= $this->Form->select('graduation_year', $years, ['empty' => 'Prefer not to say']) ?>
+    </div>
+</div>
+<div class="form-group<?= !$this->Form->isFieldError('ability') ? '' : ' has-error' ?>">
+    <label for="status" class="col-sm-3 control-label">Swimming Ability</label>
+    <div class="col-sm-9">
+        <?= $this->Form->select('ability', BunfightSignup::$abilities, ['empty' => 'Prefer not to say']) ?>
     </div>
 </div>
 
