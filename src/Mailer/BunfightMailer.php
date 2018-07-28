@@ -45,39 +45,48 @@ class BunfightMailer extends Mailer implements EventListenerInterface
 
     public function signup(BunfightSignup $signup)
     {
+        $nonSwimText = TableRegistry::getTableLocator()->get('Config')->get('bunfight.non_swim')->renderValue();
+        $vars = [
+            'non_swimmer' => $signup->ability === '-',
+            'non_swimmer_text' => $nonSwimText,
+            'signup' => $signup
+        ];
+        $vars['content'] = $this->_renderHtmlEmail($vars);
+        $vars['plain_content'] = $this->_renderPlainEmail($vars);
         $this
             ->setTo($signup->email_address, $signup->full_name)
             ->setSubject('SUSC Taster Session')
             ->setTemplate('bunfight_signup')
-            ->setViewVars([
-                'signup' => $signup,
-                'content' => $this->_renderHtmlEmail($signup),
-                'plain_content' => $this->_renderPlainEmail($signup),
-            ]);
+            ->setViewVars($vars);
     }
 
-    protected function _renderHtmlEmail(BunfightSignup $signup)
+    protected function _renderHtmlEmail(array $vars)
     {
-        $content = $this->_renderEmail($signup, 'html');
+        $content = $this->_renderEmail($vars, 'html');
         $parser = new GithubMarkdownExtended();
         return $parser->parse($content);
     }
 
-    protected function _renderEmail(BunfightSignup $signup, $template)
+    protected function _renderEmail(array $vars, $template)
     {
         $config = TableRegistry::getTableLocator()->get('Config');
         $template_name = 'bunfight.email_template_' . $template;
-        $template = $config->get($template_name)['value'];
+        $twig_template = $config->get($template_name)['value'];
         $twig = new \Twig_Environment(new \Twig_Loader_Array([
-            $template_name => $template
+            $template_name => $twig_template
         ]));
-
-        return $twig->render($template_name, $this->_getEmailVariables($signup));
+        $vars = $this->_getEmailVariables($vars);
+        if ($template == 'plain') {
+            $vars['non_swimmer_text'] = strip_tags($vars['non_swimmer_text']);
+        }
+        return $twig->render($template_name, $vars);
     }
 
-    protected function _getEmailVariables(BunfightSignup $signup)
+    protected function _getEmailVariables(array $vars)
     {
-        $vars = [
+        $signup = $vars['signup'];
+        unset($vars['signup']);
+        $vars += [
             'session_date' => null,
             'squads_list' => join(', ', $signup->squad_names),
             'squads' => $this->_getSquads($signup)
@@ -118,8 +127,8 @@ class BunfightMailer extends Mailer implements EventListenerInterface
         return $squads;
     }
 
-    protected function _renderPlainEmail(BunfightSignup $signup)
+    protected function _renderPlainEmail(array $vars)
     {
-        return $this->_renderEmail($signup, 'plain');
+        return $this->_renderEmail($vars, 'plain');
     }
 }
