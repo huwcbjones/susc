@@ -45,7 +45,7 @@ class BunfightMailer extends Mailer implements EventListenerInterface
 
     public function signup(BunfightSignup $signup)
     {
-        $nonSwimText = TableRegistry::getTableLocator()->get('Config')->get('bunfight.non_swim')->renderValue();
+        $nonSwimText = TableRegistry::getTableLocator()->get('Config')->get('bunfight.non_swim');
         $vars = [
             'non_swimmer' => $signup->ability === '-',
             'non_swimmer_text' => $nonSwimText,
@@ -77,7 +77,9 @@ class BunfightMailer extends Mailer implements EventListenerInterface
         ]));
         $vars = $this->_getEmailVariables($vars);
         if ($template == 'plain') {
-            $vars['non_swimmer_text'] = strip_tags($vars['non_swimmer_text']);
+            $vars['non_swimmer_text'] = strip_tags($vars['non_swimmer_text']->renderValue());
+        } else {
+            $vars['non_swimmer_text'] = $vars['non_swimmer_text']->value;
         }
         return $twig->render($template_name, $vars);
     }
