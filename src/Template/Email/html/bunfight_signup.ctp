@@ -33,7 +33,5 @@ use SUSC\View\AppView;
 
 <?= $content ?>
 
-<p>If you want to unsubscribe from these emails, please
-    visit <?= $this->Html->link($signup->unsubscribeUri, $signup->unsubscribeUri) ?>.<br/>
-    If you want to request all the data we have on you, please email pres@susc.org.uk, you'll need your unique ID
-    '<code><?= $signup->id ?></code>'.</p>
+<p>If you want to unsubscribe from these emails, please visit <?= $this->Html->link($signup->unsubscribeUri, $signup->unsubscribeUri) ?>.<br/>
+    If you wish to request all the data we have on you, please email pres@susc.org.uk, you'll need your unique ID '<code><?= $signup->id ?></code>'.</p>
