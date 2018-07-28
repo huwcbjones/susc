@@ -37,7 +37,10 @@ class BunfightMailer extends Mailer implements EventListenerInterface
 
     public function onSignup(Event $event, EntityInterface $entity, ArrayObject $options)
     {
-        $this->send('signup', [$entity]);
+        /** @var BunfightSignup $entity */
+        if ($entity->consent_to_emails) {
+            $this->send('signup', [$entity]);
+        }
     }
 
     public function signup(BunfightSignup $signup)
