@@ -98,6 +98,7 @@ echo $this->fetch('css')
             <div class="form-group<?= !$this->Form->isFieldError('squads') ? '' : ' has-error' ?>">
                 <label for="title" class="col-sm-3 control-label">Interested Squad(s)</label>
                 <div class="col-sm-9">
+                    <input name="squads[_ids][]" class="hidden" value="" />
                     <?php foreach ($squads as $squad): ?>
                         <div class="checkbox">
                             <label>
