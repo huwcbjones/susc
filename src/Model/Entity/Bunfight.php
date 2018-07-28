@@ -10,7 +10,8 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  * @property string $id
  * @property string $description
  *
- * @property \SUSC\Model\Entity\BunfightSession[] $bunfight_sessions
+ * @property BunfightSession[] $bunfight_sessions
+ * @property BunfightSignup[] $bunfight_signups
  */
 class Bunfight extends Entity
 {
@@ -26,7 +27,8 @@ class Bunfight extends Entity
      */
     protected $_accessible = [
         'description' => true,
-        'bunfight_sessions' => true
+        'bunfight_sessions' => true,
+        'bunfight_signups' => true
     ];
 
     protected function _getDescription($description)

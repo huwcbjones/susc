@@ -1,21 +1,25 @@
 <?php
 namespace SUSC\Model\Table;
 
+use Cake\Datasource\EntityInterface;
+use Cake\ORM\Association\HasMany;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use SUSC\Model\Entity\Bunfight;
 
 /**
  * Bunfights Model
  *
- * @property \SUSC\Model\Table\BunfightSessionsTable|\Cake\ORM\Association\HasMany $BunfightSessions
+ * @property BunfightSessionsTable|HasMany $BunfightSessions
+ * @property BunfightSignupsTable|HasMany $BunfightSignups
  *
- * @method \SUSC\Model\Entity\Bunfight get($primaryKey, $options = [])
- * @method \SUSC\Model\Entity\Bunfight newEntity($data = null, array $options = [])
- * @method \SUSC\Model\Entity\Bunfight[] newEntities(array $data, array $options = [])
- * @method \SUSC\Model\Entity\Bunfight|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \SUSC\Model\Entity\Bunfight patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \SUSC\Model\Entity\Bunfight[] patchEntities($entities, array $data, array $options = [])
- * @method \SUSC\Model\Entity\Bunfight findOrCreate($search, callable $callback = null, $options = [])
+ * @method Bunfight get($primaryKey, $options = [])
+ * @method Bunfight newEntity($data = null, array $options = [])
+ * @method Bunfight[] newEntities(array $data, array $options = [])
+ * @method Bunfight|bool save(EntityInterface $entity, $options = [])
+ * @method Bunfight patchEntity(EntityInterface $entity, array $data, array $options = [])
+ * @method Bunfight[] patchEntities($entities, array $data, array $options = [])
+ * @method Bunfight findOrCreate($search, callable $callback = null, $options = [])
  */
 class BunfightsTable extends Table
 {
@@ -36,6 +40,13 @@ class BunfightsTable extends Table
 
         $this->hasMany('BunfightSessions', [
             'foreignKey' => 'bunfight_id'
+        ]);
+        $this->hasMany('BunfightSignups', [
+            'foreignKey' => 'bunfight_id'
+        ]);
+
+        $this->addBehavior('CounterCache', [
+            'BunfightSignups' => ['signups_count']
         ]);
     }
 

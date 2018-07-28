@@ -8,6 +8,7 @@ use Cake\Routing\Router;
  * BunfightSignup Entity
  *
  * @property string $id
+ * @property string $bunfight_id
  * @property string $first_name
  * @property string $last_name
  * @property string $full_name
@@ -19,8 +20,9 @@ use Cake\Routing\Router;
  * @property string $unsubscribeUri
  * @property string[] $squad_names
  *
- * @property \SUSC\Model\Entity\Squad[] $squads
- * @property \SUSC\Model\Entity\BunfightSession $bunfight_session
+ * @property Squad[] $squads
+ * @property Bunfight $bunfight
+ * @property BunfightSession $bunfight_session
  */
 class BunfightSignup extends Entity
 {
@@ -40,6 +42,7 @@ class BunfightSignup extends Entity
         'email_address' => true,
         'graduation_year' => true,
         'squad_id' => true,
+        'bunfight_id' => true,
         'bunfight_session_id' => true,
         'consent_to_emails' => true,
         'squads' => true,

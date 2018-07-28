@@ -1,23 +1,29 @@
 <?php
 namespace SUSC\Model\Table;
 
+use Cake\Datasource\EntityInterface;
+use Cake\ORM\Association\BelongsTo;
+use Cake\ORM\Association\BelongsToMany;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use SUSC\Model\Entity\BunfightSignup;
 
 /**
  * BunfightSignups Model
  *
- * @property \SUSC\Model\Table\BunfightSessionsTable|\Cake\ORM\Association\BelongsTo $BunfightSessions
- * @property \SUSC\Model\Table\SquadsTable|\Cake\ORM\Association\BelongsToMany $Squads
+ * @property BunfightsTable|BelongsTo $Bunfights
+ * @property BunfightSessionsTable|BelongsTo $BunfightSessions
+ * @property SquadsTable|BelongsToMany $Squads
  *
- * @method \SUSC\Model\Entity\BunfightSignup get($primaryKey, $options = [])
- * @method \SUSC\Model\Entity\BunfightSignup newEntity($data = null, array $options = [])
- * @method \SUSC\Model\Entity\BunfightSignup[] newEntities(array $data, array $options = [])
- * @method \SUSC\Model\Entity\BunfightSignup|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \SUSC\Model\Entity\BunfightSignup patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \SUSC\Model\Entity\BunfightSignup[] patchEntities($entities, array $data, array $options = [])
- * @method \SUSC\Model\Entity\BunfightSignup findOrCreate($search, callable $callback = null, $options = [])
+ * @method BunfightSignup get($primaryKey, $options = [])
+ * @method BunfightSignup newEntity($data = null, array $options = [])
+ * @method BunfightSignup[] newEntities(array $data, array $options = [])
+ * @method BunfightSignup|bool save(EntityInterface $entity, $options = [])
+ * @method BunfightSignup patchEntity(EntityInterface $entity, array $data, array $options = [])
+ * @method BunfightSignup[] patchEntities($entities, array $data, array $options = [])
+ * @method BunfightSignup findOrCreate($search, callable $callback = null, $options = [])
  */
 class BunfightSignupsTable extends Table
 {
@@ -36,6 +42,9 @@ class BunfightSignupsTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
+        $this->belongsTo('Bunfights', [
+            'foreignKey' => 'bunfight_id'
+        ]);
         $this->belongsTo('BunfightSessions', [
             'foreignKey' => 'bunfight_session_id'
         ]);
@@ -102,8 +111,17 @@ class BunfightSignupsTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['squad_id'], 'Squads'));
+        $rules->add($rules->existsIn(['bunfight_id'], 'Bunfights'));
         $rules->add($rules->existsIn(['bunfight_session_id'], 'BunfightSessions'));
 
         return $rules;
     }
+
+    public function findSignup(Query $query, $options=[]){
+        return $query->where([
+            "email_address" => $options["email"],
+            "bunfight_id" => $options["bunfight"]
+        ]);
+    }
+
 }
