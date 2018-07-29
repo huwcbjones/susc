@@ -18,7 +18,8 @@ use SUSC\Model\Entity\BunfightSignup;
  * @var BunfightSignup $signup
  */
 
-$this->assign('title', 'Taster Session Signup');
+$this->assign('title', 'Interested in joining Southampton University Swimming Club?');
+$this->assign('title_string', 'Interested in joining Southampton University Swimming Club?');
 $this->append('css', $this->Html->css('bootstrap-datetimepicker'));
 
 $years = [];
@@ -157,7 +158,7 @@ echo $this->fetch('css');
 
 <div class="row">
     <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-lg-4 col-lg-offset-4">
-        <?= $this->Form->button('Signup <span class="glyphicon glyphicon-send"></span>', ['type' => 'submit', 'class' => ['btn', 'btn-success', 'btn-block']]) ?>
+        <?= $this->Form->button('Register Your Interest <span class="glyphicon glyphicon-send"></span>', ['type' => 'submit', 'class' => ['btn', 'btn-success', 'btn-block']]) ?>
     </div>
 </div>
 
