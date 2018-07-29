@@ -87,6 +87,7 @@ class BunfightMailer extends Mailer implements EventListenerInterface
     protected function _getEmailVariables(array $vars)
     {
         $signup = $vars['signup'];
+        TableRegistry::getTableLocator()->get('BunfightSignups')->loadInto($signup, ['BunfightSessions']);
         unset($vars['signup']);
         $vars += [
             'session_date' => null,
