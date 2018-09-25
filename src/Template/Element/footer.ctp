@@ -32,16 +32,16 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-6 col-xs-12">
-                        <?= $this->Html->link('<h5>Kelly&rsquo;s Bar</h5>' .
-                            $this->Html->image('kellys.png', ['alt' => 'Kelly\'s Bar', 'class' => 'img-responsive footer-logo center-block']),
-                            'https://www.facebook.com/kellysbarsoton/',
+                        <?= $this->Html->link('<h5>90 Degrees</h5>' .
+                            $this->Html->image('90_degrees.png', ['alt' => '90 Degrees', 'class' => 'img-responsive footer-logo center-block']),
+                            'https://www.ninetydegrees.com/',
                             ['target' => '_blank', 'escape' => false])
                         ?>
                     </div>
                     <div class="clearfix visible-xs-block"></div>
                     <div class="col-sm-6 col-xs-12">
                         <?= $this->Html->link('<h5>Tariq Manzils</h5>' .
-                            $this->Html->image('manzils.png', ['alt' => 'Manzils', 'class' => 'img-responsive footer-logo center-block']),
+                            $this->Html->image('manzils.svg', ['alt' => 'Manzils', 'class' => 'img-responsive footer-logo center-block']),
                             'http://tariqmanzils.com/',
                             ['target' => '_blank', 'escape' => false])
                         ?>
