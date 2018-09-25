@@ -31,10 +31,12 @@ class BunfightSignup extends Entity
 {
 
     public static $genders = [
+        '' => 'Prefer not to say',
         'f' => 'Female',
-        'm' => 'Male'
+        'm' => 'Male',
     ];
     public static $abilities = [
+        '' => 'Prefer not to say',
         '-' => 'Can’t Swim',
         'l' => 'Swimming Lessons',
         'b' => 'Club',

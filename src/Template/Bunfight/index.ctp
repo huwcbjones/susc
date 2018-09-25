@@ -20,7 +20,6 @@ use SUSC\Model\Entity\BunfightSignup;
 
 $this->assign('title', 'Interested in joining Southampton University Swimming Club?');
 $this->assign('title_string', 'Interested in joining Southampton University Swimming Club?');
-$this->append('css', $this->Html->css('bootstrap-datetimepicker'));
 
 $years = [];
 foreach (range(date('Y') + 1, date('Y') + 8) as $year) {
@@ -73,7 +72,7 @@ echo $this->fetch('css');
 <div class="form-group<?= !$this->Form->isFieldError('gender') ? '' : ' has-error' ?>">
     <label for="status" class="col-sm-3 control-label">Gender</label>
     <div class="col-sm-9">
-        <?= $this->Form->select('gender', BunfightSignup::$genders, ['empty' => 'Prefer not to say']) ?>
+        <?= $this->Form->select('gender', BunfightSignup::$genders) ?>
     </div>
 </div>
 <div class="form-group<?= !$this->Form->isFieldError('graduation_year') ? '' : ' has-error' ?>">
@@ -85,7 +84,7 @@ echo $this->fetch('css');
 <div class="form-group<?= !$this->Form->isFieldError('ability') ? '' : ' has-error' ?>">
     <label for="status" class="col-sm-3 control-label">Swimming Ability</label>
     <div class="col-sm-9">
-        <?= $this->Form->select('ability', BunfightSignup::$abilities, ['empty' => 'Prefer not to say']) ?>
+        <?= $this->Form->select('ability', BunfightSignup::$abilities) ?>
     </div>
 </div>
 
