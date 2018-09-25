@@ -107,6 +107,7 @@ use SUSC\View\AppView;
                         ->item('Coaches', ['prefix' => 'admin', 'controller' => 'Coaches', 'action' => 'index'], 'admin.coaches.*')
                         ->item('Committee', ['prefix' => 'admin', 'controller' => 'Committee', 'action' => 'index'], 'admin.committee.*')
                         ->item('Training', ['prefix' => 'admin', 'controller' => 'Training', 'action' => 'index'], 'admin.training.*')
+                        ->item('Bunfight', ['prefix' => 'admin', 'controller' => 'Bunfight', 'action' => 'index'], 'admin.bunfight.*')
                         ->end();
                     ?>
                 <?php endif ?>
