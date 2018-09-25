@@ -115,6 +115,38 @@ class BunfightController extends AppController
 
     public function config()
     {
+        $bunfights = [];
+        foreach ($this->Bunfights->find('all')->all() as $bunfight) {
+            $bunfights[$bunfight->id] = $bunfight->name;
+        }
 
+        $config_items = [
+            'confirmation_message',
+            'current',
+            'data_disclaimer',
+            'email_template_html',
+            'email_template_plain',
+            'non_swim'
+        ];
+        $config = [];
+        foreach ($config_items as $i) {
+            $config[$i] = $this->Config->get('bunfight.' . $i);
+        }
+
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            foreach ($this->request->getData()["bunfight"] as $k => $v) {
+                if ($v == '') $v = null;
+                $config[$k]->value = $v;
+            }
+            $result = $this->Config->saveMany($config);
+            if ($result !== false) {
+                $config = $result;
+                $this->Flash->success('Config saved!');
+            } else {
+                $this->Flash->error('Config could not be saved!');
+            }
+        }
+
+        $this->set(compact('bunfights', 'config'));
     }
 }

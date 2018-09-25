@@ -10,6 +10,7 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  * @property string $id
  * @property string $description
  * @property string $renderedDescription
+ * @property string $name
  *
  * @property BunfightSession[] $bunfight_sessions
  * @property BunfightSignup[] $bunfight_signups
@@ -28,6 +29,7 @@ class Bunfight extends Entity
      */
     protected $_accessible = [
         'description' => true,
+        'name' => true,
         'bunfight_sessions' => true,
         'bunfight_signups' => true
     ];
