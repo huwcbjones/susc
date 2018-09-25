@@ -9,6 +9,7 @@ use huwcbjones\markdown\GithubMarkdownExtended;
  *
  * @property string $id
  * @property string $description
+ * @property string $renderedDescription
  *
  * @property BunfightSession[] $bunfight_sessions
  * @property BunfightSignup[] $bunfight_signups
@@ -31,9 +32,9 @@ class Bunfight extends Entity
         'bunfight_signups' => true
     ];
 
-    protected function _getDescription($description)
+    protected function _getRenderedDescription()
     {
         $parser = new GithubMarkdownExtended();
-        return $parser->parse($description);
+        return $parser->parse($this->description);
     }
 }

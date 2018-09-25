@@ -40,7 +40,7 @@ echo $this->fetch('css');
 </style>
 <?php $this->end() ?>
 
-<?= $bunfight->description ?>
+<?= $bunfight->renderedDescription ?>
 
 <?= $this->Form->create($signup, ['class' => ['form-horizontal'], 'autocomplete' => 'off']) ?>
 <div class="form-group<?= !$this->Form->isFieldError('first_name') ? '' : ' has-error' ?>">
