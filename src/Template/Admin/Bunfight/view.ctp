@@ -31,6 +31,8 @@ foreach ($bunfight->bunfight_signups as $signup) {
     }
     $years[$signup->graduation_year]++;
 }
+
+ksort($years);
 ?>
 <h2><?= __('Details') ?></h2>
 <form class="form-horizontal">
