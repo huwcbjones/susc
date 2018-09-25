@@ -81,3 +81,15 @@ $this->AdminMenu
     ->item('Configure', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'config'], 'admin.membership.config')
     ->end(['class' => 'nav-sidebar']);
 ?>
+<?=
+$this->AdminMenu
+    ->startMenu('Bunfight', ['prefix' => 'admin', 'controller' => 'Bunfight', 'action' => 'index'], 'admin.bunfight.*', [], ['fuzzy' => true])
+    ->item('Add Bunfight', ['prefix' => 'admin', 'controller' => 'Bunfight', 'action' => 'add'], 'admin.bunfight.add')
+    ->item('Bunfights', ['prefix' => 'admin', 'controller' => 'Bunfight', 'action' => 'index'], 'admin.bunfight.*')
+    ->item('Add Taster Session', ['prefix' => 'admin', 'controller' => 'Bunfight', 'action' => 'add_session'], 'admin.bunfight.add')
+    ->item('Taster Sessions', ['prefix' => 'admin', 'controller' => 'Bunfight', 'action' => 'sessions'], 'admin.bunfight.*')
+    ->item('Email', ['prefix' => 'admin', 'controller' => 'Bunfight', 'action' => 'email'], 'admin.bunfight.email')
+    ->item('Configure', ['prefix' => 'admin', 'controller' => 'Bunfight', 'action' => 'config'], 'admin.bunfight.config')
+    ->end(['class' => 'nav-sidebar']);
+?>
+

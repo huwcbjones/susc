@@ -5,13 +5,17 @@ use Cake\ORM\Entity;
 use huwcbjones\markdown\GithubMarkdownExtended;
 
 /**
- * Static Entity
+ * Bunfight Entity
  *
  * @property string $id
- * @property string $key
- * @property string $value
+ * @property string $description
+ * @property string $renderedDescription
+ * @property string $name
+ *
+ * @property BunfightSession[] $bunfight_sessions
+ * @property BunfightSignup[] $bunfight_signups
  */
-class Config extends Entity
+class Bunfight extends Entity
 {
 
     /**
@@ -24,12 +28,15 @@ class Config extends Entity
      * @var array
      */
     protected $_accessible = [
-        '*' => true,
-        'id' => false
+        'description' => true,
+        'name' => true,
+        'bunfight_sessions' => true,
+        'bunfight_signups' => true
     ];
 
-    public function renderValue(){
+    protected function _getRenderedDescription()
+    {
         $parser = new GithubMarkdownExtended();
-        return $parser->parse($this->value);
+        return $parser->parse($this->description);
     }
 }

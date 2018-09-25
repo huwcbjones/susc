@@ -5,13 +5,18 @@ use Cake\ORM\Entity;
 use huwcbjones\markdown\GithubMarkdownExtended;
 
 /**
- * Static Entity
+ * Squad Entity
  *
  * @property string $id
- * @property string $key
- * @property string $value
+ * @property string $name
+ * @property string $slug
+ * @property string $description
+ * @property string $renderedDescription
+ *
+ * @property \SUSC\Model\Entity\BunfightSignup[] $bunfight_signups
+ * @property \SUSC\Model\Entity\TrainingSession[] $training_sessions
  */
-class Config extends Entity
+class Squad extends Entity
 {
 
     /**
@@ -24,12 +29,14 @@ class Config extends Entity
      * @var array
      */
     protected $_accessible = [
-        '*' => true,
-        'id' => false
+        'name' => true,
+        'slug' => true,
+        'description' => true,
+        'bunfight_signups' => true
     ];
 
-    public function renderValue(){
+    protected function _getRenderedDescription() {
         $parser = new GithubMarkdownExtended();
-        return $parser->parse($this->value);
+        return $parser->parse($this->description);
     }
 }

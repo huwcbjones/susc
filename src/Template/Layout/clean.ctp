@@ -11,7 +11,7 @@ $this->extend('/Layout/empty');
     </div>
 </header>
 <?= $this->element('header') ?>
-<div class="container menu-padding" id="content">
+<div class="container content menu-padding" id="content">
     <?= $this->fetch('precontent') ?>
     <div class="row">
         <div class="col-xs-12">

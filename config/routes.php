@@ -253,6 +253,13 @@ Router::scope('/', function (RouteBuilder $routes) {
         $routes->connect('/committee', ['action' => 'committee'], ['_name' => 'committee']);
     });
 
+    // Connect Bunfight
+    $routes->scope('/bunfight', ['controller' => 'Bunfight'], function (RouteBuilder $routes) {
+        $routes->connect('/', ['action' => 'index']);
+        $routes->connect('/data', ['action' => 'data']);
+        $routes->connect('/unsubscribe', ['action' => 'unsubscribe']);
+    });
+
 
     $routes->scope('/sitemap', function (RouteBuilder $routes) {
         $routes->extensions(['xml']);
