@@ -22,7 +22,7 @@ $this->assign('title', 'Bunfights');
             <thead>
             <tr>
                 <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('description') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('name') ?></th>
                 <th scope="col"><attr title="Current">C?</attr></th>
                 <th scope="col"># Taster Sessions</th>
                 <th scope="col"># Signups</th>
@@ -35,7 +35,7 @@ $this->assign('title', 'Bunfights');
             <?php foreach ($bunfights as $bunfight): ?>
                 <tr>
                     <td><?= h($bunfight->id) ?></td>
-                    <td><?= h($bunfight->description) ?></td>
+                    <td><?= h($bunfight->name) ?></td>
                     <td><?php
                         if ($bunfight->id == $current_bunfight_id) {
                             echo '<span class="text-success glyphicon glyphicon-ok-sign"></span>';

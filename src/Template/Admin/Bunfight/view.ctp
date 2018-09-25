@@ -43,6 +43,12 @@ ksort($years);
         </div>
     </div>
     <div class="form-group">
+        <label for="id" class="col-sm-2 control-label">Name</label>
+        <div class="col-sm-10">
+            <input type="text" name="name" class="form-control" readonly="readonly" value="<?= h($bunfight->name) ?>"/>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="description" class="col-sm-2 control-label">Description</label>
         <div class="col-sm-10">
             <div class="panel panel-default">
