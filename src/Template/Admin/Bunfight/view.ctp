@@ -45,7 +45,7 @@ foreach ($bunfight->bunfight_signups as $signup) {
         <div class="col-sm-10">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <?= $bunfight->description ?>
+                    <?= $bunfight->renderedDescription ?>
                 </div>
             </div>
         </div>

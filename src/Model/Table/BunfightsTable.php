@@ -44,10 +44,6 @@ class BunfightsTable extends Table
         $this->hasMany('BunfightSignups', [
             'foreignKey' => 'bunfight_id'
         ]);
-
-        $this->addBehavior('CounterCache', [
-            'BunfightSignups' => ['signups_count']
-        ]);
     }
 
     /**

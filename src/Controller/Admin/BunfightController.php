@@ -81,9 +81,17 @@ class BunfightController extends AppController
 
     public function edit($id = null)
     {
-        $bunfight = $this->Bunfights->get($id, [
-            'contain' => ['BunfightSessions', 'BunfightSignups' => ['Squads']]
-        ]);
+        $bunfight = $this->Bunfights->get($id);
+
+        if ($this->request->is(['patch', 'post', 'put'])) {
+
+            $bunfight = $this->Bunfights->patchEntity($bunfight, $this->request->getData());
+            if ($this->Bunfights->save($bunfight)) {
+                $this->Flash->success(__('The bunfight has been saved.'));
+                return $this->redirect(['action' => 'view', $bunfight->id]);
+            }
+            $this->Flash->error(__('The group could not be saved. Please, try again.'));
+        }
 
         $this->set(compact('bunfight', 'squads'));
         $this->set('_serialize', ['bunfight', 'squads']);
