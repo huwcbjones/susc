@@ -85,31 +85,28 @@ use SUSC\View\AppView;
                     ->item('Contact Us', ['_name' => 'contact'])
                     ->end();
                 ?>
-                <?php if (strpos($this->request->getUri()->getPath(), $this->Url->build(['_name' => 'admin'])) !== false): ?>
-                    <?= $this->Menu
-                        ->startMenu('Admin', '#', 'admin.*', [], ['onclick' =>'openMenu()'])
-                        ->end()
-                    ?>
-                <?php else: ?>
-                    <?=
-                    $this->Menu
-                        ->startMenu('Admin', ['_name' => 'admin'], 'admin.*')
-                        ->item('Site Administration', ['_name' => 'admin'], 'admin.*')
-                        ->item('Users', ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index'], 'admin.users.*')
-                        ->item('Groups', ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index'], 'admin.groups.*')
-                        ->item('Signups', ['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'index'], 'admin.registration.*')
-                        ->item('Kit Items', ['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index'], 'admin.kit-items.*')
-                        ->item('Kit Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index'], 'admin.kit-orders.*')
-                        ->item('Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index'], 'admin.membership.*')
-                        ->item('News', ['prefix' => 'admin', 'controller' => 'News', 'action' => 'index'], 'admin.news.*')
-                        ->item('Fixtures', ['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'index'], 'admin.fixtures.*')
-                        ->item('Socials', ['prefix' => 'admin', 'controller' => 'Socials', 'action' => 'index'], 'admin.socials.*')
-                        ->item('Coaches', ['prefix' => 'admin', 'controller' => 'Coaches', 'action' => 'index'], 'admin.coaches.*')
-                        ->item('Committee', ['prefix' => 'admin', 'controller' => 'Committee', 'action' => 'index'], 'admin.committee.*')
-                        ->item('Training', ['prefix' => 'admin', 'controller' => 'Training', 'action' => 'index'], 'admin.training.*')
-                        ->end();
-                    ?>
-                <?php endif ?>
+                <?= $this->Menu
+                    ->startMenu('Admin', '#', 'admin.*', ['class'=> 'visible-xs'], ['onclick' =>'openMenu()'])
+                    ->end()
+                ?>
+                <?=
+                $this->Menu
+                    ->startMenu('Admin', ['_name' => 'admin'], 'admin.*', ['class'=> 'hidden-xs'] )
+                    ->item('Site Administration', ['_name' => 'admin'], 'admin.*')
+                    ->item('Users', ['prefix' => 'admin', 'controller' => 'Users', 'action' => 'index'], 'admin.users.*')
+                    ->item('Groups', ['prefix' => 'admin', 'controller' => 'Groups', 'action' => 'index'], 'admin.groups.*')
+                    ->item('Signups', ['prefix' => 'admin', 'controller' => 'Registration', 'action' => 'index'], 'admin.registration.*')
+                    ->item('Kit Items', ['prefix' => 'admin', 'controller' => 'KitItems', 'action' => 'index'], 'admin.kit-items.*')
+                    ->item('Kit Orders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'index'], 'admin.kit-orders.*')
+                    ->item('Membership', ['prefix' => 'admin', 'controller' => 'Membership', 'action' => 'index'], 'admin.membership.*')
+                    ->item('News', ['prefix' => 'admin', 'controller' => 'News', 'action' => 'index'], 'admin.news.*')
+                    ->item('Fixtures', ['prefix' => 'admin', 'controller' => 'Fixtures', 'action' => 'index'], 'admin.fixtures.*')
+                    ->item('Socials', ['prefix' => 'admin', 'controller' => 'Socials', 'action' => 'index'], 'admin.socials.*')
+                    ->item('Coaches', ['prefix' => 'admin', 'controller' => 'Coaches', 'action' => 'index'], 'admin.coaches.*')
+                    ->item('Committee', ['prefix' => 'admin', 'controller' => 'Committee', 'action' => 'index'], 'admin.committee.*')
+                    ->item('Training', ['prefix' => 'admin', 'controller' => 'Training', 'action' => 'index'], 'admin.training.*')
+                    ->end();
+                ?>
 
                 <?php if ($currentUser !== null): ?>
                     <li class="visible-xs"><?= $this->Html->link('My Profile', ['_name' => 'profile'], ['class' => ['navbar-link']]) ?></li>
