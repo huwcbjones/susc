@@ -92,14 +92,26 @@ $kitBagForm = new KitBagForm();
                                 <p class="help-block"><?= $kit->additional_info_description ?></p>
                             </div>
                         <?php endif; ?>
-                        <div class="form-group<?php if (!$kit->hasColour): ?> hidden<?php endif; ?>">
-                            <label for="colour">Colour</label>
-                            <?= $this->Form->select('colour', $kit->colourList, ['empty' => 'Select Colour']) ?>
-                        </div>
-                        <div class="form-group<?php if (!$kit->hasSize): ?> hidden<?php endif; ?>">
-                            <label for="sizeCombo">Size</label>
-                            <?= $this->Form->select('size', $kit->sizeList, ['empty' => 'Select Size']) ?>
-                        </div>
+                        <?php if ($kit->hasColour): ?>
+                            <div class="form-group">
+                                <label class="control-label" for="colour">Colours</label>
+                                <?php if (count($kit->colourList) > 1): ?>
+                                    <?= $this->Form->select('colour', $kit->colourList, ['empty' => 'Select Colour']) ?>
+                                <?php else: ?>
+                                    <p class="form-control-static"><?= reset($kit->colourList) ?></p>
+                                <?php endif ?>
+                            </div>
+                        <?php endif ?>
+                        <?php if ($kit->hasSize): ?>
+                            <div class="form-group">
+                                <label class="control-label" for="size">Size</label>
+                                <?php if (count($kit->sizeList) > 1): ?>
+                                    <?= $this->Form->select('size', $kit->sizeList, ['empty' => 'Select Size']) ?>
+                                <?php else: ?>
+                                    <p class="form-control-static"><?= reset($kit->sizeList) ?></p>
+                                <?php endif ?>
+                            </div>
+                        <?php endif ?>
                         <div class="form-group">
                             <label for="quantity">Quantity</label>
                             <?= $this->Form->select('quantity', $kit->quantityList, ['empty' => 'Select Quantity']) ?>
