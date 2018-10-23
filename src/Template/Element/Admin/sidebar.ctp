@@ -66,7 +66,7 @@ $this->AdminMenu
     ->item('Collections', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'collections'], 'admin.kit-orders.collections')
     ->item('Batches', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'batches'], 'admin.kit-orders.process', [], ['fuzzy' => true])
     ->item('Process Batch', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'process'], 'admin.kit-orders.process')
-    ->item('Send Reminders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'sendReminderEmails'], 'admin.kit-orders.remind')
+    ->item('Send Reminders', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'sendReminderEmails'], 'admin.kit-orders.remind', [], ['post' => true])
     ->item('Configure', ['prefix' => 'admin', 'controller' => 'KitOrders', 'action' => 'config'], 'admin.kit-orders.config')
     ->end(['class' => 'nav-sidebar']);
 ?>
