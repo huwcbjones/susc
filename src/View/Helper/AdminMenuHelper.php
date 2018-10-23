@@ -94,7 +94,8 @@ class AdminMenuHelper extends MenuHelper
     protected function _item($title, $url, $acl = null, $attrs = [], $options = [], $menuHeader = false)
     {
         $options += [
-            'fuzzy' => false
+            'fuzzy' => false,
+            'post' => false,
         ];
 
         if (is_array($acl)) {
@@ -123,9 +124,15 @@ class AdminMenuHelper extends MenuHelper
             $this->_numberOfItems++;
         }
 
+        $content = '';
+        if ($options['post']){
+            $content = $this->Form->postLink($title, $url, $options);
+        } else {
+            $content = $this->Html->link($title, $url, $options);
+        }
         return $this->formatTemplate('li', [
             'attrs' => $this->templater()->formatAttributes($attrs),
-            'content' => $this->Html->link($title, $url, $options)
+            'content' => $content
         ]);
     }
 }

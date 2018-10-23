@@ -42,7 +42,7 @@ class MenuHelper extends Helper
      *
      * @var array
      */
-    public $helpers = ['Html', 'Url'];
+    public $helpers = ['Html', 'Url', 'Form'];
 
     /**
      * Reference to the Response object
@@ -237,7 +237,8 @@ class MenuHelper extends Helper
     protected function _item($title, $url, $acl = null, $attrs = [], $options = [], $menuHeader = false)
     {
         $options += [
-            'fuzzy' => false
+            'fuzzy' => false,
+            'post' => false,
         ];
 
         if (is_array($acl)) {
@@ -264,9 +265,15 @@ class MenuHelper extends Helper
             $attrs = $this->addClass($attrs, $this->_menuID);
             $this->_numberOfItems++;
         }
+        $content = '';
+        if ($options['post']){
+            $content = $this->Form->postLink($title, $url, $options);
+        } else {
+            $content = $this->Html->link($title, $url, $options);
+        }
         return $this->formatTemplate('li', [
             'attrs' => $this->templater()->formatAttributes($attrs),
-            'content' => $this->Html->link($title, $url, $options)
+            'content' => $content
         ]);
     }
 
