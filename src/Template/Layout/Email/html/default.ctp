@@ -39,7 +39,7 @@ use Cake\Core\Configure;
                         <p class="text-center">
                             <?= $this->Html->link('Website', 'https://www.susc.org.uk', ['target' => '_blank']) ?>
                             &middot;
-                            <?= $this->Html->link('Facebook', 'https://www.facebook.com/sotonswimteam/', ['target' => '_blank']) ?>
+                            <?= $this->Html->link('Facebook', 'https://www.facebook.com/swimsusc/', ['target' => '_blank']) ?>
                             &middot;
                             <?= $this->Html->link('Facebook Group', 'https://www.facebook.com/groups/114314605328729/', ['target' => '_blank']) ?>
                             &middot;

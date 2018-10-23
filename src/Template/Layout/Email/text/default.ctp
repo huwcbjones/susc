@@ -18,6 +18,6 @@ Southampton University Swimming Club
 
 Website <?= Router::url('/', true) ?>
 
-Facebook https://fb.me/sotonswimteam/
+Facebook https://fb.me/swimsusc/
 Instagram https://www.instagram.com/swimsusc/
 Twitter https://twitter.com/swimsusc
