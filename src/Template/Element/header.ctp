@@ -79,7 +79,7 @@ use SUSC\View\AppView;
                 $this->Menu
                     ->startMenu('About Us', ['_name' => 'about'], null, [], ['fuzzy' => true])
                     ->item('Our Club', ['_name' => 'about'])
-                    ->item('Club Records', "https://docs.google.com/spreadsheets/d/1DC3bJHdW8ujtneftwrqbEZRSriWwinH5gItkd7mUQ1Q/edit?usp=sharing")  
+                    ->item('Club Records', "https://docs.google.com/spreadsheets/d/1DC3bJHdW8ujtneftwrqbEZRSriWwinH5gItkd7mUQ1Q/edit?usp=sharing", null, [], ["target" => "_blank"])  
                     ->item('Our Coaches', ['_name' => 'coaches'])
                     ->item('Our Committee', ['_name' => 'committee'])
                     ->separator()
